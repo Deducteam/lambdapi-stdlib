@@ -30,7 +30,7 @@ set infix left 6 "+" ≔ add
 
 assert λx y z,x+y=z : ∀x y z,Prop // check that x+y=z is parsed as expected
 
-rule 0       + &y → &y
+rule       0 + &y → &y
  and succ &x + &y → succ (&x + &y)
 
 // Addition is commutative
@@ -39,7 +39,6 @@ theorem add0r x : P (x + 0 = x)
 proof
   refine nat_ind _ _ _
   // case x = 0
-  simpl
   reflexivity
   // case x = s x'
   intro x' h
@@ -54,8 +53,8 @@ theorem addsr x y : P (x + succ y = succ (x + y))
 proof
   refine nat_ind _ _ _
   // case x = 0
-  simpl
-  intro y reflexivity //FIXME: remove intro y
+  intro y
+  reflexivity
   // case x = s x'
   intro x' h y
   simpl
@@ -69,8 +68,8 @@ theorem add_com x y : P (x+y = y+x)
 proof
   refine nat_ind _ _ _
   // case x = 0
-  simpl
-  intro y reflexivity //FIXME: remove intro y
+  intro y
+  reflexivity
   // case x = s x'
   simpl
   intro x' h y
@@ -84,7 +83,6 @@ theorem add_assoc x y z : P ((x+y)+z = x+(y+z))
 proof
   refine nat_ind _ _ _
   // case x = 0
-  simpl
   intro y z
   reflexivity
   // case x = s x'
@@ -104,11 +102,62 @@ set infix left 7 "×" ≔ mul
 
 assert λx y z,x+y×z ≡ λx y z,x+(y×z) // check that x+y×z is parsed as expected
 
-rule 0       × _       → 0
- and succ &x × &y      → &y + &x × &y
+rule       0 × _  → 0
+ and succ &x × &y → &y + &x × &y
 
+// Multiplication is commutative
 
+theorem mul0r x : P (x × 0 = 0)
+proof
+  refine nat_ind _ _ _
+  // case x = 0
+  reflexivity
+  // case x = s x'
+  intro x' h
+  refine h
+qed
 
+rule _ × 0 → 0
 
-rule _       × 0       → 0
-rule &x      × succ &y → &x + &x × &y
+theorem mulsr x y : P (x × succ y = x × y + x)
+proof
+  refine nat_ind _ _ _
+  // case x = 0
+  intro y
+  reflexivity
+  // case x = s x'
+  intro x' h y
+  simpl
+  rewrite h
+  reflexivity
+qed
+
+rule &x × succ &y → &x + &x × &y
+
+theorem mul_com x y : P (x × y = y × x)
+proof
+  refine nat_ind _ _ _
+  // case x = 0
+  intro y
+  reflexivity
+  // case x = s x'
+  intro x' h y
+  simpl
+  rewrite h
+  reflexivity
+qed
+
+// Multiplication is associative
+
+theorem mul_assoc x y z : P ((x × y) × z = x × (y × z))
+proof
+  refine nat_ind _ _ _
+  // case x = 0
+  intro y z
+  reflexivity
+  // case x = s x'
+  intro x' h y z
+  simpl
+qed
+
+rule (&x × &y) × &z → &x × (&y × &z)
