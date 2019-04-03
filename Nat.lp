@@ -1,7 +1,6 @@
 set flag "print_implicits" off
 
-require open Set
-require open Logic
+require open Set Logic
 
 // Type of natural numbers
 
