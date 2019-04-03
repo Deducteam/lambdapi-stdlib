@@ -63,7 +63,7 @@ proof
   reflexivity
 qed
 
-rule &x + (succ &y) → succ (&x + &y)
+rule &x + succ &y → succ (&x + &y)
 
 theorem add_com x y : P (x+y = y+x)
 proof
@@ -82,12 +82,19 @@ qed
 
 theorem add_assoc x y z : P ((x+y)+z = x+(y+z))
 proof
-  set debug +ts
   refine nat_ind _ _ _
   // case x = 0
   simpl
-  //reflexivity
+  intro y z
+  reflexivity
+  // case x = s x'
+  intro x' h y z
+  simpl
+  rewrite h
+  reflexivity
 qed
+
+rule (&x + &y) + &z → &x + (&y + &z)
 
 // Multiplication
 
@@ -95,9 +102,13 @@ symbol mul : N ⇒ N ⇒ N
 
 set infix left 7 "×" ≔ mul
 
-assert λx y z,x+y×z ≡ λx y z,x+(y×z)
+assert λx y z,x+y×z ≡ λx y z,x+(y×z) // check that x+y×z is parsed as expected
 
-rule 0         × _         → 0
- and (succ &x) × &y        → &y + &x × &y
- and _         × 0         → 0
- and &x        × (succ &y) → &x + &x × &y
+rule 0       × _       → 0
+ and succ &x × &y      → &y + &x × &y
+
+
+
+
+rule _       × 0       → 0
+rule &x      × succ &y → &x + &x × &y
