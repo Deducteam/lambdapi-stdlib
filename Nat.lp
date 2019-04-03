@@ -28,10 +28,10 @@ symbol add : N ⇒ N ⇒ N
 
 set infix left 6 "+" ≔ add
 
-assert λx y z,x+y=z : ∀x y z,Prop
+assert λx y z,x+y=z : ∀x y z,Prop // check that x+y=z is parsed as expected
 
-rule 0         + &y → &y
- and (succ &x) + &y → succ (&x + &y)
+rule 0       + &y → &y
+ and succ &x + &y → succ (&x + &y)
 
 // Addition is commutative
 
@@ -39,26 +39,23 @@ theorem add0r x : P (x + 0 = x)
 proof
   refine nat_ind _ _ _
   // case x = 0
-  print
   simpl
-  print
   reflexivity
   // case x = s x'
-  print
   intro x' h
-  print
+  simpl
   rewrite h
   reflexivity
 qed
 
-theorem add_com x y : P (x+y = y+x)
+rule &x + 0 → &x
+
+theorem addsr x y : P (x + succ y = succ (x + y))
 proof
-  set debug +ts
   refine nat_ind _ _ _
   // case x = 0
   simpl
-  print
-  reflexivity
+  intro y reflexivity //FIXME: remove intro y
   // case x = s x'
   intro x' h y
   simpl
@@ -66,8 +63,20 @@ proof
   reflexivity
 qed
 
-rule &x + 0         → &x
- and &x + (succ &y) → succ (&x + &y)
+rule &x + (succ &y) → succ (&x + &y)
+
+theorem add_com x y : P (x+y = y+x)
+proof
+  refine nat_ind _ _ _
+  // case x = 0
+  simpl
+  intro y reflexivity //FIXME: remove intro y
+  // case x = s x'
+  simpl
+  intro x' h y
+  rewrite h
+  reflexivity
+qed
 
 // Addition is associative
 
@@ -76,7 +85,8 @@ proof
   set debug +ts
   refine nat_ind _ _ _
   // case x = 0
-
+  simpl
+  //reflexivity
 qed
 
 // Multiplication
