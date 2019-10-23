@@ -26,7 +26,7 @@ symbol add : N ⇒ N ⇒ N
 
 set infix left 6 "+" ≔ add
 
-assert λx y z,x+y+z ≡ λx y z,(x+y)+z // check that x+y=z is parsed as expected
+assert λx y z,x+y+z ≡ λx y z,(x+y)+z // check that x+y=z is parsed correctly
 
 rule       0 + &y → &y
  and succ &x + &y → succ (&x + &y)
@@ -39,7 +39,7 @@ proof
   // case x = 0
   reflexivity
   // case x = s x'
-  intro x' h
+  assume x' h
   simpl
   rewrite h
   reflexivity
@@ -51,10 +51,10 @@ theorem addsr x y : P (x + succ y = succ (x + y))
 proof
   refine nat_ind _ _ _
   // case x = 0
-  intro y
+  assume y
   reflexivity
   // case x = s x'
-  intro x' h y
+  assume x' h y
   simpl
   rewrite h
   reflexivity
@@ -66,11 +66,11 @@ theorem add_com x y : P (x+y = y+x)
 proof
   refine nat_ind _ _ _
   // case x = 0
-  intro y
+  assume y
   reflexivity
   // case x = s x'
   simpl
-  intro x' h y
+  assume x' h y
   rewrite h
   reflexivity
 qed
@@ -81,10 +81,10 @@ theorem add_assoc x y z : P ((x+y)+z = x+(y+z))
 proof
   refine nat_ind _ _ _
   // case x = 0
-  intro y z
+  assume y z
   reflexivity
   // case x = s x'
-  intro x' h y z
+  assume x' h y z
   simpl
   rewrite h
   reflexivity
@@ -98,7 +98,7 @@ symbol mul : N ⇒ N ⇒ N
 
 set infix left 7 "×" ≔ mul
 
-assert λx y z,x+y×z ≡ λx y z,x+(y×z) // check that x+y×z is parsed as expected
+assert λx y z,x+y×z ≡ λx y z,x+(y×z) // check that x+y×z is parsed correctly
 
 rule       0 × _  → 0
  and succ &x × &y → &y + &x × &y
@@ -111,8 +111,8 @@ proof
   // case x = 0
   reflexivity
   // case x = s x'
-  intro x' h
-  refine h
+  assume x' h
+  apply h
 qed
 
 rule _ × 0 → 0
@@ -121,10 +121,10 @@ theorem mulsr x y : P (x × succ y = x × y + x)
 proof
   refine nat_ind _ _ _
   // case x = 0
-  intro y
+  assume y
   reflexivity
   // case x = s x'
-  intro x' h y
+  assume x' h y
   simpl
   rewrite h
   reflexivity
@@ -136,14 +136,43 @@ theorem mul_com x y : P (x × y = y × x)
 proof
   refine nat_ind _ _ _
   // case x = 0
-  intro y
+  assume y
   reflexivity
   // case x = s x'
-  intro x' h y
+  assume x' h y
   simpl
   rewrite h
   reflexivity
 qed
+
+// Multiplication distributes over addition
+
+theorem mul_addl x y z : P ((x+y)×z = x×z+y×z)
+proof
+  refine nat_ind _ _ _
+  // case x = 0
+  assume y z
+  reflexivity
+  // case x = s x'
+  assume x' h y z
+  simpl
+  rewrite h
+  reflexivity
+qed
+
+rule (&x + &y) × &z → &x × &z + &y × &z
+
+theorem mul_addr x y z : P (z×(x+y) = z×x+z×y)
+proof
+  assume x y z
+  rewrite mul_com
+  rewrite mul_addl
+  rewrite mul_com
+  rewrite [y×_]mul_com
+  reflexivity
+qed
+
+rule &z × (&x + &y) → &z × &x + &z × &y
 
 // Multiplication is associative
 
@@ -151,11 +180,13 @@ theorem mul_assoc x y z : P ((x × y) × z = x × (y × z))
 proof
   refine nat_ind _ _ _
   // case x = 0
-  intro y z
+  assume y z
   reflexivity
   // case x = s x'
-  intro x' h y z
+  assume x' h y z
   simpl
+  rewrite h
+  reflexivity
 qed
 
 rule (&x × &y) × &z → &x × (&y × &z)

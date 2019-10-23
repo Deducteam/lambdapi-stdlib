@@ -35,8 +35,7 @@ assert λx y z,x∨y∧z ≡ λx y z,x∨(y∧z) // check that propositions are 
 set declared "⊥"
 
 symbol const ⊥ : Prop
-
-symbol const ⊥_elim p : P ⊥ ⇒ P p
+symbol const false_elim p : P ⊥ ⇒ P p
 
 // Negation
 
@@ -57,9 +56,8 @@ rule P (@all &a &f) → ∀x:S &a, P (&f x)
 set declared "∃"
 
 symbol const ∃ {a} : (S a ⇒ Prop) ⇒ Prop
-
-symbol const ∃_intro a p (x:S a) : P (p x) ⇒ P (∃ p)
-symbol ∃_elim a (p:S a⇒Prop) q : P (∃ p) ⇒ (∀x, P (p x) ⇒ P q) ⇒ P q
+symbol const ex_intro {a} p (x:S a) : P (p x) ⇒ P (∃ p)
+symbol ex_elim {a} p q : P (∃ p) ⇒ (∀x:S a, P (p x) ⇒ P q) ⇒ P q
 
 // Leibniz equality
 
@@ -83,7 +81,7 @@ set builtin "all"   ≔ all
 
 theorem eq_sym {a} (x y:S a) : P (x=y) ⇒ P (y=x)
 proof
-  intro a x y xy
+  assume a x y xy
   symmetry
-  refine xy
+  apply xy
 qed

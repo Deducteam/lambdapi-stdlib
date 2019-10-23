@@ -1,6 +1,6 @@
-// Type of booleans
-
 require open Set
+
+// Type of booleans
 
 symbol const bool : Set
 
@@ -19,6 +19,7 @@ rule not true  → false
 // Disjunction
 
 symbol or : B ⇒ B ⇒ B
+
 set infix left 6 "|" ≔ or
 
 rule true | _  → true
@@ -29,6 +30,7 @@ rule true | _  → true
 // Conjunction
 
 symbol {|and|} : B ⇒ B ⇒ B
+
 set infix left 7 "^" ≔ {|and|}
 
 rule true ^ &b → &b
