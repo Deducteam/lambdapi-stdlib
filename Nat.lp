@@ -1,5 +1,3 @@
-set flag "print_implicits" off
-
 require open Set Logic
 
 // Type of natural numbers
@@ -16,7 +14,7 @@ symbol const succ : N ⇒ N
 set builtin "0"  ≔ zero
 set builtin "+1" ≔ succ
 
-assert 42 : N
+assert 42 : N // example
 
 // Induction principle
 
@@ -28,7 +26,7 @@ symbol add : N ⇒ N ⇒ N
 
 set infix left 6 "+" ≔ add
 
-assert λx y z,x+y=z : ∀x y z,Prop // check that x+y=z is parsed as expected
+assert λx y z,x+y+z ≡ λx y z,(x+y)+z // check that x+y=z is parsed as expected
 
 rule       0 + &y → &y
  and succ &x + &y → succ (&x + &y)

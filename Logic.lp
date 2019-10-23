@@ -28,19 +28,23 @@ symbol const or_intro_left p q : P p ⇒ P (p ∨ q)
 symbol const or_intro_right p q : P q ⇒ P (p ∨ q)
 symbol or_elim p q r : P (p ∨ q) ⇒ (P p ⇒ P r) ⇒ (P q ⇒ P r) ⇒ P r
 
-assert λx y z,x∨y∧z ≡ λx y z,x∨(y∧z)
-
+assert λx y z,x∨y∧z ≡ λx y z,x∨(y∧z) // check that propositions are parsed correctly
+  
 // False
 
-symbol const false : Prop
+set declared "⊥"
 
-symbol const false_elim p : P false ⇒ P p
+symbol const ⊥ : Prop
+
+symbol const ⊥_elim p : P ⊥ ⇒ P p
 
 // Negation
 
-symbol const not : Prop ⇒ Prop
+set declared "¬"
 
-rule P (not &p) → P &p ⇒ P false
+symbol const ¬ : Prop ⇒ Prop
+
+rule P (¬ &p) → P &p ⇒ P ⊥
 
 // Universal quantification
 
@@ -50,10 +54,12 @@ rule P (@all &a &f) → ∀x:S &a, P (&f x)
 
 // Existential quantification
 
-symbol const ex {a} : (S a ⇒ Prop) ⇒ Prop
+set declared "∃"
 
-symbol const ex_intro a p (x:S a) : P (p x) ⇒ P (ex p)
-symbol ex_elim a (p:S a⇒Prop) q : P (ex p) ⇒ (∀x, P (p x) ⇒ P q) ⇒ P q
+symbol const ∃ {a} : (S a ⇒ Prop) ⇒ Prop
+
+symbol const ∃_intro a p (x:S a) : P (p x) ⇒ P (∃ p)
+symbol ∃_elim a (p:S a⇒Prop) q : P (∃ p) ⇒ (∀x, P (p x) ⇒ P q) ⇒ P q
 
 // Leibniz equality
 

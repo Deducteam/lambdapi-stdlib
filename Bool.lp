@@ -1,35 +1,37 @@
 // Type of booleans
 
-symbol const B : TYPE
+require open Set
 
-symbol const tt : B
-symbol const ff : B
+symbol const bool : Set
+
+definition B ≔ S bool
+
+symbol const true : B
+symbol const false : B
 
 // Negation
 
-symbol bnot : B ⇒ B
+symbol not : B ⇒ B
 
-rule bnot tt → ff
- and bnot ff → tt
+rule not true  → false
+ and not false → true
 
 // Disjunction
 
-symbol bor : B ⇒ B ⇒ B
+symbol or : B ⇒ B ⇒ B
+set infix left 6 "|" ≔ or
 
-set infix left 6 "|" ≔ bor
-
-rule tt | _  → tt
- and _  | tt → tt
- and ff | &b → &b
- and &b | ff → &b
+rule true | _  → true
+ and _  | true → true
+ and false | &b → &b
+ and &b | false → &b
 
 // Conjunction
 
-symbol band : B ⇒ B ⇒ B
+symbol {|and|} : B ⇒ B ⇒ B
+set infix left 7 "^" ≔ {|and|}
 
-set infix left 7 "&" ≔ band
-
-rule tt & &b → &b
- and &b & tt → &b
- and ff & _  → ff
- and _  & ff → ff
+rule true ^ &b → &b
+ and &b ^ true → &b
+ and false ^ _  → false
+ and _  ^ false → false
