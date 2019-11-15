@@ -5,3 +5,6 @@ default: $(LPO_FILES)
 
 %.lpo: %.lp
 	lambdapi --gen-obj $<
+
+clean:
+	rm -f $(LPO_FILES)
