@@ -1,32 +1,34 @@
-require open Set
+require open Stdlib.Set
 
 // Type of propositions
 
-symbol const Prop : TYPE
+constant symbol Prop : TYPE
 
 // Interpretation of propositions in TYPE
 
-symbol injective P : Prop ⇒ TYPE
+set declared "π"
+
+injective symbol π : Prop ⇒ TYPE
 
 // Conjunction
 
-symbol const {|and|} : Prop ⇒ Prop ⇒ Prop
+constant symbol conj : Prop ⇒ Prop ⇒ Prop
 
-set infix left 7 "∧" ≔ {|and|}
+set infix left 7 "∧" ≔ conj
 
-symbol const and_intro p q : P p ⇒ P q ⇒ P (p ∧ q)
-symbol and_elim_left p q : P (p ∧ q) ⇒ P p
-symbol and_elim_right p q : P (p ∧ q) ⇒ P q
+constant symbol conj_intro p q : π p ⇒ π q ⇒ π (p ∧ q)
+symbol conj_elim_left p q : π (p ∧ q) ⇒ π p
+symbol conj_elim_right p q : π (p ∧ q) ⇒ π q
 
 // Disjunction
 
-symbol const or : Prop ⇒ Prop ⇒ Prop
+constant symbol disj : Prop ⇒ Prop ⇒ Prop
 
-set infix left 6 "∨" ≔ or
+set infix left 6 "∨" ≔ disj
 
-symbol const or_intro_left p q : P p ⇒ P (p ∨ q)
-symbol const or_intro_right p q : P q ⇒ P (p ∨ q)
-symbol or_elim p q r : P (p ∨ q) ⇒ (P p ⇒ P r) ⇒ (P q ⇒ P r) ⇒ P r
+constant symbol disj_intro_left p q : π p ⇒ π (p ∨ q)
+constant symbol disj_intro_right p q : π q ⇒ π (p ∨ q)
+symbol disj_elim p q r : π (p ∨ q) ⇒ (π p ⇒ π r) ⇒ (π q ⇒ π r) ⇒ π r
 
 assert λx y z,x∨y∧z ≡ λx y z,x∨(y∧z) // check that propositions are parsed correctly
   
@@ -34,52 +36,52 @@ assert λx y z,x∨y∧z ≡ λx y z,x∨(y∧z) // check that propositions are 
 
 set declared "⊥"
 
-symbol const ⊥ : Prop
-symbol const false_elim p : P ⊥ ⇒ P p
+constant symbol ⊥ : Prop
+constant symbol false_elim p : π ⊥ ⇒ π p
 
 // Negation
 
 set declared "¬"
 
-symbol const ¬ : Prop ⇒ Prop
+constant symbol ¬ : Prop ⇒ Prop
 
-rule P (¬ &p) → P &p ⇒ P ⊥
+rule π (¬ &p) → π &p ⇒ π ⊥
 
 // Universal quantification
 
-symbol const all {a} : (S a ⇒ Prop) ⇒ Prop
+constant symbol forall {a} : (τ a ⇒ Prop) ⇒ Prop
 
-rule P (@all &a &f) → ∀x:S &a, P (&f x)
+rule π (@forall &a &f) → ∀x:τ &a, π (&f x)
 
 // Existential quantification
 
 set declared "∃"
 
-symbol const ∃ {a} : (S a ⇒ Prop) ⇒ Prop
-symbol const ex_intro {a} p (x:S a) : P (p x) ⇒ P (∃ p)
-symbol ex_elim {a} p q : P (∃ p) ⇒ (∀x:S a, P (p x) ⇒ P q) ⇒ P q
+constant symbol ∃ {a} : (τ a ⇒ Prop) ⇒ Prop
+constant symbol ex_intro {a} p (x:τ a) : π (p x) ⇒ π (∃ p)
+symbol ex_elim {a} p q : π (∃ p) ⇒ (∀x:τ a, π (p x) ⇒ π q) ⇒ π q
 
 // Leibniz equality
 
-symbol const eq {a} : S a ⇒ S a ⇒ Prop
+constant symbol eq {a} : τ a ⇒ τ a ⇒ Prop
 
 set infix 1 "=" ≔ eq
 
-symbol const eq_refl {a} (x:S a) : P (x = x)
-symbol const eq_ind {a} (x y:S a) : P (x = y) ⇒ ∀p, P (p y) ⇒ P (p x)
+constant symbol eq_refl {a} (x:τ a) : π (x = x)
+constant symbol eq_ind {a} (x y:τ a) : π (x = y) ⇒ ∀p, π (p y) ⇒ π (p x)
 
 // Set builtins for the rewrite tactic
 
-set builtin "P"     ≔ P
-set builtin "T"     ≔ S
+set builtin "P"     ≔ π
+set builtin "T"     ≔ τ
 set builtin "eq"    ≔ eq
 set builtin "refl"  ≔ eq_refl
 set builtin "eqind" ≔ eq_ind
-set builtin "all"   ≔ all
+set builtin "all"   ≔ forall
 
 // Properties of Leibniz equality
 
-theorem eq_sym {a} (x y:S a) : P (x=y) ⇒ P (y=x)
+theorem eq_sym {a} (x y:τ a) : π (x=y) ⇒ π (y=x)
 proof
   assume a x y xy
   symmetry

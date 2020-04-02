@@ -1,13 +1,13 @@
-require open Set
+require open Stdlib.Set
 
 // Type of booleans
 
-symbol const bool : Set
+constant symbol bool : Set
 
-definition B ≔ S bool
+definition B ≔ τ bool
 
-symbol const true : B
-symbol const false : B
+constant symbol true : B
+constant symbol false : B
 
 // Negation
 

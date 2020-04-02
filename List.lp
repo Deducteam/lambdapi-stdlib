@@ -2,12 +2,12 @@ require open Set Logic Nat
 
 // Type of polymorphic lists
 
-symbol const list : Set ⇒ Set
+constant symbol list : Set ⇒ Set
 
 definition L a ≔ S (list a)
 
-symbol const nil {a} : L a
-symbol const cons {a} : S a ⇒ L a ⇒ L a
+constant symbol nil {a} : L a
+constant symbol cons {a} : S a ⇒ L a ⇒ L a
 
 // Induction principle on lists
 

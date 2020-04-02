@@ -1,7 +1,9 @@
 // Type of set codes
 
-symbol const Set : TYPE
+constant symbol Set : TYPE
 
 // Interpretation of set codes in TYPE
 
-symbol injective S : Set ⇒ TYPE
+set declared "τ"
+
+injective symbol τ : Set ⇒ TYPE

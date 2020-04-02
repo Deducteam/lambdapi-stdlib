@@ -1,4 +1,4 @@
-require open Bool Nat
+require open Stdlib.Bool Stdlib.Nat
 
 // Boolean equality on N
 
