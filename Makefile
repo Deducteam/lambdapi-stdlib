@@ -1,10 +1,10 @@
-LP_FILES := $(shell ls *.lp)
-LPO_FILES := $(LP_FILES:%=%o)
+LP_SRC = $(wildcard *.lp)
+LP_OBJ = $(LP_SRC:%.lp=%.lpo)
 
-default: $(LPO_FILES)
+default: $(LP_OBJ)
 
-%.lpo: %.lp
-	lambdapi check --gen-obj $<
+$(LP_OBJ)&: $(LP_SRC)
+	@lambdapi check --gen-obj $^
 
 clean:
-	rm -f $(LPO_FILES)
+	@rm -f $(LP_OBJ)

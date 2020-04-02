@@ -1,18 +1,18 @@
-require open Set Logic Nat
+require open Stdlib.Set Stdlib.Logic Stdlib.Nat
 
 // Type of polymorphic lists
 
 constant symbol list : Set ⇒ Set
 
-definition L a ≔ S (list a)
+definition L a ≔ τ (list a)
 
 constant symbol nil {a} : L a
-constant symbol cons {a} : S a ⇒ L a ⇒ L a
+constant symbol cons {a} : τ a ⇒ L a ⇒ L a
 
 // Induction principle on lists
 
 symbol list_ind {a} p :
-  P(p nil) ⇒ (∀(x:S a),∀l,P(p l)⇒P(p(cons x l))) ⇒ ∀l,P(p l)
+  π(p nil) ⇒ (∀(x:τ a),∀l,π(p l)⇒π(p(cons x l))) ⇒ ∀l,π(p l)
 
 // Length of a list
 
@@ -32,7 +32,7 @@ rule nil ++ &m → &m
 //and cons &x &l ++ &m → cons &x (&l ++ &m) // not accepted FIXME
 and concat (@cons &a &x &l) &m → @cons &a &x (@concat &a &l &m)
 
-theorem concat_nilr {a} (l:L a) : P (l ++ nil = l)
+theorem concat_nilr {a} (l:L a) : π (l ++ nil = l)
 proof
   assume a
   refine list_ind _ _ _
@@ -48,7 +48,7 @@ qed
 rule &m ++ nil → &m
 
 theorem length_concat {a} (l m : L a) :
-  P (length (l ++ m) = length l + length m)
+  π (length (l ++ m) = length l + length m)
 proof
   assume a
   refine list_ind _ _ _
@@ -64,7 +64,7 @@ qed
 
 rule @length &a (&l ++ &m) → @length &a &l + @length &a &m
 
-theorem concat_assoc {a} (l m n : L a) : P((l ++ m) ++ n = l ++ (m ++ n))
+theorem concat_assoc {a} (l m n : L a) : π((l ++ m) ++ n = l ++ (m ++ n))
 proof
   assume a
   refine list_ind _ _ _
