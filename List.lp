@@ -4,79 +4,85 @@ require open Stdlib.Set Stdlib.Logic Stdlib.Nat
 
 constant symbol list : Set ⇒ Set
 
-definition L a ≔ τ (list a)
+definition L a ≔ τ(list a)
 
-constant symbol nil {a} : L a
-constant symbol cons {a} : τ a ⇒ L a ⇒ L a
+set declared "⌑"
+
+constant symbol ⌑ {a} : L a
+constant symbol cons {a} : τa ⇒ L a ⇒ L a
+
+set infix 4 "⸬" ≔ cons
 
 // Induction principle on lists
 
-symbol list_ind {a} p :
-  π(p nil) ⇒ (∀(x:τ a),∀l,π(p l)⇒π(p(cons x l))) ⇒ ∀l,π(p l)
+symbol list_ind {a} (p:L a⇒Prop) :
+  π(p ⌑) ⇒ (∀x l,π(p l) ⇒ π(p(x⸬l))) ⇒ ∀l,π(p l)
 
 // Length of a list
 
 symbol length {a} : L a ⇒ N
 
-rule length nil → 0
-//and length (cons _ &l) → length &l // not accepted FIXME
-and length (@cons &a _ &l) → succ (@length &a &l)
+rule length ⌑ → 0
+and length (_ ⸬ &l) → succ (length &l)
 
 // Concatenation of two lists
 
 symbol concat {a} : L a ⇒ L a ⇒ L a
 
-set infix 5 "++" ≔ concat
+set infix right 5 "⋅" ≔ concat
+assert a (x y z:L a) ⊢ x⋅y⋅z ≡ x⋅(y⋅z)
+assert a x l m ⊢ x⸬l⋅m ≡ x⸬(l⋅m)
 
-rule nil ++ &m → &m
-//and cons &x &l ++ &m → cons &x (&l ++ &m) // not accepted FIXME
-and concat (@cons &a &x &l) &m → @cons &a &x (@concat &a &l &m)
+rule concat ⌑ &m → &m
+and concat (&x⸬&l) &m → &x⸬(concat &l &m)
 
-theorem concat_nilr {a} (l:L a) : π (l ++ nil = l)
+rule ⌑ ⋅ &m → &m
+and (&x ⸬ &l) ⋅ &m → &x ⸬ (&l ⋅ &m)
+
+theorem concat_nil {a} (l:L a) : π(l ⋅ ⌑ = l)
 proof
   assume a
   refine list_ind _ _ _
-  // case l = nil
+  // case l = ⌑
   reflexivity
-  // case l = cons x l'
+  // case l = x ⸬ l'
   assume x l' h
   simpl
   rewrite h
   reflexivity
 qed
 
-rule &m ++ nil → &m
+rule &m ⋅ ⌑ → &m
 
 theorem length_concat {a} (l m : L a) :
-  π (length (l ++ m) = length l + length m)
+  π(length (l ⋅ m) = length l + length m)
 proof
   assume a
   refine list_ind _ _ _
-  // case l = nil
+  // case l = ⌑
   assume m
   reflexivity
-  // case l = cons x l'
+  // case l = x⸬l'
   assume x l' h m
   simpl
   rewrite h
   reflexivity
 qed
 
-rule @length &a (&l ++ &m) → @length &a &l + @length &a &m
+rule length (&l ⋅ &m) → length &l + length &m
 
-theorem concat_assoc {a} (l m n : L a) : π((l ++ m) ++ n = l ++ (m ++ n))
+theorem concat_assoc {a} (l m n : L a) : π((l ⋅ m) ⋅ n = l ⋅ (m ⋅ n))
 proof
   assume a
   refine list_ind _ _ _
-  // case l = nil
+  // case l = ⌑
   assume m n
   reflexivity
-  // case l = cons x l'
+  // case l = x⸬l'
   assume x l' h m n
   simpl
   rewrite h
   reflexivity
 qed
 
-//rule (&l ++ &m) ++ &n → &l ++ (&m ++ &n)
-rule @concat &a (&l ++ &m) &n → @concat &a &l (@concat &a &m &n)
+rule (&l ⋅ &m) ⋅ &n → &l ⋅ (&m ⋅ &n)
