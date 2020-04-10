@@ -4,17 +4,19 @@ require open Stdlib.Set Stdlib.Logic
 
 constant symbol nat : Set
 
-definition N ≔ τ nat
+set declared "ℕ"
 
-constant symbol zero : N
-constant symbol succ : N ⇒ N
+definition ℕ ≔ τ nat
+
+constant symbol zero : ℕ
+constant symbol succ : ℕ ⇒ ℕ
 
 // Enabling builtin natural number literals
 
 set builtin "0"  ≔ zero
 set builtin "+1" ≔ succ
 
-assert 42 : N // example
+assert 42 : ℕ // example
 
 // Induction principle
 
@@ -22,7 +24,7 @@ symbol nat_ind p : π (p 0) ⇒ (∀x, π (p x) ⇒ π (p (succ x))) ⇒ ∀x, �
 
 // Addition
 
-symbol add : N ⇒ N ⇒ N
+symbol add : ℕ ⇒ ℕ ⇒ ℕ
 
 set infix left 6 "+" ≔ add
 
@@ -94,7 +96,7 @@ rule (&x + &y) + &z → &x + (&y + &z)
 
 // Multiplication
 
-symbol mul : N ⇒ N ⇒ N
+symbol mul : ℕ ⇒ ℕ ⇒ ℕ
 
 set infix left 7 "×" ≔ mul
 

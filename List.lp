@@ -4,46 +4,46 @@ require open Stdlib.Set Stdlib.Logic Stdlib.Nat
 
 constant symbol list : Set ⇒ Set
 
-definition L a ≔ τ(list a)
+set declared "𝕃"
 
-set declared "⌑"
+definition 𝕃a ≔ τ (list a)
 
-constant symbol ⌑ {a} : L a
-constant symbol cons {a} : τa ⇒ L a ⇒ L a
+set declared "□"
+
+constant symbol □ {a} : 𝕃a
+constant symbol cons {a} : τa ⇒ 𝕃a ⇒ 𝕃a
 
 set infix 4 "⸬" ≔ cons
 
 // Induction principle on lists
 
-symbol list_ind {a} (p:L a⇒Prop) :
-  π(p ⌑) ⇒ (∀x l,π(p l) ⇒ π(p(x⸬l))) ⇒ ∀l,π(p l)
+symbol list_ind {a} (p:𝕃a⇒Prop) :
+  π(p □) ⇒ (∀x l,π(p l) ⇒ π(p(x⸬l))) ⇒ ∀l,π(p l)
 
 // Length of a list
 
-symbol length {a} : L a ⇒ N
+symbol length {a} : 𝕃a ⇒ ℕ
 
-rule length ⌑ → 0
+rule length □ → 0
 and length (_ ⸬ &l) → succ (length &l)
 
 // Concatenation of two lists
 
-symbol concat {a} : L a ⇒ L a ⇒ L a
+symbol concat {a} : 𝕃a ⇒ 𝕃a ⇒ 𝕃a
 
 set infix right 5 "⋅" ≔ concat
-assert a (x y z:L a) ⊢ x⋅y⋅z ≡ x⋅(y⋅z)
+
+assert a (x y z:𝕃a) ⊢ x⋅y⋅z ≡ x⋅(y⋅z)
 assert a x l m ⊢ x⸬l⋅m ≡ x⸬(l⋅m)
 
-rule concat ⌑ &m → &m
-and concat (&x⸬&l) &m → &x⸬(concat &l &m)
-
-rule ⌑ ⋅ &m → &m
+rule □ ⋅ &m → &m
 and (&x ⸬ &l) ⋅ &m → &x ⸬ (&l ⋅ &m)
 
-theorem concat_nil {a} (l:L a) : π(l ⋅ ⌑ = l)
+theorem concat_nil {a} (l:𝕃a) : π(l ⋅ □ = l)
 proof
   assume a
   refine list_ind _ _ _
-  // case l = ⌑
+  // case l = □
   reflexivity
   // case l = x ⸬ l'
   assume x l' h
@@ -52,14 +52,14 @@ proof
   reflexivity
 qed
 
-rule &m ⋅ ⌑ → &m
+rule &m ⋅ □ → &m
 
-theorem length_concat {a} (l m : L a) :
+theorem length_concat {a} (l m : 𝕃a) :
   π(length (l ⋅ m) = length l + length m)
 proof
   assume a
   refine list_ind _ _ _
-  // case l = ⌑
+  // case l = □
   assume m
   reflexivity
   // case l = x⸬l'
@@ -71,11 +71,11 @@ qed
 
 rule length (&l ⋅ &m) → length &l + length &m
 
-theorem concat_assoc {a} (l m n : L a) : π((l ⋅ m) ⋅ n = l ⋅ (m ⋅ n))
+theorem concat_assoc {a} (l m n : 𝕃a) : π((l ⋅ m) ⋅ n = l ⋅ (m ⋅ n))
 proof
   assume a
   refine list_ind _ _ _
-  // case l = ⌑
+  // case l = □
   assume m n
   reflexivity
   // case l = x⸬l'
