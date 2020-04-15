@@ -6,4 +6,4 @@ constant symbol Set : TYPE
 
 set declared "τ"
 
-injective symbol τ : Set ⇒ TYPE
+injective symbol τ : Set → TYPE

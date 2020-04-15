@@ -9,7 +9,7 @@ set declared "ℕ"
 definition ℕ ≔ τ nat
 
 constant symbol zero : ℕ
-constant symbol succ : ℕ ⇒ ℕ
+constant symbol succ : ℕ → ℕ
 
 // Enabling builtin natural number literals
 
@@ -20,18 +20,18 @@ assert 42 : ℕ // example
 
 // Induction principle
 
-symbol nat_ind p : π (p 0) ⇒ (∀x, π (p x) ⇒ π (p (succ x))) ⇒ ∀x, π (p x)
+symbol nat_ind p : π (p 0) → (Πx, π (p x) → π (p (succ x))) → Πx, π (p x)
 
 // Addition
 
-symbol add : ℕ ⇒ ℕ ⇒ ℕ
+symbol add : ℕ → ℕ → ℕ
 
 set infix left 6 "+" ≔ add
 
 assert λx y z,x+y+z ≡ λx y z,(x+y)+z // check that x+y=z is parsed correctly
 
-rule       0 + &y → &y
- and succ &x + &y → succ (&x + &y)
+rule       0 + $y ⟶ $y
+ with succ $x + $y ⟶ succ ($x + $y)
 
 // Addition is commutative
 
@@ -47,7 +47,7 @@ proof
   reflexivity
 qed
 
-rule &x + 0 → &x
+rule $x + 0 ⟶ $x
 
 theorem addsr x y : π (x + succ y = succ (x + y))
 proof
@@ -62,7 +62,7 @@ proof
   reflexivity
 qed
 
-rule &x + succ &y → succ (&x + &y)
+rule $x + succ $y ⟶ succ ($x + $y)
 
 theorem add_com x y : π (x+y = y+x)
 proof
@@ -92,18 +92,18 @@ proof
   reflexivity
 qed
 
-rule (&x + &y) + &z → &x + (&y + &z)
+rule ($x + $y) + $z ⟶ $x + ($y + $z)
 
 // Multiplication
 
-symbol mul : ℕ ⇒ ℕ ⇒ ℕ
+symbol mul : ℕ → ℕ → ℕ
 
 set infix left 7 "×" ≔ mul
 
 assert λx y z,x+y×z ≡ λx y z,x+(y×z) // check that x+y×z is parsed correctly
 
-rule       0 × _  → 0
- and succ &x × &y → &y + &x × &y
+rule       0 × _  ⟶ 0
+ with succ $x × $y ⟶ $y + $x × $y
 
 // Multiplication is commutative
 
@@ -117,7 +117,7 @@ proof
   apply h
 qed
 
-rule _ × 0 → 0
+rule _ × 0 ⟶ 0
 
 theorem mulsr x y : π (x × succ y = x × y + x)
 proof
@@ -132,7 +132,7 @@ proof
   reflexivity
 qed
 
-rule &x × succ &y → &x + &x × &y
+rule $x × succ $y ⟶ $x + $x × $y
 
 theorem mul_com x y : π (x × y = y × x)
 proof
@@ -162,7 +162,7 @@ proof
   reflexivity
 qed
 
-rule (&x + &y) × &z → &x × &z + &y × &z
+rule ($x + $y) × $z ⟶ $x × $z + $y × $z
 
 theorem mul_addr x y z : π (z×(x+y) = z×x+z×y)
 proof
@@ -174,7 +174,7 @@ proof
   reflexivity
 qed
 
-rule &z × (&x + &y) → &z × &x + &z × &y
+rule $z × ($x + $y) ⟶ $z × $x + $z × $y
 
 // Multiplication is associative
 
@@ -191,4 +191,4 @@ proof
   reflexivity
 qed
 
-rule (&x × &y) × &z → &x × (&y × &z)
+rule ($x × $y) × $z ⟶ $x × ($y × $z)
