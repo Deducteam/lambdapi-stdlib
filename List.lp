@@ -24,8 +24,8 @@ symbol list_ind {a} (p:𝕃a→Prop) :
 
 symbol length {a} : 𝕃a → ℕ
 
-rule length □ ⟶ 0
-with length (_ ⸬ $l) ⟶ succ (length $l)
+rule length □ ↪ 0
+with length (_ ⸬ $l) ↪ succ (length $l)
 
 // Concatenation of two lists
 
@@ -36,8 +36,8 @@ set infix right 5 "⋅" ≔ concat
 assert a (x y z:𝕃a) ⊢ x⋅y⋅z ≡ x⋅(y⋅z)
 assert a x l m ⊢ x⸬l⋅m ≡ x⸬(l⋅m)
 
-rule □ ⋅ $m ⟶ $m
-with ($x ⸬ $l) ⋅ $m ⟶ $x ⸬ ($l ⋅ $m)
+rule □ ⋅ $m ↪ $m
+with ($x ⸬ $l) ⋅ $m ↪ $x ⸬ ($l ⋅ $m)
 
 theorem concat_nil {a} (l:𝕃a) : π(l ⋅ □ = l)
 proof
@@ -52,7 +52,7 @@ proof
   reflexivity
 qed
 
-rule $m ⋅ □ ⟶ $m
+rule $m ⋅ □ ↪ $m
 
 theorem length_concat {a} (l m : 𝕃a) :
   π(length (l ⋅ m) = length l + length m)
@@ -69,7 +69,7 @@ proof
   reflexivity
 qed
 
-rule length ($l ⋅ $m) ⟶ length $l + length $m
+rule length ($l ⋅ $m) ↪ length $l + length $m
 
 theorem concat_assoc {a} (l m n : 𝕃a) : π((l ⋅ m) ⋅ n = l ⋅ (m ⋅ n))
 proof
@@ -85,4 +85,4 @@ proof
   reflexivity
 qed
 
-rule ($l ⋅ $m) ⋅ $n ⟶ $l ⋅ ($m ⋅ $n)
+rule ($l ⋅ $m) ⋅ $n ↪ $l ⋅ ($m ⋅ $n)

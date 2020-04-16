@@ -45,13 +45,13 @@ set declared "¬"
 
 constant symbol ¬ : Prop → Prop
 
-rule π (¬ $p) ⟶ π $p → π ⊥
+rule π (¬ $p) ↪ π $p → π ⊥
 
 // Universal quantification
 
 constant symbol forall {a} : (τ a → Prop) → Prop
 
-rule π (@forall $a $f) ⟶ Πx:τ $a, π ($f x)
+rule π (@forall $a $f) ↪ Πx:τ $a, π ($f x)
 
 // Existential quantification
 

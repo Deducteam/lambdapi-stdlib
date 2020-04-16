@@ -13,8 +13,8 @@ constant symbol false : B
 
 symbol not : B → B
 
-rule not true  ⟶ false
- with not false ⟶ true
+rule not true  ↪ false
+ with not false ↪ true
 
 // Disjunction
 
@@ -22,10 +22,10 @@ symbol or : B → B → B
 
 set infix left 6 "|" ≔ or
 
-rule true | _  ⟶ true
- with _  | true ⟶ true
- with false | $b ⟶ $b
- with $b | false ⟶ $b
+rule true | _  ↪ true
+ with _  | true ↪ true
+ with false | $b ↪ $b
+ with $b | false ↪ $b
 
 // Conjunction
 
@@ -33,7 +33,7 @@ symbol {|and|} : B → B → B
 
 set infix left 7 "^" ≔ {|and|}
 
-rule true ^ $b ⟶ $b
- with $b ^ true ⟶ $b
- with false ^ _  ⟶ false
- with _  ^ false ⟶ false
+rule true ^ $b ↪ $b
+ with $b ^ true ↪ $b
+ with false ^ _  ↪ false
+ with _  ^ false ↪ false
