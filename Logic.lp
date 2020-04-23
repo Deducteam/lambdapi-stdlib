@@ -2,7 +2,9 @@ require open Stdlib.Set
 
 // Type of propositions
 
-constant symbol Prop : TYPE
+constant symbol prop : Set
+
+definition Prop ≔ τ prop
 
 // Interpretation of propositions in TYPE
 
@@ -30,8 +32,16 @@ constant symbol disj_intro_left p q : π p → π (p ∨ q)
 constant symbol disj_intro_right p q : π q → π (p ∨ q)
 symbol disj_elim p q r : π (p ∨ q) → (π p → π r) → (π q → π r) → π r
 
-assert λx y z,x∨y∧z ≡ λx y z,x∨(y∧z) // check that propositions are parsed correctly
-  
+// check that propositions are parsed correctly
+assert λx y z,x∨y∧z ≡ λx y z,x∨(y∧z)
+
+// True
+
+set declared "⊤"
+
+constant symbol ⊤ : Prop
+constant symbol top : π ⊤
+
 // False
 
 set declared "⊥"
@@ -49,9 +59,11 @@ rule π (¬ $p) ↪ π $p → π ⊥
 
 // Universal quantification
 
-constant symbol forall {a} : (τ a → Prop) → Prop
+set declared "∀"
 
-rule π (@forall $a $f) ↪ Πx:τ $a, π ($f x)
+constant symbol ∀ {a} : (τ a → Prop) → Prop
+
+rule π (∀ $f) ↪ Πx, π ($f x)
 
 // Existential quantification
 
@@ -68,7 +80,13 @@ constant symbol eq {a} : τ a → τ a → Prop
 set infix 1 "=" ≔ eq
 
 constant symbol eq_refl {a} (x:τ a) : π (x = x)
-constant symbol eq_ind {a} (x y:τ a) : π (x = y) → Πp, π (p y) → π (p x)
+constant symbol eq_ind {a} {x y:τ a} : π (x = y) → Πp, π (p y) → π (p x)
+
+// inequality
+
+definition neq {a} (x y : τ a) ≔ ¬ (x = y)
+
+set infix 1 "≠" ≔ neq
 
 // Set builtins for the rewrite tactic
 
@@ -77,7 +95,7 @@ set builtin "T"     ≔ τ
 set builtin "eq"    ≔ eq
 set builtin "refl"  ≔ eq_refl
 set builtin "eqind" ≔ eq_ind
-set builtin "all"   ≔ forall
+set builtin "all"   ≔ ∀
 
 // Properties of Leibniz equality
 

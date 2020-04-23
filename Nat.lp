@@ -18,9 +18,27 @@ set builtin "+1" ≔ succ
 
 assert 42 : ℕ // example
 
-// Induction principle
+// Induction principle on propositions
 
 symbol nat_ind p : π (p 0) → (Πx, π (p x) → π (p (succ x))) → Πx, π (p x)
+
+// (Non-dependent) induction principle on sets
+
+symbol nat_rec {a} : τ a → (ℕ → τ a → τ a) → ℕ → τ a
+
+rule nat_rec $x _ 0 ↪ $x
+with nat_rec $x $y (succ $n) ↪ $y $n (nat_rec $x $y $n)
+
+// 0 ≠ 1
+
+definition is_0 ≔ nat_rec ⊤ (λ_ _,⊥)
+
+theorem succ_is_not_zero n : π (succ n ≠ 0)
+
+proof
+  assume n h
+  refine eq_ind h is_0 top
+qed
 
 // Addition
 
