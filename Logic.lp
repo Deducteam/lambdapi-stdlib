@@ -12,6 +12,28 @@ set declared "π"
 
 injective symbol π : Prop → TYPE
 
+// True
+
+set declared "⊤"
+
+constant symbol ⊤ : Prop
+constant symbol top : π ⊤
+
+// False
+
+set declared "⊥"
+
+constant symbol ⊥ : Prop
+constant symbol false_elim p : π ⊥ → π p
+
+// Negation
+
+set declared "¬"
+
+constant symbol ¬ : Prop → Prop
+
+rule π (¬ $p) ↪ π $p → π ⊥
+
 // Conjunction
 
 constant symbol conj : Prop → Prop → Prop
@@ -35,27 +57,13 @@ symbol disj_elim p q r : π (p ∨ q) → (π p → π r) → (π q → π r) �
 // check that propositions are parsed correctly
 assert λx y z,x∨y∧z ≡ λx y z,x∨(y∧z)
 
-// True
+// Implication
 
-set declared "⊤"
+constant symbol imp : Prop → Prop → Prop
 
-constant symbol ⊤ : Prop
-constant symbol top : π ⊤
+set infix left 5 "⇒" ≔ imp
 
-// False
-
-set declared "⊥"
-
-constant symbol ⊥ : Prop
-constant symbol false_elim p : π ⊥ → π p
-
-// Negation
-
-set declared "¬"
-
-constant symbol ¬ : Prop → Prop
-
-rule π (¬ $p) ↪ π $p → π ⊥
+rule π ($p ⇒ $q) ↪ π $p → π $q
 
 // Universal quantification
 
