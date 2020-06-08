@@ -25,7 +25,7 @@ symbol list_ind {a} (p:𝕃a→Prop) :
 symbol length {a} : 𝕃a → ℕ
 
 rule length □ ↪ 0
-with length (_ ⸬ $l) ↪ succ (length $l)
+with length (_ ⸬ $l) ↪ suc (length $l)
 
 // Concatenation of two lists
 

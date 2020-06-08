@@ -9,31 +9,29 @@ set declared "ℕ"
 definition ℕ ≔ τ nat
 
 constant symbol zero : ℕ
-constant symbol succ : ℕ → ℕ
+constant symbol suc : ℕ → ℕ
 
 // Enabling builtin natural number literals
 
 set builtin "0"  ≔ zero
-set builtin "+1" ≔ succ
+set builtin "+1" ≔ suc
 
 assert 42 : ℕ // example
 
 // Induction principle on propositions
 
-symbol nat_ind p : π (p 0) → (Πx, π (p x) → π (p (succ x))) → Πx, π (p x)
+symbol nat_ind p : π (p 0) → (Πx, π (p x) → π (p (suc x))) → Πx, π (p x)
 
-// (Non-dependent) induction principle on sets
+// is_0 predicate
 
-symbol nat_rec {a} : τ a → (ℕ → τ a → τ a) → ℕ → τ a
+symbol is_0 : ℕ → Prop
 
-rule nat_rec $x _ 0 ↪ $x
-with nat_rec $x $y (succ $n) ↪ $y $n (nat_rec $x $y $n)
+rule is_0 0 ↪ ⊤
+with is_0 (suc _) ↪ ⊥
 
 // 0 ≠ 1
 
-definition is_0 ≔ nat_rec ⊤ (λ_ _,⊥)
-
-theorem succ_is_not_zero n : π (succ n ≠ 0)
+theorem suc_is_not_zero n : π (suc n ≠ 0)
 
 proof
   assume n h
@@ -48,8 +46,8 @@ set infix left 6 "+" ≔ add
 
 assert λx y z,x+y+z ≡ λx y z,(x+y)+z // check that x+y=z is parsed correctly
 
-rule       0 + $y ↪ $y
- with succ $x + $y ↪ succ ($x + $y)
+rule 0 + $y ↪ $y
+with suc $x + $y ↪ suc ($x + $y)
 
 // Addition is commutative
 
@@ -67,7 +65,7 @@ qed
 
 rule $x + 0 ↪ $x
 
-theorem addsr x y : π (x + succ y = succ (x + y))
+theorem addsr x y : π (x + suc y = suc (x + y))
 proof
   refine nat_ind _ _ _
   // case x = 0
@@ -80,7 +78,7 @@ proof
   reflexivity
 qed
 
-rule $x + succ $y ↪ succ ($x + $y)
+rule $x + suc $y ↪ suc ($x + $y)
 
 theorem add_com x y : π (x+y = y+x)
 proof
@@ -120,8 +118,8 @@ set infix left 7 "×" ≔ mul
 
 assert λx y z,x+y×z ≡ λx y z,x+(y×z) // check that x+y×z is parsed correctly
 
-rule       0 × _  ↪ 0
- with succ $x × $y ↪ $y + $x × $y
+rule 0 × _  ↪ 0
+with suc $x × $y ↪ $y + $x × $y
 
 // Multiplication is commutative
 
@@ -137,7 +135,7 @@ qed
 
 rule _ × 0 ↪ 0
 
-theorem mulsr x y : π (x × succ y = x × y + x)
+theorem mulsr x y : π (x × suc y = x × y + x)
 proof
   refine nat_ind _ _ _
   // case x = 0
@@ -150,7 +148,7 @@ proof
   reflexivity
 qed
 
-rule $x × succ $y ↪ $x + $x × $y
+rule $x × suc $y ↪ $x + $x × $y
 
 theorem mul_com x y : π (x × y = y × x)
 proof
