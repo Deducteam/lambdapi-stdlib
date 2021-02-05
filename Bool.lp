@@ -1,39 +1,47 @@
-require open Stdlib.Set
+require open Stdlib.Set Stdlib.Logic;
 
 // Type of booleans
 
-constant symbol bool : Set
+inductive 𝔹 : TYPE ≔
+| true : 𝔹
+| false : 𝔹;
 
-definition B ≔ τ bool
+symbol bool : Set;
 
-constant symbol true : B
-constant symbol false : B
+rule 𝔹 ↪ τ bool;
 
-// Negation
+// 𝔹oolean not
 
-symbol not : B → B
+symbol not : 𝔹 → 𝔹;
 
 rule not true  ↪ false
- with not false ↪ true
+with not false ↪ true;
 
-// Disjunction
+// 𝔹oolean or
 
-symbol or : B → B → B
+symbol or : 𝔹 → 𝔹 → 𝔹;
 
-set infix left 6 "|" ≔ or
+set infix left 6 "||" ≔ or;
 
-rule true | _  ↪ true
- with _  | true ↪ true
- with false | $b ↪ $b
- with $b | false ↪ $b
+rule true  || _     ↪ true
+with _     || true  ↪ true
+with false || $b    ↪ $b
+with $b    || false ↪ $b;
 
-// Conjunction
+// 𝔹oolean and
 
-symbol {|and|} : B → B → B
+symbol and : 𝔹 → 𝔹 → 𝔹;
 
-set infix left 7 "^" ≔ {|and|}
+set infix left 7 "^" ≔ and;
 
-rule true ^ $b ↪ $b
- with $b ^ true ↪ $b
- with false ^ _  ↪ false
- with _  ^ false ↪ false
+rule true  ^ $b    ↪ $b
+with $b    ^ true  ↪ $b
+with false ^ _     ↪ false
+with _     ^ false ↪ false;
+
+// Conditional
+
+symbol if : 𝔹 → Π{a}, τ a → τ a → τ a;
+
+rule if true  $x _ ↪ $x
+with if false _ $y ↪ $y;
