@@ -34,7 +34,7 @@ with ($x ⸬ $l) ⋅ $m ↪ $x ⸬ ($l ⋅ $m);
 opaque symbol concat_nil {a} (l:𝕃 a) : π(l ⋅ □ = l) ≔
 begin
   assume a;
-  refine ind_𝕃 _ _ _ _;
+  induction;
   // case l = □
   reflexivity;
   // case l = x ⸬ l'
@@ -50,7 +50,7 @@ opaque symbol length_concat {a} (l m : 𝕃 a) :
   π(length (l ⋅ m) = length l + length m) ≔
 begin
   assume a;
-  refine ind_𝕃 _ _ _ _;
+  induction;
   // case l = □
   assume m;
   reflexivity;
@@ -66,7 +66,7 @@ rule length ($l ⋅ $m) ↪ length $l + length $m;
 opaque symbol concat_assoc {a} (l m n : 𝕃 a) : π((l ⋅ m) ⋅ n = l ⋅ (m ⋅ n)) ≔
 begin
   assume a;
-  refine ind_𝕃 _ _ _ _;
+  induction;
   // case l = □
   assume m n;
   reflexivity;

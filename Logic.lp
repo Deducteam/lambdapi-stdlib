@@ -68,6 +68,7 @@ constant symbol ∀ {a} : (τ a → Prop) → Prop;
 set quantifier ∀;
 
 rule π (∀ $f) ↪ Π x, π ($f x);
+//set unif_rule π $p ≡ Π x, π $q[x] ↪ [ $p ≡ `∀ x, $q[x] ];
 
 // Existential quantification
 
