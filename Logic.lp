@@ -6,7 +6,7 @@ constant symbol prop : Set;
 
 symbol Prop ≔ τ prop;
 
-set builtin "Prop" ≔ Prop;
+builtin "Prop" ≔ Prop;
 
 // Interpretation of propositions in TYPE
 
@@ -24,17 +24,11 @@ constant symbol ⊥ : Prop;
 
 constant symbol false_elim p : π ⊥ → π p;
 
-// Negation
-
-constant symbol ¬ : Prop → Prop;
-
-rule π (¬ $p) ↪ π $p → π ⊥;
-
 // Conjunction
 
-constant symbol conj : Prop → Prop → Prop;
+constant symbol ∧ : Prop → Prop → Prop; // \wedge
 
-set infix left 7 "∧" ≔ conj;
+notation ∧ infix left 7;
 
 constant symbol conj_intro p q : π p → π q → π (p ∧ q);
 symbol conj_elim_left p q : π (p ∧ q) → π p;
@@ -42,9 +36,9 @@ symbol conj_elim_right p q : π (p ∧ q) → π q;
 
 // Disjunction
 
-constant symbol disj : Prop → Prop → Prop;
+constant symbol ∨ : Prop → Prop → Prop; // \vee
 
-set infix left 6 "∨" ≔ disj;
+notation ∨ infix left 6;
 
 constant symbol disj_intro_left p q : π p → π (p ∨ q);
 constant symbol disj_intro_right p q : π q → π (p ∨ q);
@@ -55,53 +49,62 @@ assert x y z ⊢ x ∨ y ∧ z ≡ x ∨ (y ∧ z);
 
 // Implication
 
-constant symbol impl : Prop → Prop → Prop;
+constant symbol ⇒ : Prop → Prop → Prop; // =>
 
-set infix left 5 "⇒" ≔ impl;
+notation ⇒ infix left 5;
 
 rule π ($p ⇒ $q) ↪ π $p → π $q;
+
+// Negation
+
+symbol ¬ p ≔ p ⇒ ⊥;
 
 // Universal quantification
 
 constant symbol ∀ {a} : (τ a → Prop) → Prop;
 
-set quantifier ∀;
+notation ∀ quantifier;
 
 rule π (∀ $f) ↪ Π x, π ($f x);
-//set unif_rule π $p ≡ Π x, π $q[x] ↪ [ $p ≡ `∀ x, $q[x] ];
+/*verbose 3;
+flag "print_domains" on;
+unif_rule π $p ≡ Π x:$t, $u[x]
+↪ [ Π x:$t, $u[x] ≡ Π x:τ $a, π $q[x];
+    $p ≡ `∀ x:$t, $q[x] ];
+verbose 1;*/
 
 // Existential quantification
 
 constant symbol ∃ {a} : (τ a → Prop) → Prop;
 
-set quantifier ∃;
+notation ∃ quantifier;
 
 constant symbol ex_intro {a} p (x:τ a) : π (p x) → π (∃ p);
 symbol ex_elim {a} p q : π (∃ p) → (Π x:τ a, π (p x) → π q) → π q;
 
 // Leibniz equality
 
-constant symbol eq {a} : τ a → τ a → Prop;
+constant symbol = {a} : τ a → τ a → Prop;
 
-set infix 1 "=" ≔ eq;
+notation = infix 1;
 
 constant symbol eq_refl {a} (x:τ a) : π (x = x);
 constant symbol eq_ind {a} {x y:τ a} : π (x = y) → Π p, π (p y) → π (p x);
 
 // inequality
 
-symbol neq {a} (x y : τ a) ≔ ¬ (x = y);
+symbol ≠ {a} (x y : τ a) ≔ ¬ (x = y); // \neq
 
-set infix 1 "≠" ≔ neq;
+notation ≠ infix 1;
 
 // Set builtins for the rewrite tactic
 
-set builtin "P"     ≔ π;
-set builtin "T"     ≔ τ;
-set builtin "eq"    ≔ eq;
-set builtin "refl"  ≔ eq_refl;
-set builtin "eqind" ≔ eq_ind;
-set builtin "all"   ≔ ∀;
+builtin "P"     ≔ π;
+builtin "T"     ≔ τ;
+builtin "eq"    ≔ =;
+builtin "refl"  ≔ eq_refl;
+builtin "eqind" ≔ eq_ind;
+builtin "all"   ≔ ∀;
 
 // Properties of Leibniz equality
 

@@ -8,14 +8,14 @@ inductive ℕ : TYPE ≔
 
 constant symbol nat : Set;
 
-rule ℕ ↪ τ nat;
-//rule τ nat ↪ ℕ;
-//set unif_rule τ $x ≡ ℕ ↪ [ $x ≡ nat ];
+rule τ nat ↪ ℕ;
+//unif_rule τ $x ≡ ℕ ↪ [ $x ≡ nat ];
+// FIXME: should be infered from the injectivity of τ
 
 // Enabling the use of decimal notation
 
-set builtin "0"  ≔ zero;
-set builtin "+1" ≔ suc;
+builtin "0"  ≔ zero;
+builtin "+1" ≔ suc;
 
 assert ⊢ 42 : ℕ;
 
@@ -36,9 +36,9 @@ end;
 
 // Addition
 
-symbol add : ℕ → ℕ → ℕ;
+symbol + : ℕ → ℕ → ℕ;
 
-set infix left 6 "+" ≔ add;
+notation + infix left 6;
 
 assert x y z ⊢ x + y + z ≡ (x + y) + z; // check associativity
 
@@ -60,6 +60,16 @@ begin
 end;
 
 rule $x + 0 ↪ $x;
+
+verbose 3;
+flag "print_domains" on;
+/*unif_rule π $p ≡ Π x:$t, $u[x]
+  ↪ [ //Π x:$t, $u[x] ≡ Π x:τ $a, π $q[x];
+      $p ≡ `∀ x:$t, $q[x] ];*/
+verbose 1;
+/*symbol f : (ℕ → Prop) → Prop;
+rule f (λ x:$t, $u[x]) ↪ `∀ x:$t, $u[x];
+compute f (λ x, ?u[x]);*/
 
 opaque symbol addsr (x y:ℕ) : π (x + suc y = suc (x + y)) ≔
 begin
@@ -93,6 +103,7 @@ end;
 
 opaque symbol add_assoc (x y z:ℕ) : π ((x + y) + z = x + (y + z)) ≔
 begin
+  debug +u;
   induction;
   // case x = 0
   assume y z;
@@ -108,9 +119,9 @@ rule ($x + $y) + $z ↪ $x + ($y + $z);
 
 // Multiplication
 
-symbol mul : ℕ → ℕ → ℕ;
+symbol × : ℕ → ℕ → ℕ; // \times
 
-set infix left 7 "×" ≔ mul;
+notation × infix left 7;
 
 assert x y z ⊢ x + y × z ≡ x + (y × z); // check priorities
 

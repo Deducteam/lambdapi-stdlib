@@ -5,12 +5,12 @@ require open Stdlib.Set Stdlib.Logic Stdlib.Nat Stdlib.Bool;
 constant symbol list : Set → Set;
 
 (a:Set) inductive 𝕃:TYPE ≔
-| □ : 𝕃 a
-| cons : τ a → 𝕃 a → 𝕃 a;
+| □ : 𝕃 a // \Box
+| ⸬ : τ a → 𝕃 a → 𝕃 a; // ::
 
-set infix 4 "⸬" ≔ cons; // :: 
+notation ⸬ infix right 4;
 
-rule 𝕃 $a ↪ τ (list $a);
+rule τ (list $a) ↪ 𝕃 $a;
 
 // Length of a list
 
@@ -21,9 +21,9 @@ with length (_ ⸬ $l) ↪ suc (length $l);
 
 // Concatenation of two lists
 
-symbol concat {a} : 𝕃 a → 𝕃 a → 𝕃 a;
+symbol ⋅ {a} : 𝕃 a → 𝕃 a → 𝕃 a;
 
-set infix right 5 "⋅" ≔ concat; // \cdot
+notation ⋅ infix right 5; // \cdot
 
 assert a (x y z:𝕃 a) ⊢ x ⋅ y ⋅ z ≡ x ⋅ (y ⋅ z);
 assert a x l m ⊢ x ⸬ l ⋅ m ≡ x ⸬ (l ⋅ m);

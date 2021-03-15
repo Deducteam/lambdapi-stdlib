@@ -8,7 +8,7 @@ inductive 𝔹 : TYPE ≔
 
 symbol bool : Set;
 
-rule 𝔹 ↪ τ bool;
+rule τ bool ↪ 𝔹;
 
 // 𝔹oolean not
 
@@ -21,27 +21,27 @@ with not false ↪ true;
 
 symbol or : 𝔹 → 𝔹 → 𝔹;
 
-set infix left 6 "||" ≔ or;
+notation or infix left 6;
 
-rule true  || _     ↪ true
-with _     || true  ↪ true
-with false || $b    ↪ $b
-with $b    || false ↪ $b;
+rule true  or _     ↪ true
+with _     or true  ↪ true
+with false or $b    ↪ $b
+with $b    or false ↪ $b;
 
 // 𝔹oolean and
 
 symbol and : 𝔹 → 𝔹 → 𝔹;
 
-set infix left 7 "^" ≔ and;
+notation and infix left 7;
 
-rule true  ^ $b    ↪ $b
-with $b    ^ true  ↪ $b
-with false ^ _     ↪ false
-with _     ^ false ↪ false;
+rule true  and $b    ↪ $b
+with $b    and true  ↪ $b
+with false and _     ↪ false
+with _     and false ↪ false;
 
 // Conditional
 
-symbol if : 𝔹 → Π{a}, τ a → τ a → τ a;
+symbol if : 𝔹 → Π {a}, τ a → τ a → τ a;
 
 rule if true  $x _ ↪ $x
 with if false _ $y ↪ $y;
