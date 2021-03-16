@@ -61,16 +61,6 @@ end;
 
 rule $x + 0 ↪ $x;
 
-verbose 3;
-flag "print_domains" on;
-/*unif_rule π $p ≡ Π x:$t, $u[x]
-  ↪ [ //Π x:$t, $u[x] ≡ Π x:τ $a, π $q[x];
-      $p ≡ `∀ x:$t, $q[x] ];*/
-verbose 1;
-/*symbol f : (ℕ → Prop) → Prop;
-rule f (λ x:$t, $u[x]) ↪ `∀ x:$t, $u[x];
-compute f (λ x, ?u[x]);*/
-
 opaque symbol addsr (x y:ℕ) : π (x + suc y = suc (x + y)) ≔
 begin
   induction;
@@ -103,7 +93,6 @@ end;
 
 opaque symbol add_assoc (x y z:ℕ) : π ((x + y) + z = x + (y + z)) ≔
 begin
-  debug +u;
   induction;
   // case x = 0
   assume y z;
