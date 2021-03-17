@@ -47,7 +47,7 @@ with suc $x + $y ↪ suc ($x + $y);
 
 // Addition is commutative
 
-opaque symbol add0r (x:ℕ) : π (x + 0 = x) ≔
+opaque symbol add0r x : π (x + 0 = x) ≔
 begin
   induction;
   // case x = 0
@@ -61,7 +61,7 @@ end;
 
 rule $x + 0 ↪ $x;
 
-opaque symbol addsr (x y:ℕ) : π (x + suc y = suc (x + y)) ≔
+opaque symbol addsr x y : π (x + suc y = suc (x + y)) ≔
 begin
   induction;
   // case x = 0
@@ -76,7 +76,7 @@ end;
 
 rule $x + suc $y ↪ suc ($x + $y);
 
-opaque symbol add_com (x y:ℕ) : π (x + y = y + x) ≔
+opaque symbol add_com x y : π (x + y = y + x) ≔
 begin
   induction;
   // case x = 0
@@ -91,7 +91,7 @@ end;
 
 // Addition is associative
 
-opaque symbol add_assoc (x y z:ℕ) : π ((x + y) + z = x + (y + z)) ≔
+opaque symbol add_assoc x y z : π ((x + y) + z = x + (y + z)) ≔
 begin
   induction;
   // case x = 0
@@ -119,7 +119,7 @@ with suc $x × $y ↪ $y + $x × $y;
 
 // Multiplication is commutative
 
-opaque symbol mul0r (x:ℕ) : π (x × 0 = 0) ≔
+opaque symbol mul0r x : π (x × 0 = 0) ≔
 begin
   induction;
   // case x = 0
@@ -131,7 +131,7 @@ end;
 
 rule _ × 0 ↪ 0;
 
-opaque symbol mulsr (x y:ℕ) : π (x × suc y = x × y + x) ≔
+opaque symbol mulsr x y : π (x × suc y = x × y + x) ≔
 begin
   induction;
   // case x = 0
@@ -146,7 +146,7 @@ end;
 
 rule $x × suc $y ↪ $x + $x × $y;
 
-opaque symbol mul_com (x y:ℕ) : π (x × y = y × x) ≔
+opaque symbol mul_com x y : π (x × y = y × x) ≔
 begin
   induction;
   // case x = 0
@@ -161,7 +161,7 @@ end;
 
 // Multiplication distributes over addition
 
-opaque symbol mul_addl (x y z:ℕ) : π ((x + y) × z = x × z + y × z) ≔
+opaque symbol mul_addl x y z : π ((x + y) × z = x × z + y × z) ≔
 begin
   induction;
   // case x = 0
@@ -176,7 +176,7 @@ end;
 
 rule ($x + $y) × $z ↪ $x × $z + $y × $z;
 
-opaque symbol mul_addr (x y z:ℕ) : π (z × (x + y) = z × x + z × y) ≔
+opaque symbol mul_addr x y z : π (z × (x + y) = z × x + z × y) ≔
 begin
   assume x y z;
   rewrite mul_com;
@@ -190,7 +190,7 @@ rule $z × ($x + $y) ↪ $z × $x + $z × $y;
 
 // Multiplication is associative
 
-opaque symbol mul_assoc (x y z:ℕ) : π ((x × y) × z = x × (y × z)) ≔
+opaque symbol mul_assoc x y z : π ((x × y) × z = x × (y × z)) ≔
 begin
   induction;
   // case x = 0
