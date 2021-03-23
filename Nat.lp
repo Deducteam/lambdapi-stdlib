@@ -9,8 +9,6 @@ inductive ℕ : TYPE ≔
 constant symbol nat : Set;
 
 rule τ nat ↪ ℕ;
-//unif_rule τ $x ≡ ℕ ↪ [ $x ≡ nat ];
-// FIXME: should be infered from the injectivity of τ
 
 // Enabling the use of decimal notation
 
