@@ -88,48 +88,48 @@ with rev ($x ⸬ $l) ↪ rev $l ⋅ ($x ⸬ □);
 
 opaque symbol rev_concat {a} (l m : 𝕃 a) : π(rev (l ⋅ m) = rev m ⋅ rev l) ≔
 begin
-assume a;
-induction;
-// case l = □
-simplify;
-assume x;
-reflexivity;
-// case l = ⸬
-assume x l' hl' m;
-simplify;
-rewrite hl';
-reflexivity;
+  assume a;
+  induction;
+  // case l = □
+  simplify;
+  assume x;
+  reflexivity;
+  // case l = ⸬
+  assume x l' hl' m;
+  simplify;
+  rewrite hl';
+  reflexivity;
 end;
 
 rule rev ($l ⋅ $m) ↪ rev $m ⋅ rev $l;
 
 opaque symbol rev_idem {a} (l :𝕃 a) : π(rev (rev l) = l) ≔
 begin
-assume a;
-induction;
-// case l = □
-reflexivity;
-// case l = ⸬
-assume x l' hl';
-simplify;
-rewrite hl';
-reflexivity;
+  assume a;
+  induction;
+  // case l = □
+  reflexivity;
+  // case l = ⸬
+  assume x l' hl';
+  simplify;
+  rewrite hl';
+  reflexivity;
 end;
 
 rule rev (rev $l) ↪ $l;
 
 opaque symbol length_rev {a} (l : 𝕃 a) : π(length (rev l) = length l) ≔
 begin
-assume a;
-induction;
-// case l = □
-simplify;
-reflexivity;
-// case l = ⸬
-assume x l' hl';
-simplify;
-rewrite hl';
-reflexivity;
+  assume a;
+  induction;
+  // case l = □
+  simplify;
+  reflexivity;
+  // case l = ⸬
+  assume x l' hl';
+  simplify;
+  rewrite hl';
+  reflexivity;
 end;
 
 rule length (rev $l) ↪ length $l;
