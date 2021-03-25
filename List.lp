@@ -39,7 +39,7 @@ begin
   reflexivity;
   // case l = x ⸬ l'
   assume x l' h;
-  simpl;
+  simplify;
   rewrite h;
   reflexivity;
 end;
@@ -56,7 +56,7 @@ begin
   reflexivity;
   // case l = x⸬l'
   assume x l' h m;
-  simpl;
+  simplify;
   rewrite h;
   reflexivity;
 end;
@@ -72,7 +72,7 @@ begin
   reflexivity;
   // case l = x⸬l'
   assume x l' h m n;
-  simpl;
+  simplify;
   rewrite h;
   reflexivity;
 end;
@@ -91,12 +91,12 @@ begin
 assume a;
 induction;
 // case l = □
-simpl;
+simplify;
 assume x;
 reflexivity;
 // case l = ⸬
 assume x l' hl' m;
-simpl;
+simplify;
 rewrite hl';
 reflexivity;
 end;
@@ -111,7 +111,7 @@ induction;
 reflexivity;
 // case l = ⸬
 assume x l' hl';
-simpl;
+simplify;
 rewrite hl';
 reflexivity;
 end;
@@ -123,11 +123,11 @@ begin
 assume a;
 induction;
 // case l = □
-simpl;
+simplify;
 reflexivity;
 // case l = ⸬
 assume x l' hl';
-simpl;
+simplify;
 rewrite hl';
 reflexivity;
 end;

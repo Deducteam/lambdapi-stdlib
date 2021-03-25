@@ -52,7 +52,7 @@ begin
   reflexivity;
   // case x = s x'
   assume x' h;
-  simpl;
+  simplify;
   rewrite h;
   reflexivity;
 end;
@@ -67,7 +67,7 @@ begin
   reflexivity;
   // case x = s x'
   assume x' h y;
-  simpl;
+  simplify;
   rewrite h;
   reflexivity;
 end;
@@ -81,7 +81,7 @@ begin
   assume y;
   reflexivity;
   // case x = s x'
-  simpl;
+  simplify;
   assume x' h y;
   rewrite h;
   reflexivity;
@@ -97,7 +97,7 @@ begin
   reflexivity;
   // case x = s x'
   assume x' h y z;
-  simpl;
+  simplify;
   rewrite h;
   reflexivity;
 end;
@@ -137,7 +137,7 @@ begin
   reflexivity;
   // case x = s x'
   assume x' h y;
-  simpl;
+  simplify;
   rewrite h;
   reflexivity;
 end;
@@ -152,7 +152,7 @@ begin
   reflexivity;
   // case x = s x'
   assume x' h y;
-  simpl;
+  simplify;
   rewrite h;
   reflexivity;
 end;
@@ -167,7 +167,7 @@ begin
   reflexivity;
   // case x = s x'
   assume x' h y z;
-  simpl;
+  simplify;
   rewrite h;
   reflexivity;
 end;
@@ -196,7 +196,7 @@ begin
   reflexivity;
   // case x = s x'
   assume x' h y z;
-  simpl;
+  simplify;
   rewrite h;
   reflexivity;
 end;
