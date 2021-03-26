@@ -20,7 +20,7 @@ constant symbol top : π ⊤;
 
 constant symbol ⊥ : Prop;
 
-constant symbol false_elim p : π ⊥ → π p;
+constant symbol ⊥_elim p : π ⊥ → π p;
 
 // Conjunction
 
@@ -28,9 +28,9 @@ constant symbol ∧ : Prop → Prop → Prop; // \wedge
 
 notation ∧ infix left 7;
 
-constant symbol conj_intro p q : π p → π q → π (p ∧ q);
-symbol conj_elim_left p q : π (p ∧ q) → π p;
-symbol conj_elim_right p q : π (p ∧ q) → π q;
+constant symbol ∧ᵢ p q : π p → π q → π (p ∧ q);
+symbol ∧ₑ₁ p q : π (p ∧ q) → π p;
+symbol ∧ₑ₂ p q : π (p ∧ q) → π q;
 
 // Disjunction
 
@@ -38,9 +38,9 @@ constant symbol ∨ : Prop → Prop → Prop; // \vee
 
 notation ∨ infix left 6;
 
-constant symbol disj_intro_left p q : π p → π (p ∨ q);
-constant symbol disj_intro_right p q : π q → π (p ∨ q);
-symbol disj_elim p q r : π (p ∨ q) → (π p → π r) → (π q → π r) → π r;
+constant symbol ∨ᵢ₁ p q : π p → π (p ∨ q);
+constant symbol ∨ᵢ₂ p q : π q → π (p ∨ q);
+symbol ∨ₑ p q r : π (p ∨ q) → (π p → π r) → (π q → π r) → π r;
 
 // check that priorities are correctly set
 assert x y z ⊢ x ∨ y ∧ z ≡ x ∨ (y ∧ z);

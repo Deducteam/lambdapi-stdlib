@@ -16,5 +16,7 @@ constant symbol ∃ {a} : (τ a → Prop) → Prop;
 
 notation ∃ quantifier;
 
-constant symbol ex_intro {a} p (x:τ a) : π (p x) → π (∃ p);
-symbol ex_elim {a} p q : π (∃ p) → (Π x:τ a, π (p x) → π q) → π q;
+constant symbol ∃ᵢ {a} p (x:τ a) : π (p x) → π (∃ p);
+symbol ∃ₑ {a} p : π (∃ p) → Π q, (Π x:τ a, π (p x) → π q) → π q;
+
+rule ∃ₑ _ (∃ᵢ _ $x $px) _ $f ↪ $f $x $px;
