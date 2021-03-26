@@ -1,10 +1,12 @@
-require open Stdlib.Set Stdlib.Logic;
+// Natural numbers
 
-// Type of natural numbers
+require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq;
 
 inductive ℕ : TYPE ≔
 | zero : ℕ
 | suc : ℕ → ℕ ;
+
+// set code for ℕ
 
 constant symbol nat : Set;
 

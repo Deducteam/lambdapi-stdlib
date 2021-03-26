@@ -1,12 +1,14 @@
-require open Stdlib.Set Stdlib.Logic;
+// Booleans
 
-// Type of booleans
+require open Stdlib.Set Stdlib.Prop Stdlib.FOL;
 
 inductive 𝔹 : TYPE ≔
 | true : 𝔹
 | false : 𝔹;
 
-symbol bool : Set;
+// set code for 𝔹
+
+constant symbol bool : Set;
 
 rule τ bool ↪ 𝔹;
 

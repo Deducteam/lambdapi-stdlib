@@ -1,14 +1,16 @@
-require open Stdlib.Set Stdlib.Logic Stdlib.Nat Stdlib.Bool;
+// Polymorphic lists
 
-// Type of polymorphic lists
-
-constant symbol list : Set → Set;
+require open Stdlib.Set Stdlib.Prop Stdlib.Eq Stdlib.Nat;
 
 (a:Set) inductive 𝕃:TYPE ≔
 | □ : 𝕃 a // \Box
 | ⸬ : τ a → 𝕃 a → 𝕃 a; // ::
 
 notation ⸬ infix right 4;
+
+// set code for 𝕃
+
+constant symbol list : Set → Set;
 
 rule τ (list $a) ↪ 𝕃 $a;
 
