@@ -1,4 +1,4 @@
-Lambdapi library on natural numbers and polymorphic lists
+Lambdapi library on natural numbers and polymorphic lists (in intuitionistic first-order logic)
 =========================================================
 
 - `Set`: type of set codes
