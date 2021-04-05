@@ -1,6 +1,6 @@
 // Polymorphic lists
 
-require open Stdlib.Set Stdlib.Prop Stdlib.Eq Stdlib.Nat;
+require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq Stdlib.Nat;
 
 (a:Set) inductive 𝕃:TYPE ≔
 | □ : 𝕃 a // \Box
@@ -19,13 +19,13 @@ rule τ (list $a) ↪ 𝕃 $a;
 symbol length {a} : 𝕃 a → ℕ;
 
 rule length □ ↪ 0
-with length (_ ⸬ $l) ↪ suc (length $l);
+with length (_ ⸬ $l) ↪ s (length $l);
 
 // Concatenation of two lists
 
 symbol ⋅ {a} : 𝕃 a → 𝕃 a → 𝕃 a;
 
-notation ⋅ infix right 5; // \cdot
+notation ⋅ infix right 15; // \cdot
 
 assert a (x y z:𝕃 a) ⊢ x ⋅ y ⋅ z ≡ x ⋅ (y ⋅ z);
 assert a x l m ⊢ x ⸬ l ⋅ m ≡ x ⸬ (l ⋅ m);
@@ -40,10 +40,7 @@ begin
   // case l = □
   reflexivity;
   // case l = x ⸬ l'
-  assume x l' h;
-  simplify;
-  rewrite h;
-  reflexivity;
+  assume x l' h; simplify; rewrite h; reflexivity;
 end;
 
 rule $m ⋅ □ ↪ $m;
@@ -54,13 +51,9 @@ begin
   assume a;
   induction;
   // case l = □
-  assume m;
   reflexivity;
   // case l = x⸬l'
-  assume x l' h m;
-  simplify;
-  rewrite h;
-  reflexivity;
+  assume x l' h m; simplify; rewrite h; reflexivity;
 end;
 
 rule length ($l ⋅ $m) ↪ length $l + length $m;
@@ -70,13 +63,9 @@ begin
   assume a;
   induction;
   // case l = □
-  assume m n;
   reflexivity;
   // case l = x⸬l'
-  assume x l' h m n;
-  simplify;
-  rewrite h;
-  reflexivity;
+  assume x l' h m n; simplify; rewrite h; reflexivity;
 end;
 
 rule ($l ⋅ $m) ⋅ $n ↪ $l ⋅ ($m ⋅ $n);
@@ -93,14 +82,9 @@ begin
   assume a;
   induction;
   // case l = □
-  simplify;
-  assume x;
-  reflexivity;
+  simplify; reflexivity;
   // case l = ⸬
-  assume x l' hl' m;
-  simplify;
-  rewrite hl';
-  reflexivity;
+  assume x l h m; simplify; rewrite h; reflexivity;
 end;
 
 rule rev ($l ⋅ $m) ↪ rev $m ⋅ rev $l;
@@ -112,10 +96,7 @@ begin
   // case l = □
   reflexivity;
   // case l = ⸬
-  assume x l' hl';
-  simplify;
-  rewrite hl';
-  reflexivity;
+  assume x l h; simplify; rewrite h; reflexivity;
 end;
 
 rule rev (rev $l) ↪ $l;
@@ -125,13 +106,9 @@ begin
   assume a;
   induction;
   // case l = □
-  simplify;
-  reflexivity;
+  simplify; reflexivity;
   // case l = ⸬
-  assume x l' hl';
-  simplify;
-  rewrite hl';
-  reflexivity;
+  assume x l h; simplify; rewrite h; reflexivity;
 end;
 
 rule length (rev $l) ↪ length $l;

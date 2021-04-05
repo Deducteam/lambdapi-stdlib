@@ -20,7 +20,7 @@ constant symbol top : π ⊤;
 
 constant symbol ⊥ : Prop;
 
-constant symbol ⊥_elim p : π ⊥ → π p;
+constant symbol ⊥ₑ p : π ⊥ → π p;
 
 // Conjunction
 
@@ -49,7 +49,7 @@ assert x y z ⊢ x ∨ y ∧ z ≡ x ∨ (y ∧ z);
 
 constant symbol ⇒ : Prop → Prop → Prop; // =>
 
-notation ⇒ infix left 5;
+notation ⇒ infix right 5;
 
 rule π ($p ⇒ $q) ↪ π $p → π $q;
 
