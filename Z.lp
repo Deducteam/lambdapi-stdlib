@@ -253,7 +253,7 @@ symbol succ_double_carac x : π (succ_double x = double x + 1)
   reflexivity;
 end;
 
-symbol double_succ x : π (double (x + 1) = double x + 2)
+symbol double_succ x : π (double (x + 1) = succ_double x + 1)
 ≔ begin
   induction;
   reflexivity;
@@ -269,7 +269,7 @@ end;
 symbol - x y ≔ x + ~ y;
 notation - infix left 20;
 
-symbol +_same z : π (z - z = 0)
+symbol -_same z : π (z + ~ z = 0)
 ≔ begin
   induction;
   reflexivity;
@@ -277,3 +277,220 @@ symbol +_same z : π (z - z = 0)
   simplify; refine sub_same;
 end;
 
+// Associativity
+
+symbol sub_succ x y : π (sub (succ x) y = sub x y + 1)
+≔ begin
+  induction;
+  assume x xrec; induction;
+  assume y _;
+  simplify; rewrite xrec; rewrite pred_double_succ;
+  rewrite succ_double_carac; reflexivity;
+  assume y _;
+  simplify; rewrite xrec; rewrite double_succ;
+  reflexivity;
+  simplify; rewrite pos_pred_double_succ; reflexivity;
+
+  assume x xrec; induction;
+  assume y _; simplify; rewrite left succ_pred_double (sub x y);
+  reflexivity;
+  assume y _; simplify; rewrite succ_double_carac;
+  reflexivity;
+  simplify; rewrite succ_pos_pred_double; reflexivity;
+
+  induction;
+  induction; reflexivity; reflexivity; reflexivity;
+  induction; reflexivity; reflexivity; reflexivity;
+  reflexivity;
+end;
+
+symbol add_Zpos_succ x p : π (x + Zpos (succ p) = (x + Zpos p) + 1)
+≔ begin
+  induction;
+  reflexivity;
+  assume x p; simplify; rewrite add_succ_right; reflexivity;
+  assume x p; simplify; rewrite sub_succ; reflexivity;
+end;
+
+symbol sub_add_Zpos a b c : π (sub a b + Zpos c = sub (add a c) b)
+≔ begin
+  assume a b c;
+  refine ind_positive_peano (λ c, sub a b + Zpos c = sub (add a c) b) _ _ c;
+  simplify; rewrite sub_succ; reflexivity;
+
+  assume r rrec; rewrite add_Zpos_succ;
+  rewrite rrec; rewrite add_succ_right; rewrite sub_succ;
+  reflexivity;
+end;
+
+symbol sub_add_Zneg a b c : π (sub a b + Zneg c = sub a (add b c))
+≔ begin
+  assume a b c;
+  rewrite left sub_opp (add b c) a;
+  rewrite left sub_add_Zpos b a c;
+  rewrite distr_~_+;
+  rewrite sub_opp;
+  reflexivity;
+end;
+
+symbol +_assoc x y z : π (x + y + z = x + (y + z))
+≔ begin
+  induction;
+  reflexivity;
+
+  assume x; induction; reflexivity;
+  assume y; induction; reflexivity;
+  // Zpos - Zpos - Zpos
+  assume z; simplify; rewrite add_assoc; reflexivity;
+  // Zpos - Zpos - Zneg
+  assume z; simplify; rewrite +_com; rewrite sub_add_Zpos;
+  rewrite add_com; reflexivity;
+
+  assume y; induction; reflexivity;
+  // Zpos - Zneg - Zpos
+  assume z; simplify; rewrite sub_add_Zpos; rewrite +_com;
+  rewrite sub_add_Zpos; rewrite add_com; reflexivity;
+  // Zpos - Zneg - Zneg
+  assume z; simplify; rewrite sub_add_Zneg; reflexivity;
+
+  assume x; induction; reflexivity;
+  assume y; induction; reflexivity;
+  // Zneg - Zpos - Zpos
+  assume z; simplify; rewrite sub_add_Zpos; reflexivity;
+  // Zneg - Zpos - Zneg
+  assume z; simplify; rewrite sub_add_Zneg; rewrite +_com;
+  rewrite sub_add_Zneg; rewrite add_com; reflexivity;
+
+  assume y; induction; reflexivity;
+  // Zneg - Zneg - Zpos
+  assume z; simplify; rewrite +_com; rewrite sub_add_Zneg;
+  rewrite add_com; reflexivity;
+  // Zneg - Zneg - Zneg
+  assume z; simplify; rewrite add_assoc; reflexivity;
+end;
+
+// Comparison of integers
+
+require open Stdlib.Comp;
+
+symbol ≐ : ℤ → ℤ → comparison; // \doteq
+notation ≐ infix 12;
+
+rule Z0      ≐ Z0      ↪ Eq
+with Z0      ≐ Zpos _  ↪ Lt
+with Z0      ≐ Zneg _  ↪ Gt
+with Zpos _  ≐ Z0      ↪ Gt
+with Zpos $p ≐ Zpos $q ↪ compare $p $q
+with Zpos _  ≐ Zneg _  ↪ Gt
+with Zneg _  ≐ Z0      ↪ Lt
+with Zneg _  ≐ Zpos _  ↪ Lt
+with Zneg $p ≐ Zneg $q ↪ compare $q $p;
+
+// ≐ decides the equality of integers
+
+symbol ≐_decides x y : π (x ≐ y = Eq ⇒ x = y)
+≔ begin
+  induction;
+  induction; reflexivity;
+  assume y H; apply ⊥ₑ; refine discr_Lt_Eq H;
+  assume y H; apply ⊥ₑ; refine discr_Gt_Eq H;
+  assume x; induction;
+  assume H; apply ⊥ₑ; refine discr_Gt_Eq H;
+  assume y H; rewrite compare_decides x y H; reflexivity;
+  assume y H; apply ⊥ₑ; refine discr_Gt_Eq H;
+  assume x; induction;
+  assume H; apply ⊥ₑ; refine discr_Lt_Eq H;
+  assume y H; apply ⊥ₑ; refine discr_Lt_Eq H;
+  assume y H; rewrite compare_decides y x H; reflexivity;
+end;
+
+// Commutative properties of ≐
+
+symbol ≐_com x y : π (x ≐ y = CompOpp (y ≐ x))
+≔ begin
+  induction;
+  induction; reflexivity; reflexivity; reflexivity;
+
+  assume x; induction; reflexivity;
+  assume y; simplify; rewrite compare_acc_com; reflexivity;
+  reflexivity;
+
+  assume x; induction; reflexivity;
+  reflexivity;
+  assume y; simplify; rewrite compare_acc_com; reflexivity;
+end;
+
+symbol ≐_opp x y : π (~ x ≐ ~ y = CompOpp (x ≐ y))
+≔ begin
+  induction;
+  induction; reflexivity; reflexivity; reflexivity;
+
+  assume x; induction; reflexivity;
+  assume y; simplify; rewrite compare_acc_com; reflexivity;
+  reflexivity;
+
+  assume x; induction; reflexivity;
+  reflexivity;
+  assume y; simplify; rewrite compare_acc_com; reflexivity;
+end;
+
+// Interaction of doubling function with compare applied to 0
+
+symbol ≐_double x : π ((double x ≐ 0) = (x ≐ 0))
+≔ begin
+  induction; reflexivity; reflexivity; reflexivity;
+end;
+
+// TODO
+symbol ≐_pred_double x y :
+  π (pred_double (sub x y) ≐ 0 = compare_acc x Lt y);
+
+// TODO
+symbol ≐_succ_double x y :
+  π (succ_double (sub x y) ≐ 0 = compare_acc x Gt y);
+
+
+// ≐ comparison with 0
+
+symbol ≐_pos_sub x y : π ((sub x y ≐ 0) = compare x y)
+≔ begin
+  induction;
+  assume x xrec; induction;
+  assume y _; simplify; rewrite ≐_double; refine xrec y;
+  assume y _; simplify; refine ≐_succ_double x y;
+  reflexivity;
+
+  assume x xrec; induction;
+  assume y _; simplify; refine ≐_pred_double x y;
+  assume y _; simplify; rewrite ≐_double; refine xrec y;
+  reflexivity;
+
+  induction; reflexivity; reflexivity; reflexivity;
+end;
+
+symbol ≐_sub x y : π ((x ≐ y) = (x - y ≐ 0))
+≔ begin
+  induction;
+  induction; reflexivity; reflexivity; reflexivity;
+
+  assume x; induction; reflexivity;
+  assume y; simplify; rewrite ≐_pos_sub; reflexivity;
+  reflexivity;
+
+  assume x; induction; reflexivity;
+  reflexivity;
+  assume y; simplify; rewrite ≐_pos_sub; reflexivity;
+end;
+
+// Compatibility with addition
+
+symbol ≐_compat_add x y z : π ((x ≐ y) = (x + z ≐ y + z))
+≔ begin
+  assume x y z;
+  rewrite ≐_sub;
+  rewrite [x in _ = x] ≐_sub;
+  simplify; rewrite distr_~_+;
+  rewrite [~ y + ~ z] +_com;
+  rewrite +_assoc; rewrite left +_assoc z (~ z) (~ y);
+  rewrite -_same z; reflexivity;
+end;
