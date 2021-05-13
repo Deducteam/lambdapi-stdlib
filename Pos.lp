@@ -189,14 +189,14 @@ end;
 
 // function λ x, 2 * x - 1
 
-symbol pred_double : positive → positive;
+symbol pos_pred_double : positive → positive;
 
-rule pred_double (xI $p) ↪ xI (xO $p)
-with pred_double (xO $p) ↪ xI (pred_double $p)
-with pred_double xH      ↪ xH;
+rule pos_pred_double (xI $p) ↪ xI (xO $p)
+with pos_pred_double (xO $p) ↪ xI (pos_pred_double $p)
+with pos_pred_double xH      ↪ xH;
 
 
-symbol pred_double_succ x : π (pred_double (succ x) = xI x)
+symbol pos_pred_double_succ x : π (pos_pred_double (succ x) = xI x)
 ≔ begin
   induction;
   assume x xrec; simplify; rewrite xrec; reflexivity;
@@ -204,7 +204,7 @@ symbol pred_double_succ x : π (pred_double (succ x) = xI x)
   reflexivity;
 end;
 
-symbol succ_pred_double x : π (succ (pred_double x) = xO x)
+symbol succ_pos_pred_double x : π (succ (pos_pred_double x) = xO x)
 ≔ begin
   induction;
   reflexivity;
