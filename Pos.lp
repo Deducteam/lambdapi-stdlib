@@ -1,6 +1,6 @@
 // Positive binary integers
 
-require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq Stdlib.Comp;
+require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.CoC Stdlib.Eq Stdlib.Comp;
 
 inductive positive : TYPE ≔
 | xI : positive → positive
@@ -72,16 +72,27 @@ with succ xH ↪ xO xH;
 symbol ind_positive_peano Q :
   π (Q xH) →
   (Π p, π (Q p) → π (Q (succ p))) →
-  Π p, π (Q p);
-// ≔ begin
-//   assume Q qH qS p;
-//   have Gi : Π p P, π (P xH) → (Π x, π (P x) → π (P (succ x))) → π (P p);
-//   induction;
-// end;
-// Can't prove this yet because the predicate on which we want to do the
-// induction is :
-// λ p, `Π P, P xH ⇒ (`∀ x, P x ⇒ P (succ x)) ⇒ P p
-// We need `Π, that is: a deep symbol for the universal quantification on Prop
+  Π p, π (Q p)
+≔ begin
+  assume Q qH qS p;
+  refine ind_positive (λ x, ∀ₜₚ (∀ₛₜ pos (λ _, prop)) (λ P, P xH ⇒ (`∀ y, P y ⇒ P (succ y)) ⇒ P x)) _ _ _ p Q qH qS;
+  assume q qrec P pH pS;
+  refine pS (xO q) _;
+  refine qrec (λ x, P (xO x)) _ _;
+  refine pS xH pH;
+  assume y p2y;
+  refine pS (xI y) _;
+  refine pS _ p2y;
+
+  assume q qrec P pH pS;
+  refine qrec (λ x, P (xO x)) _ _;
+  refine pS xH pH;
+  assume y p2y;
+  refine pS (xI y) _;
+  refine pS _ p2y;
+
+  assume P pH _; refine pH;
+end;
 
 // Addition of positive numbers with and without a carry
 
