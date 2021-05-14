@@ -188,7 +188,7 @@ symbol +1 x ≔ x + Zpos xH;
 builtin "0" ≔ Z0;
 builtin "+1" ≔ +1;
 
-// Interaction with opposite
+// Interaction of addition with opposite
 
 symbol distr_~_+ x y : π (~ (x + y) = ~ x + ~ y)
 ≔ begin
@@ -228,6 +228,7 @@ symbol +_com x y : π (x + y = y + x)
   assume y; simplify; rewrite add_com; reflexivity;
 end;
 
+// Interaction of succ and doubling functions
 
 symbol pred_double_succ x : π (pred_double (x + 1) = succ_double x)
 ≔ begin
@@ -434,34 +435,37 @@ symbol ≐_opp x y : π (~ x ≐ ~ y = CompOpp (x ≐ y))
   assume y; simplify; rewrite compare_acc_com; reflexivity;
 end;
 
-// Interaction of doubling function with compare applied to 0
+// ≐ with 0
 
 symbol ≐_double x : π ((double x ≐ 0) = (x ≐ 0))
 ≔ begin
   induction; reflexivity; reflexivity; reflexivity;
 end;
 
-// TODO
-symbol ≐_pred_double x y :
-  π (pred_double (sub x y) ≐ 0 = compare_acc x Lt y);
+symbol ≐_pred_double x :
+  π (pred_double x ≐ 0 = comparison_case (x ≐ 0) Lt Lt Gt)
+≔ begin
+  induction; reflexivity; reflexivity; reflexivity;
+end;
 
-// TODO
-symbol ≐_succ_double x y :
-  π (succ_double (sub x y) ≐ 0 = compare_acc x Gt y);
-
-
-// ≐ comparison with 0
+symbol ≐_succ_double x :
+  π (succ_double x ≐ 0 = comparison_case (x ≐ 0) Gt Lt Gt)
+≔ begin
+  induction; reflexivity; reflexivity; reflexivity;
+end;
 
 symbol ≐_pos_sub x y : π ((sub x y ≐ 0) = compare x y)
 ≔ begin
   induction;
   assume x xrec; induction;
   assume y _; simplify; rewrite ≐_double; refine xrec y;
-  assume y _; simplify; refine ≐_succ_double x y;
+  assume y _; simplify; rewrite ≐_succ_double; rewrite xrec;
+  rewrite compare_Gt; reflexivity;
   reflexivity;
 
   assume x xrec; induction;
-  assume y _; simplify; refine ≐_pred_double x y;
+  assume y _; simplify; rewrite ≐_pred_double; rewrite xrec;
+  rewrite compare_Lt; reflexivity;
   assume y _; simplify; rewrite ≐_double; refine xrec y;
   reflexivity;
 

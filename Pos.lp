@@ -1,6 +1,6 @@
 // Positive binary integers
 
-require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq;
+require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq Stdlib.Comp;
 
 inductive positive : TYPE ≔
 | xI : positive → positive
@@ -214,18 +214,16 @@ end;
 
 // Comparison of positive numbers
 
-require open Stdlib.Comp;
-
 symbol compare_acc : positive → comparison → positive → comparison;
 
 rule compare_acc (xI $p) $c (xI $q) ↪ compare_acc $p $c $q
 with compare_acc (xI $p) _  (xO $q) ↪ compare_acc $p Gt $q
-with compare_acc (xI $p) _  xH      ↪ Gt
+with compare_acc (xI _)  _  xH      ↪ Gt
 with compare_acc (xO $p) _  (xI $q) ↪ compare_acc $p Lt $q
 with compare_acc (xO $p) $c (xO $q) ↪ compare_acc $p $c $q
-with compare_acc (xO $p) _  xH      ↪ Gt
-with compare_acc xH      _  (xI $q) ↪ Lt
-with compare_acc xH      _  (xO $q) ↪ Lt
+with compare_acc (xO _)  _  xH      ↪ Gt
+with compare_acc xH      _  (xI _)  ↪ Lt
+with compare_acc xH      _  (xO _)  ↪ Lt
 with compare_acc xH      $c xH      ↪ $c;
 
 
@@ -311,7 +309,66 @@ symbol compare_decides x y : π (compare x y = Eq ⇒ x = y)
   reflexivity;
 end;
 
-// Copatibility of compare with addition
+// Compare with Gt or Lt
+
+symbol compare_Lt x y :
+  π (compare_acc x Lt y = comparison_case (compare x y) Lt Lt Gt)
+≔ begin
+  induction;
+  assume x xrec; induction;
+  assume y _; refine xrec y;
+  assume y _; simplify;
+  refine ind_comparison (λ c, compare_acc x Gt y = c ⇒ c = comparison_case c Lt Lt Gt) _ _ _ (compare_acc x Gt y) _;
+  assume H; apply ⊥ₑ; refine compare_acc_nEq x y Gt _ H;
+  refine discr_Gt_Eq;
+  reflexivity; reflexivity; reflexivity;
+  reflexivity;
+
+  assume x xrec; induction;
+  assume y _; simplify;
+  refine ind_comparison (λ c, compare_acc x Lt y = c ⇒ c = comparison_case c Lt Lt Gt) _ _ _ (compare_acc x Lt y) _;
+  assume H; apply ⊥ₑ; refine compare_acc_nEq x y Lt _ H;
+  refine discr_Lt_Eq;
+  reflexivity; reflexivity; reflexivity;
+  assume y _; refine xrec y;
+  reflexivity;
+
+  induction;
+  reflexivity;
+  reflexivity;
+  reflexivity;
+end;
+
+
+symbol compare_Gt x y :
+  π (compare_acc x Gt y = comparison_case (compare x y) Gt Lt Gt)
+≔ begin
+  induction;
+  assume x xrec; induction;
+  assume y _; refine xrec y;
+  assume y _; simplify;
+  refine ind_comparison (λ c, compare_acc x Gt y = c ⇒ c = comparison_case c Gt Lt Gt) _ _ _ (compare_acc x Gt y) _;
+  assume H; apply ⊥ₑ; refine compare_acc_nEq x y Gt _ H;
+  refine discr_Gt_Eq;
+  reflexivity; reflexivity; reflexivity;
+  reflexivity;
+
+  assume x xrec; induction;
+  assume y _; simplify;
+  refine ind_comparison (λ c, compare_acc x Lt y = c ⇒ c = comparison_case c Gt Lt Gt) _ _ _ (compare_acc x Lt y) _;
+  assume H; apply ⊥ₑ; refine compare_acc_nEq x y Lt _ H;
+  refine discr_Lt_Eq;
+  reflexivity; reflexivity; reflexivity;
+  assume y _; refine xrec y;
+  reflexivity;
+
+  induction;
+  reflexivity;
+  reflexivity;
+  reflexivity;
+end;
+
+// Compatibility of compare with the addition
 
 symbol compare_xH_Lt y : π (compare_acc xH Lt y = Lt)
 ≔ begin

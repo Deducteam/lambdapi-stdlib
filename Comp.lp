@@ -74,3 +74,11 @@ symbol compopp_idem c : π (CompOpp (CompOpp c) = c)
   reflexivity;
   reflexivity;
 end;
+
+// Conditional
+
+symbol comparison_case {A} : comparison → τ A → τ A → τ A → τ A;
+
+rule comparison_case Eq $fEq _ _ ↪ $fEq
+with comparison_case Lt _ $fLt _ ↪ $fLt
+with comparison_case Gt _ _ $fGt ↪ $fGt;
