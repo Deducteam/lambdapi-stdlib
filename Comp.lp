@@ -29,9 +29,9 @@ with is_Lt Gt ↪ ⊥;
 
 symbol is_Gt : comparison → Prop;
 
-rule is_Lt Eq ↪ ⊥
-with is_Lt Lt ↪ ⊥
-with is_Lt Gt ↪ ⊤;
+rule is_Gt Eq ↪ ⊥
+with is_Gt Lt ↪ ⊥
+with is_Gt Gt ↪ ⊤;
 
 // Discriminate constructors
 

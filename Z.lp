@@ -435,6 +435,22 @@ symbol ≐_opp x y : π (~ x ≐ ~ y = CompOpp (x ≐ y))
   assume y; simplify; rewrite compare_acc_com; reflexivity;
 end;
 
+// General results
+
+symbol simpl_right x a : π (x + a - a = x)
+≔ begin
+  assume x a; simplify; rewrite +_assoc;
+  rewrite -_same;
+  reflexivity;
+end;
+
+symbol simpl_inv_right x a : π (x - a + a = x)
+≔ begin
+  assume x a; simplify; rewrite +_assoc;
+  rewrite [~ a + a] +_com; rewrite -_same;
+  reflexivity;
+end;
+
 // ≐ with 0
 
 symbol ≐_double x : π ((double x ≐ 0) = (x ≐ 0))
@@ -472,7 +488,7 @@ symbol ≐_pos_sub x y : π ((sub x y ≐ 0) = compare x y)
   induction; reflexivity; reflexivity; reflexivity;
 end;
 
-symbol ≐_sub x y : π ((x ≐ y) = (x - y ≐ 0))
+symbol ≐_sub x y : π ((x ≐ y) = (x + ~ y ≐ 0))
 ≔ begin
   induction;
   induction; reflexivity; reflexivity; reflexivity;
@@ -486,7 +502,7 @@ symbol ≐_sub x y : π ((x ≐ y) = (x - y ≐ 0))
   assume y; simplify; rewrite ≐_pos_sub; reflexivity;
 end;
 
-// Compatibility with addition
+// Compatibility of comparison with the addition
 
 symbol ≐_compat_add x y z : π ((x ≐ y) = (x + z ≐ y + z))
 ≔ begin
@@ -498,3 +514,155 @@ symbol ≐_compat_add x y z : π ((x ≐ y) = (x + z ≐ y + z))
   rewrite +_assoc; rewrite left +_assoc z (~ z) (~ y);
   rewrite -_same z; reflexivity;
 end;
+
+// Directional comparison operators
+
+symbol ≤ x y ≔ ¬ (is_Gt (x ≐ y));
+notation ≤ infix 10;
+
+symbol < x y ≔ is_Lt (x ≐ y);
+notation < infix 10;
+
+symbol ≥ x y ≔ ¬ (x < y);
+notation ≤ infix 10;
+
+symbol > x y ≔ ¬ (x ≤ y);
+notation > infix 10;
+
+symbol <_≤ x y : π (x < y ⇒ x ≤ y)
+≔ begin
+  assume x y;
+  refine ind_comparison (λ u, is_Lt u ⇒ is_Gt u ⇒ ⊥) _ _ _ (x ≐ y);
+  refine (λ x _, x);
+  refine (λ _ y, y);
+  refine (λ x _, x);
+end;
+
+// Compatibility of directional comparison operators with the addition
+
+symbol ≤_compat_add x y a : π (x ≤ y ⇒ x + a ≤ y + a)
+≔ begin
+  assume x y a; simplify;
+  assume H; refine fold_implies _; rewrite ≐_sub;
+  simplify; refine fold_implies _; rewrite +_assoc;
+  rewrite [y + a] +_com;
+  rewrite distr_~_+; rewrite left +_assoc a (~ a) (~ y);
+  rewrite -_same; rewrite left +_assoc x 0 (~ y);
+  simplify; refine fold_implies _;
+  rewrite left ≐_sub x y; refine H;
+end;
+
+symbol <_compat_add x y a : π (x < y ⇒ x + a < y + a)
+≔ begin
+  assume x y a; simplify;
+  assume H; rewrite ≐_sub;
+  simplify; rewrite +_assoc;
+  rewrite [y + a] +_com;
+  rewrite distr_~_+; rewrite left +_assoc a (~ a) (~ y);
+  rewrite -_same; rewrite left +_assoc x 0 (~ y);
+  simplify; rewrite left ≐_sub x y; refine H;
+end;
+
+symbol ≤_compat x y : π (0 ≤ x ⇒ 0 ≤ y ⇒ 0 ≤ x + y)
+≔ begin
+  induction; assume y _ H; refine H;
+  assume x; induction; assume _ _; refine λ x, x;
+  assume y _ _; refine λ x, x;
+  simplify; assume y _ f; apply ⊥ₑ; refine f top;
+  assume x; assume y f _; apply ⊥ₑ; refine f top;
+end;
+
+symbol <_compat_≤ x y : π (0 < x ⇒ 0 ≤ y ⇒ 0 < x + y)
+≔ begin
+  induction; assume y f _; apply ⊥ₑ; refine f;
+  assume x; induction; assume _ _; refine top;
+  assume y _ _; refine top;
+  simplify; assume y _ f; apply ⊥ₑ; refine f top;
+  assume x; assume y f _; apply ⊥ₑ; refine f;
+end;
+
+// Reflexivity
+
+symbol ≤_refl x : π (x ≤ x)
+≔ begin
+  assume x; refine ≤_compat_add 0 0 x _; refine (λ x, x);
+end;
+
+// Antisymmetry
+
+symbol ≤_antisym x y : π (x ≤ y ⇒ y ≤ x ⇒ x = y)
+≔ begin
+  assume x y;
+  have e : π (¬ (is_Gt (x ≐ y)) ⇒ ¬ (is_Gt (y ≐ x)) ⇒ x = y);
+  rewrite ≐_com;
+  refine ind_comparison (λ c, (y ≐ x) = c ⇒ ¬ (is_Gt (CompOpp c)) ⇒ ¬ (is_Gt c) ⇒ x = y) _ _ _ (y ≐ x) _;
+  assume H _ _; symmetry; refine ≐_decides y x H;
+  assume _ f _; apply ⊥ₑ; refine f top;
+  assume _ _ f; apply ⊥ₑ; refine f top;
+  reflexivity; refine e;
+end;
+
+// Transitivity theorems
+
+symbol ≤_trans x y z : π (x ≤ y ⇒ y ≤ z ⇒ x ≤ z)
+≔ begin
+  assume x y z lxy lyz;
+  have H : π (0 ≤ (z + ~ y) + (y + ~ x));
+  refine ≤_compat (z - y) (y - x) _ _;
+  rewrite left -_same y;
+  refine ≤_compat_add y z (~ y) _; refine lyz;
+  rewrite left -_same x;
+  refine ≤_compat_add x y (~ x) _; refine lxy;
+  generalize H; refine fold_implies _;
+  rewrite +_assoc; rewrite left +_assoc (~ y) y (~ x);
+  rewrite [~ y + y] +_com; rewrite -_same;
+  rewrite left [in x ≤ z] simpl_inv_right z x;
+  refine ≤_compat_add 0 (z - x) x;
+end;
+
+symbol <_trans_1 x y z : π (x < y ⇒ y ≤ z ⇒ x < z)
+≔ begin
+  assume x y z lxy lyz;
+  have H : π (0 < (z + ~ y) + (y + ~ x));
+  rewrite +_com;
+  apply <_compat_≤ (y - x) (z - y);
+  rewrite left -_same x;
+  refine <_compat_add x y (~ x) _; refine lxy;
+  rewrite left -_same y;
+  refine ≤_compat_add y z (~ y) _; refine lyz;
+  generalize H; refine fold_implies _;
+  rewrite +_assoc; rewrite left +_assoc (~ y) y (~ x);
+  rewrite [~ y + y] +_com; rewrite -_same;
+  rewrite left [in x < z] simpl_inv_right z x;
+  refine <_compat_add 0 (z - x) x;
+end;
+
+symbol <_trans_2 x y z : π (x ≤ y ⇒ y < z ⇒ x < z)
+≔ begin
+  assume x y z lxy lyz;
+  have H : π (0 < (z + ~ y) + (y + ~ x));
+  apply <_compat_≤ (z - y) (y - x);
+  rewrite left -_same y;
+  refine <_compat_add y z (~ y) _; refine lyz;
+  rewrite left -_same x;
+  refine ≤_compat_add x y (~ x) _; refine lxy;
+  generalize H; refine fold_implies _;
+  rewrite +_assoc; rewrite left +_assoc (~ y) y (~ x);
+  rewrite [~ y + y] +_com; rewrite -_same;
+  rewrite left [in x < z] simpl_inv_right z x;
+  refine <_compat_add 0 (z - x) x;
+end;
+
+// Multiplication
+
+symbol × : ℤ → ℤ → ℤ;
+notation × infix left 22;
+
+rule 0       × _       ↪ 0
+with _       × 0       ↪ 0
+with Zpos $x × Zpos $y ↪ Zpos (mul $x $y)
+with Zpos $x × Zneg $y ↪ Zneg (mul $x $y)
+with Zneg $x × Zpos $y ↪ Zneg (mul $x $y)
+with Zneg $x × Zneg $y ↪ Zpos (mul $x $y);
+
+// TO BE CONTINUED (theorems about multiplication)

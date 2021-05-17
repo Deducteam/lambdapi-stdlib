@@ -42,8 +42,8 @@ constant symbol ∨ᵢ₁ p q : π p → π (p ∨ q); // \vee__i__1
 constant symbol ∨ᵢ₂ p q : π q → π (p ∨ q); // \vee__i__2
 symbol ∨ₑ p q r : π (p ∨ q) → (π p → π r) → (π q → π r) → π r; // \vee__e
 
-// check that priorities are correctly set
-assert x y z ⊢ x ∨ y ∧ z ≡ x ∨ (y ∧ z);
+// Check that priorities are correctly set
+// assert x y z ⊢ x ∨ y ∧ z ≡ x ∨ (y ∧ z);
 
 // Implication
 
@@ -52,6 +52,8 @@ constant symbol ⇒ : Prop → Prop → Prop; // =>
 notation ⇒ infix right 5;
 
 rule π ($p ⇒ $q) ↪ π $p → π $q;
+
+symbol fold_implies {p q} : π (p ⇒ q) → π p → π q;
 
 // Negation
 

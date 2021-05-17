@@ -53,7 +53,8 @@ symbol + : ℕ → ℕ → ℕ;
 
 notation + infix left 20;
 
-assert x y z ⊢ x + y + z ≡ (x + y) + z; // check associativity
+// Check that priority is correctly set
+// assert x y z ⊢ x + y + z ≡ (x + y) + z;
 
 rule 0 + $y ↪ $y
 with s $x + $y ↪ s ($x + $y);
@@ -102,7 +103,8 @@ symbol × : ℕ → ℕ → ℕ; // \times
 
 notation × infix left 30;
 
-assert x y z ⊢ x + y × z ≡ x + (y × z); // check priorities
+// Check that priority is correctly set
+// assert x y z ⊢ x + y × z ≡ x + (y × z);
 
 rule 0 × _  ↪ 0
 with s $x × $y ↪ $y + $x × $y;
