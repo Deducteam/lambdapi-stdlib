@@ -17,7 +17,7 @@ rule τ nat ↪ ℕ;
 builtin "0"  ≔ zero;
 builtin "+1" ≔ s;
 
-assert ⊢ 42 : ℕ;
+// assert ⊢ 42 : ℕ;
 
 // is0 predicate
 

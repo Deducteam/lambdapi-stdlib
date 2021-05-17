@@ -538,7 +538,7 @@ symbol <_≤ x y : π (x < y ⇒ x ≤ y)
   refine (λ x _, x);
 end;
 
-// Compatibility of directional comparison operators with the addition
+// Compatibility of directional comparison operators
 
 symbol ≤_compat_add x y a : π (x ≤ y ⇒ x + a ≤ y + a)
 ≔ begin
@@ -563,7 +563,7 @@ symbol <_compat_add x y a : π (x < y ⇒ x + a < y + a)
   simplify; rewrite left ≐_sub x y; refine H;
 end;
 
-symbol ≤_compat x y : π (0 ≤ x ⇒ 0 ≤ y ⇒ 0 ≤ x + y)
+symbol ≤_compat_≤ x y : π (0 ≤ x ⇒ 0 ≤ y ⇒ 0 ≤ x + y)
 ≔ begin
   induction; assume y _ H; refine H;
   assume x; induction; assume _ _; refine λ x, x;
@@ -608,7 +608,7 @@ symbol ≤_trans x y z : π (x ≤ y ⇒ y ≤ z ⇒ x ≤ z)
 ≔ begin
   assume x y z lxy lyz;
   have H : π (0 ≤ (z + ~ y) + (y + ~ x));
-  refine ≤_compat (z - y) (y - x) _ _;
+  refine ≤_compat_≤ (z - y) (y - x) _ _;
   rewrite left -_same y;
   refine ≤_compat_add y z (~ y) _; refine lyz;
   rewrite left -_same x;

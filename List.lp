@@ -27,8 +27,9 @@ symbol ⋅ [a] : 𝕃 a → 𝕃 a → 𝕃 a;
 
 notation ⋅ infix right 15; // \cdot
 
-assert a (x y z:𝕃 a) ⊢ x ⋅ y ⋅ z ≡ x ⋅ (y ⋅ z);
-assert a x l m ⊢ x ⸬ l ⋅ m ≡ x ⸬ (l ⋅ m);
+// Check that priorities are correctly set
+// assert a (x y z:𝕃 a) ⊢ x ⋅ y ⋅ z ≡ x ⋅ (y ⋅ z);
+// assert a x l m ⊢ x ⸬ l ⋅ m ≡ x ⸬ (l ⋅ m);
 
 rule □ ⋅ $m ↪ $m
 with ($x ⸬ $l) ⋅ $m ↪ $x ⸬ ($l ⋅ $m);
