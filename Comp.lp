@@ -35,24 +35,24 @@ with is_Gt Gt ↪ ⊤;
 
 // Discriminate constructors
 
-symbol discr_Lt_Eq : π (Lt ≠ Eq)
-≔ begin
+symbol discr_Lt_Eq : π (Lt ≠ Eq) ≔
+begin
   assume H;
   have f : π (is_Eq Lt);
   rewrite H; refine top;
   refine ⊥ₑ _ f;
 end;
 
-symbol discr_Gt_Eq : π (Gt ≠ Eq)
-≔ begin
+symbol discr_Gt_Eq : π (Gt ≠ Eq) ≔
+begin
   assume H;
   have f : π (is_Eq Gt);
   rewrite H; refine top;
   refine ⊥ₑ _ f;
 end;
 
-symbol discr_Gt_Lt : π (Gt ≠ Lt)
-≔ begin
+symbol discr_Gt_Lt : π (Gt ≠ Lt) ≔
+begin
   assume H;
   have f : π (is_Lt Gt);
   rewrite H; refine top;
@@ -61,18 +61,15 @@ end;
 
 // Reverse a comparison
 
-symbol CompOpp : comparison → comparison;
+symbol revcomp : comparison → comparison;
 
-rule CompOpp Eq ↪ Eq
-with CompOpp Lt ↪ Gt
-with CompOpp Gt ↪ Lt;
+rule revcomp Eq ↪ Eq
+with revcomp Lt ↪ Gt
+with revcomp Gt ↪ Lt;
 
-symbol compopp_idem c : π (CompOpp (CompOpp c) = c)
-≔ begin
-  induction;
-  reflexivity;
-  reflexivity;
-  reflexivity;
+symbol revcomp_idem c : π (revcomp (revcomp c) = c) ≔
+begin
+  induction; reflexivity; reflexivity; reflexivity;
 end;
 
 // Conditional

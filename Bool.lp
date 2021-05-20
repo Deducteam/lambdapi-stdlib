@@ -19,6 +19,11 @@ symbol is_true : 𝔹 → Prop;
 rule is_true true  ↪ ⊤
 with is_true false ↪ ⊥;
 
+symbol is_false : 𝔹 → Prop;
+
+rule is_false true  ↪ ⊥
+with is_false false ↪ ⊤;
+
 // Discriminate constructors
 
 symbol discr_true_false : π (false ≠ true)

@@ -5,7 +5,7 @@ require open Stdlib.Set Stdlib.Prop;
 
 constant symbol Type : TYPE;
 
-symbol ε : Type → TYPE;
+symbol ε : Type → TYPE; // `e
 
 symbol prop : Type;
 rule ε prop ↪ Prop;
@@ -23,6 +23,7 @@ constant symbol ∀ₛₜ (a : Set)  : (τ a → Type) → Type;
 constant symbol ∀ₚₜ (P : Prop) : (π P → Type) → Type;
 constant symbol ∀ₜₚ (T : Type) : (ε T → Prop) → Prop;
 constant symbol ∀ₜₛ (T : Type) : (ε T → Set)  → Set;
+constant symbol ∀ₜₜ (T : Type) : (ε T → Type) → Type;
 
 rule τ (∀ₛₛ $s $f) ↪ Π a : τ $s, τ ($f a);
 rule τ (∀ₚₛ $p $f) ↪ Π P : π $p, τ ($f P);
@@ -30,8 +31,8 @@ rule τ (∀ₚₛ $p $f) ↪ Π P : π $p, τ ($f P);
 // rule π (∀ₛₚ $s $f) ↪ Π a : τ $s , π ($f a); // already defined
 rule π (∀ₚₚ $p $f) ↪ Π P : π $p, π ($f P); // defined for ⇒
 
-
 rule ε (∀ₛₜ $s $f) ↪ Π a : τ $s, ε ($f a);
 rule ε (∀ₚₜ $p $f) ↪ Π P : π $p, ε ($f P);
 rule π (∀ₜₚ $t $f) ↪ Π T : ε $t, π ($f T);
 rule τ (∀ₜₛ $t $f) ↪ Π a : ε $t, τ ($f a);
+rule ε (∀ₜₜ $t $f) ↪ Π a : ε $t, ε ($f a);
