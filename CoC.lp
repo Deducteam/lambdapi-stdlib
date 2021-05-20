@@ -13,7 +13,7 @@ rule ε prop ↪ Prop;
 symbol set : Type;
 rule ε set ↪ Set;
 
-constant symbol ∀ₛₛ (a : Set)  : (τ a → Set)  → Set;
+constant symbol ∀ₛₛ (a : Set)  : (τ a → Set)  → Set; // \forall__s__s
 constant symbol ∀ₚₛ (P : Prop) : (π P → Set)  → Set;
 
 // constant symbol ∀ₛₚ (a : Set)  : (τ a → Prop) → Prop; // this is ∀
@@ -35,4 +35,4 @@ rule ε (∀ₛₜ $s $f) ↪ Π a : τ $s, ε ($f a);
 rule ε (∀ₚₜ $p $f) ↪ Π P : π $p, ε ($f P);
 rule π (∀ₜₚ $t $f) ↪ Π T : ε $t, π ($f T);
 rule τ (∀ₜₛ $t $f) ↪ Π a : ε $t, τ ($f a);
-rule ε (∀ₜₜ $t $f) ↪ Π a : ε $t, ε ($f a);
+rule ε (∀ₜₜ $t $f) ↪ Π T : ε $t, ε ($f T);

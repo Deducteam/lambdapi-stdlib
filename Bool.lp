@@ -26,8 +26,8 @@ with is_false false ↪ ⊤;
 
 // Discriminate constructors
 
-symbol discr_true_false : π (false ≠ true)
-≔ begin
+symbol discr_false_true : π (false ≠ true) ≔
+begin
   assume H;
   have f : π (is_true false);
   rewrite H; refine top;

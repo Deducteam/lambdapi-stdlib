@@ -184,8 +184,8 @@ end;
 
 // Commutativity of the addition
 
-symbol add_com x y : π (add x y = add y x)
-≔ begin
+symbol add_com x y : π (add x y = add y x) ≔
+begin
   refine ind_positive_peano (λ x, `∀ y, add x y = add y x) _ _;
   // case xH
   reflexivity;
@@ -211,8 +211,8 @@ begin
   reflexivity;
 end;
 
-symbol succ_pos_pred_double x : π (succ (pos_pred_double x) = xO x)
-≔ begin
+symbol succ_pos_pred_double x : π (succ (pos_pred_double x) = xO x) ≔
+begin
   induction;
   reflexivity;
   assume x xrec; simplify; rewrite xrec; reflexivity;
