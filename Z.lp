@@ -258,7 +258,7 @@ begin
   simplify; rewrite pos_pred_double_succ; reflexivity;
   // case xO
   assume x xrec; induction;
-  assume y _; simplify; rewrite left succ_pred_double (sub x y); reflexivity;
+  assume y _; simplify; rewrite left succ_pred_double; reflexivity;
   assume y _; simplify; rewrite succ_double_carac; reflexivity;
   simplify; rewrite succ_pos_pred_double; reflexivity;
   // case xH
@@ -291,7 +291,7 @@ symbol sub_add_Zneg a b c : π (sub a b + Zneg c = sub a (add b c)) ≔
 begin
   assume a b c;
   rewrite left sub_opp (add b c) a;
-  rewrite left sub_add_Zpos b a c;
+  rewrite left sub_add_Zpos;
   rewrite distr_~_+; rewrite sub_opp; reflexivity;
 end;
 
@@ -526,8 +526,8 @@ begin
   assume x y a; simplify; assume H; rewrite ≐_sub;
   simplify; rewrite +_assoc; rewrite [y + a] +_com;
   rewrite distr_~_+; rewrite left +_assoc a (~ a) (~ y);
-  rewrite -_same; rewrite left +_assoc x 0 (~ y);
-  simplify; rewrite left ≐_sub x y; refine H;
+  rewrite -_same; rewrite left +_assoc;
+  simplify; rewrite left ≐_sub; refine H;
 end;
 
 symbol ≤_compat_≤ x y : π (0 ≤ x ⇒ 0 ≤ y ⇒ 0 ≤ x + y) ≔
