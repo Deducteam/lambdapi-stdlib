@@ -186,6 +186,59 @@ end;
 
 rule ($x × $y) × $z ↪ $x × ($y × $z);
 
+// Maximum
+
+symbol ∨: ℕ → ℕ → ℕ;
+
+notation ∨ infix left 40;
+
+rule 0 ∨ $x ↪ $x
+with $x ∨ 0 ↪ $x
+with s $x ∨ s $y ↪ s ($x ∨ $y);
+
+opaque symbol ∨_com x y : π (x ∨ y = y ∨ x) ≔
+begin
+induction;
+// case 0
+reflexivity;
+// case s
+assume x h;
+simplify;
+induction;
+reflexivity;
+assume y i;
+simplify;
+rewrite h;
+reflexivity;
+end;
+
+opaque symbol ∨_assoc x y z : π ((x ∨ y) ∨ z = x ∨ (y ∨ z)) ≔
+begin
+induction;
+reflexivity;
+assume x h;
+induction;
+reflexivity;
+assume y i;
+induction;
+reflexivity;
+assume z j;
+simplify;
+rewrite h;
+reflexivity;
+end;
+
+opaque symbol +_dist_∨ x y z : π (x + (y ∨ z) = (x + y) ∨ (x + z)) ≔
+begin
+induction;
+reflexivity;
+assume x h y z;
+simplify;
+apply feq s;
+rewrite h;
+reflexivity;
+end;
+
 // Order on ℕ
 
 constant symbol ≤ : ℕ → ℕ → Prop; notation ≤ infix 10;
