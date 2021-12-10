@@ -36,8 +36,8 @@ with ($x ⸬ $l) ⋅ $m ↪ $x ⸬ ($l ⋅ $m);
 opaque symbol concat_nil [a] (l:𝕃 a) : π(l ⋅ □ = l) ≔
 begin
   assume a; induction
-  { /* □ */ reflexivity }
-  { /* ⸬ */ assume x l' h; simplify; rewrite h; reflexivity }
+  { reflexivity }
+  { assume x l' h; simplify; rewrite h; reflexivity }
 end;
 
 rule $m ⋅ □ ↪ $m;
@@ -46,20 +46,17 @@ opaque symbol length_concat [a] (l m : 𝕃 a) :
   π(length (l ⋅ m) = length l + length m) ≔
 begin
   assume a; induction
-  { /* □ */ reflexivity }
-  { /* ⸬ */ assume x l' h m; simplify; rewrite h; reflexivity }
+  { reflexivity }
+  { assume x l' h m; simplify; rewrite h; reflexivity }
 end;
 
 rule length ($l ⋅ $m) ↪ length $l + length $m;
 
 opaque symbol concat_assoc [a] (l m n : 𝕃 a) : π((l ⋅ m) ⋅ n = l ⋅ (m ⋅ n)) ≔
 begin
-  assume a;
-  induction;
-  // case l = □
-  reflexivity;
-  // case l = x⸬l'
-  assume x l' h m n; simplify; rewrite h; reflexivity;
+  assume a; induction
+  { reflexivity }
+  { assume x l' h m n; simplify; rewrite h; reflexivity }
 end;
 
 rule ($l ⋅ $m) ⋅ $n ↪ $l ⋅ ($m ⋅ $n);
@@ -73,36 +70,27 @@ with rev ($x ⸬ $l) ↪ rev $l ⋅ ($x ⸬ □);
 
 opaque symbol rev_concat [a] (l m : 𝕃 a) : π(rev (l ⋅ m) = rev m ⋅ rev l) ≔
 begin
-  assume a;
-  induction;
-  // case l = □
-  simplify; reflexivity;
-  // case l = ⸬
-  assume x l h m; simplify; rewrite h; reflexivity;
+  assume a; induction
+  { simplify; reflexivity }
+  { assume x l h m; simplify; rewrite h; reflexivity }
 end;
 
 rule rev ($l ⋅ $m) ↪ rev $m ⋅ rev $l;
 
 opaque symbol rev_idem [a] (l :𝕃 a) : π(rev (rev l) = l) ≔
 begin
-  assume a;
-  induction;
-  // case l = □
-  reflexivity;
-  // case l = ⸬
-  assume x l h; simplify; rewrite h; reflexivity;
+  assume a; induction
+  { reflexivity }
+  { assume x l h; simplify; rewrite h; reflexivity }
 end;
 
 rule rev (rev $l) ↪ $l;
 
 opaque symbol length_rev [a] (l : 𝕃 a) : π(length (rev l) = length l) ≔
 begin
-  assume a;
-  induction;
-  // case l = □
-  simplify; reflexivity;
-  // case l = ⸬
-  assume x l h; simplify; rewrite h; reflexivity;
+  assume a; induction
+  { simplify; reflexivity }
+  { assume x l h; simplify; rewrite h; reflexivity }
 end;
 
 rule length (rev $l) ↪ length $l;
