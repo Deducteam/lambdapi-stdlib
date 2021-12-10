@@ -43,7 +43,7 @@ with _     and false ↪ false;
 
 // Conditional
 
-symbol if : 𝔹 → Π {a}, τ a → τ a → τ a;
+symbol if : 𝔹 → Π [a], τ a → τ a → τ a;
 
 rule if true  $x _ ↪ $x
 with if false _ $y ↪ $y;
