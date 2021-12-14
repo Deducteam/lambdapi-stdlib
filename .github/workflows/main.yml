@@ -15,10 +15,14 @@ jobs:
         run: opam install dune bindlib timed sedlex menhir pratter yojson cmdliner why3
       - name: Install lambdapi and compile lib
         run: |
+          pwd
+          ls
+          opam switch
           eval $(opam env)
           cd ..
           git clone https://github.com/Deducteam/lambdapi
           cd lambdapi
+          ocamlc --version
           make install
           cd ../lib
           make
