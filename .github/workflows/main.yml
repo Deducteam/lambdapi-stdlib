@@ -16,8 +16,7 @@ jobs:
       - name: update opam
         run: opam update
       - name: install lambdapi dependencies
-        run: |
-        opam install dune bindlib timed sedlex menhir pratter yojson cmdliner why3
+        run: opam install dune bindlib timed sedlex menhir pratter yojson cmdliner why3
       - name: check out lambdapi
         run: git clone https://github.com/Deducteam/lambdapi
       - name: compile and install lambdapi
