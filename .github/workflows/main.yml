@@ -1,16 +1,17 @@
 on:
-  pull_request:
-    types: [opened, synchronize, edited, reopened]
+#  pull_request:
+#    types: [opened, synchronize, edited, reopened]
   push:
   workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        lambdapi-version: [master]
     steps:
+      - name: recover ~/.opam
+        uses: actions/cache@v2
+        with:
+          path: ~/.opam
+          key: opam-cache
       - name: install ocaml and opam
         uses: ocaml/setup-ocaml@v2
       - name: install lambdapi dependencies
