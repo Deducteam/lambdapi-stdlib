@@ -7,26 +7,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: recover ~/.opam
-        uses: actions/cache@v2
-        with:
-          path: ~/.opam
-          key: opam-cache
+      - name: check out lib
+        uses: actions/checkout@v2
       - name: install ocaml and opam
         uses: ocaml/setup-ocaml@v2
       - name: install lambdapi dependencies
         run: opam install dune bindlib timed sedlex menhir pratter yojson cmdliner why3
-      - name: install lambdapi
+      - name: install lambdapi and compile lib
         run: |
           git clone https://github.com/Deducteam/lambdapi
           cd lambdapi
           eval $(opam env)
           make install
-          which lambdapi
-      - name: check out lib
-        uses: actions/checkout@v2
-      - name: compile lib
-        run: |
-          eval $(opam env)
-          echo $PATH
+          cd ../lib
           make
