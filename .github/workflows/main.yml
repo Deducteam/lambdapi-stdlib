@@ -18,7 +18,7 @@ jobs:
       - name: Check out lambdapi
         uses: actions/checkout@v2
         with:
-          repository: https://github.com/Deducteam/lambdapi
+          repository: Deducteam/lambdapi
       - name: Install lambdapi
         run: |
           cd lambdapi
