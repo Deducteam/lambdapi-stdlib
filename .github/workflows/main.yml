@@ -7,12 +7,30 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Where we are
+        run: |
+          pwd
+          ls
       - name: Check out lib
         uses: actions/checkout@v2
+      - name: Where we are
+        run: |
+          pwd
+          ls
       - name: Install ocaml and opam
         uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: 4.13.x
+      - name: Where we are
+        run: |
+          pwd
+          ls
       - name: Install lambdapi dependencies
         run: opam install dune bindlib timed sedlex menhir pratter yojson cmdliner why3
+      - name: Where we are
+        run: |
+          pwd
+          ls
       - name: Install lambdapi and compile lib
         run: |
           pwd
