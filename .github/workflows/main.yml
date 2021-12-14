@@ -1,0 +1,30 @@
+on:
+  pull_request:
+    types: [opened, synchronize, edited, reopened]
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        lambdapi-version: [master]
+    steps:
+      - name: install ocaml and opam
+        uses: ocaml/setup-ocaml@v2
+      - name: update opam
+        run opam update
+      - name: install lambdapi dependencies
+        run: |
+        opam install dune bindlib timed sedlex menhir pratter yojson cmdliner why3
+      - name: check out lambdapi
+        run: git clone https://github.com/Deducteam/lambdapi
+      - name: compile and install lambdapi
+        run: |
+          cd lambdapi
+          make install
+      - name: check out lib
+        uses: actions/checkout@v2
+      - name: compile lib
+        run: make
