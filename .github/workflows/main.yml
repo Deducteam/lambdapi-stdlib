@@ -10,17 +10,21 @@ jobs:
 #      - name: Working directory
 #        run: pwd
       - name: Check out lib
-        run: git clone git@github.com:fblanqui/lib.git
-#        uses: actions/checkout@v2
+        uses: actions/checkout@v2
       - name: Install ocaml and opam
         uses: ocaml/setup-ocaml@v2
       - name: Install lambdapi dependencies
         run: opam install dune bindlib timed sedlex menhir pratter yojson cmdliner why3
-      - name: Install lambdapi and compile lib
+      - name: Check out lambdapi
+        uses: actions/checkout@v2
+        with:
+          repository: https://github.com/Deducteam/lambdapi
+      - name: Install lambdapi
+        run: |
+          cd lambdapi
+          eval $(opam env)
+          make install
+      - name: Check lib
         run: |
           eval $(opam env)
-          git clone https://github.com/Deducteam/lambdapi
-          cd lambdapi
-          make install
-          cd ../lib
           make
