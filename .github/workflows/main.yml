@@ -27,4 +27,5 @@ jobs:
       - name: compile lib
         run: |
           eval $(opam env)
+          echo $PATH
           make
