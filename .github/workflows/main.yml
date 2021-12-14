@@ -5,6 +5,10 @@ on:
   workflow_dispatch:
 jobs:
   build:
+    strategy:
+      fail-fast: false
+      matrix:
+        lambdapi-version: [master]
     runs-on: ubuntu-latest
     steps:
       - name: Check out lib
@@ -13,8 +17,8 @@ jobs:
         uses: ocaml/setup-ocaml@v2
       - name: Install lambdapi dependencies
         run: opam install dune bindlib timed sedlex menhir pratter yojson cmdliner why3
-      - name: Check out lambdapi
-        run: git clone --depth 0 https://github.com/Deducteam/lambdapi.git
+      - name: Check out lambdapi ${{ matrix.lambdapi-version }}
+        run: git clone --depth 1 --branch ${{ matrix.lambdapi-version }} https://github.com/Deducteam/lambdapi.git
       - name: Install lambdapi
         run: |
           cd lambdapi
