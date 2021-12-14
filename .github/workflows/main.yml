@@ -1,6 +1,6 @@
 on:
-#  pull_request:
-#    types: [opened, synchronize, edited, reopened]
+  pull_request:
+    types: [opened, synchronize, edited, reopened]
   push:
   workflow_dispatch:
 jobs:
@@ -15,12 +15,10 @@ jobs:
         run: opam install dune bindlib timed sedlex menhir pratter yojson cmdliner why3
       - name: Install lambdapi and compile lib
         run: |
-          pwd
-          echo $GITHUB_WORKSPACE
           eval $(opam env)
-          echo $PATH
+          cd ..
           git clone https://github.com/Deducteam/lambdapi
           cd lambdapi
           make install
-          cd ..
+          cd ../lib
           make
