@@ -25,4 +25,6 @@ jobs:
       - name: check out lib
         uses: actions/checkout@v2
       - name: compile lib
-        run: make
+        run: |
+          eval $(opam env)
+          make
