@@ -7,12 +7,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Check out lib
+        uses: actions/checkout@v2
       - name: Install ocaml and opam
         uses: ocaml/setup-ocaml@v2
       - name: Install lambdapi dependencies
         run: opam install dune bindlib timed sedlex menhir pratter yojson cmdliner why3
-      - name: Check out lib
-        uses: actions/checkout@v2
       - name: Install lambdapi and compile lib
         run: |
           cd ..
