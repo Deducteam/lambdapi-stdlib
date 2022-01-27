@@ -8,23 +8,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        lambdapi-version: [master]
+        lambdapi-version: [lambdapi.2.0.0, lambdapi.2.1.0, lambdapi]
     runs-on: ubuntu-latest
     steps:
-      - name: Check out lib
+      - name: Check out library
         uses: actions/checkout@v2
       - name: Install ocaml and opam
         uses: ocaml/setup-ocaml@v2
-      - name: Install lambdapi dependencies
-        run: opam install dune bindlib timed sedlex menhir pratter yojson cmdliner why3
-      - name: Check out lambdapi ${{ matrix.lambdapi-version }}
-        run: git clone --depth 1 --branch ${{ matrix.lambdapi-version }} https://github.com/Deducteam/lambdapi.git
-      - name: Install lambdapi
-        run: |
-          cd lambdapi
-          eval $(opam env)
-          make install
-      - name: Check lib
+      - name: Setup opam for testing the development version
+        run: opam pin -n --dev-repo lambdapi
+        if: matrix.lambdapi-version == 'lambdapi'
+      - name: Install ${{ matrix.lambdapi-version }}
+        run: opam install ${{ matrix.lambdapi-version }}
+      - name: Check library
         run: |
           eval $(opam env)
           make
