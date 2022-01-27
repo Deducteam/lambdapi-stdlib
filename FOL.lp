@@ -1,6 +1,6 @@
 // (multi-sorted) First-order logic
 
-require open Stdlib.Set Stdlib.Prop;
+require open Blanqui.Lib.Set Blanqui.Lib.Prop;
 
 // Universal quantification
 

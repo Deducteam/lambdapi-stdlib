@@ -1,4 +1,4 @@
-require open Stdlib.Bool Stdlib.Nat;
+require open Blanqui.Lib.Bool Blanqui.Lib.Nat;
 
 // Boolean equality on ℕ
 

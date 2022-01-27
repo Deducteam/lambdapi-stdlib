@@ -1,6 +1,6 @@
 // Natural numbers
 
-require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq;
+require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq;
 
 inductive ℕ : TYPE ≔
 | zero : ℕ

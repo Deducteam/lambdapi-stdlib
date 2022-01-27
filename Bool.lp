@@ -1,6 +1,6 @@
 // Booleans
 
-require open Stdlib.Set Stdlib.Prop Stdlib.FOL;
+require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL;
 
 inductive 𝔹 : TYPE ≔
 | true : 𝔹
