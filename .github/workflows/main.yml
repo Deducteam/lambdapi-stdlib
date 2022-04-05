@@ -4,27 +4,41 @@ on:
   push:
   workflow_dispatch:
 jobs:
-  build:
+  lambdapi:
     strategy:
       fail-fast: false
       matrix:
-        lambdapi-version: [master]
+        lambdapi-version: [2.0.0, 2.1.0, 2.2.0]
     runs-on: ubuntu-latest
     steps:
-      - name: Check out lib
+      - name: Check out library
         uses: actions/checkout@v2
       - name: Install ocaml and opam
         uses: ocaml/setup-ocaml@v2
-      - name: Install lambdapi dependencies
-        run: opam install dune bindlib timed sedlex menhir pratter yojson cmdliner why3
-      - name: Check out lambdapi ${{ matrix.lambdapi-version }}
-        run: git clone --depth 1 --branch ${{ matrix.lambdapi-version }} https://github.com/Deducteam/lambdapi.git
+        with:
+          ocaml-compiler: 4.13.1
+      - name: Install lambdapi ${{ matrix.lambdapi-version }}
+        run: opam install lambdapi.${{ matrix.lambdapi-version }}
+      - name: Check library
+        run: |
+          eval $(opam env)
+          make
+  lambdapi-master:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out library
+        uses: actions/checkout@v2
+      - name: Install ocaml and opam
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: 4.13.1
       - name: Install lambdapi
         run: |
-          cd lambdapi
-          eval $(opam env)
-          make install
-      - name: Check lib
+          opam pin add lambdapi https://github.com/Deducteam/lambdapi.git
+          opam install lambdapi
+      - name: Check library
         run: |
           eval $(opam env)
           make
