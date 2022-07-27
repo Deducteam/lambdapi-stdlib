@@ -29,9 +29,9 @@ with is_false false ↪ ⊤;
 symbol discr_false_true : π (false ≠ true) ≔
 begin
   assume H;
-  have f : π (is_true false);
-  rewrite H; refine top;
-  refine ⊥ₑ _ f;
+  have f : π (is_true false)
+  { rewrite H; refine top } ;
+    refine ⊥ₑ _ f ;
 end;
 
 // 𝔹oolean not

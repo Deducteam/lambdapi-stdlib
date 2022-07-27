@@ -1,4 +1,4 @@
-require open Stdlib.Set Stdlib.Prop;
+require open Blanqui.Lib.Set Blanqui.Lib.Prop;
 
 // From CoC encoding, keep the following:
 // For now this is only used in the proof of Pos.ind_positive_peano

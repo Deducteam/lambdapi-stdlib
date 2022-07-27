@@ -53,7 +53,7 @@ notation ⇒ infix right 5;
 
 rule π ($p ⇒ $q) ↪ π $p → π $q;
 
-symbol fold_implies {p q} : π (p ⇒ q) → π p → π q;
+symbol fold_implies [p q] : π (p ⇒ q) → π p → π q;
 
 // Negation
 

@@ -1,6 +1,6 @@
 // Comparison datatype
 
-require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq;
+require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq;
 
 inductive comparison : TYPE ≔
 | Eq : comparison
@@ -38,24 +38,24 @@ with is_Gt Gt ↪ ⊤;
 symbol discr_Lt_Eq : π (Lt ≠ Eq) ≔
 begin
   assume H;
-  have f : π (is_Eq Lt);
-  rewrite H; refine top;
+  have f : π (is_Eq Lt)
+  { rewrite H; refine top; } ;
   refine ⊥ₑ _ f;
 end;
 
 symbol discr_Gt_Eq : π (Gt ≠ Eq) ≔
 begin
   assume H;
-  have f : π (is_Eq Gt);
-  rewrite H; refine top;
+  have f : π (is_Eq Gt)
+  { rewrite H; refine top; } ;
   refine ⊥ₑ _ f;
 end;
 
 symbol discr_Gt_Lt : π (Gt ≠ Lt) ≔
 begin
   assume H;
-  have f : π (is_Lt Gt);
-  rewrite H; refine top;
+  have f : π (is_Lt Gt)
+  { rewrite H; refine top; } ;
   refine ⊥ₑ _ f;
 end;
 
@@ -69,12 +69,12 @@ with revcomp Gt ↪ Lt;
 
 symbol revcomp_idem c : π (revcomp (revcomp c) = c) ≔
 begin
-  induction; reflexivity; reflexivity; reflexivity;
+  induction { reflexivity; } { reflexivity; } { reflexivity; }
 end;
 
 // Conditional
 
-symbol comparison_case {A} : comparison → τ A → τ A → τ A → τ A;
+symbol comparison_case [A] : comparison → τ A → τ A → τ A → τ A;
 
 rule comparison_case Eq $fEq _ _ ↪ $fEq
 with comparison_case Lt _ $fLt _ ↪ $fLt
