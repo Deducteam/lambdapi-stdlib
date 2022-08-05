@@ -14,7 +14,7 @@ It provides the following modules:
 - NatBool: some boolean functions on natural numbers
 """
 maintainer: ["frederic.blanqui@inria.fr"]
-authors: ["Frédéric Blanqui"]
+authors: ["Frédéric Blanqui", "Quentin Buzet"]
 license: "CECILL-2.1"
 homepage: "https://github.com/fblanqui/lib"
 bug-reports: "https://github.com/fblanqui/lib/issues"
