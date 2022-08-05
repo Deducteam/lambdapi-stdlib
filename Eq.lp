@@ -17,7 +17,7 @@ builtin "eqind" ≔ ind_eq;
 
 symbol ≠ [a] (x y : τ a) ≔ ¬ (x = y); // \neq
 
-notation ≠ infix 1;
+notation ≠ infix 10;
 
 // symmetry
 
