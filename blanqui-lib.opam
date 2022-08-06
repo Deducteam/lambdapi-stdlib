@@ -22,5 +22,5 @@ dev-repo: "git+https://github.com/fblanqui/lib.git"
 install: [ make "install" ]
 uninstall: [ make "uninstall" ]
 depends: [
-  "lambdapi" {>= "2.0.0"}
+  "lambdapi" {>= "2.2.1"}
 ]
