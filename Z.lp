@@ -607,48 +607,48 @@ end;
 
 // Transitivity theorems
 
-// symbol ≤_trans x y z : π (x ≤ y ⇒ y ≤ z ⇒ x ≤ z) ≔
-// begin
-//    assume x y z lxy lyz;
-//    have H : π (0 ≤ (z + ~ y) + (y + ~ x))
-//    { refine ≤_compat_≤ (z - y) (y - x) _ _
-//       { rewrite left -_same y; refine ≤_compat_add y z (~ y) _; refine lyz; }
-//       { rewrite left -_same x; refine ≤_compat_add x y (~ x) _; refine lxy; } } ;
-//    generalize H; refine fold_implies _;
-//    rewrite +_assoc; rewrite left +_assoc (~ y) y (~ x);
-//    rewrite .[~ y + y] +_com; rewrite -_same; simplify; refine fold_implies _;
-//    // rewrite left .[in x ≤ z] simpl_inv_right z x;
-//    refine ≤_compat_add 0 (z - x) x;
-//    rewrite left .[in ((z - x) + x)] +_assoc;
-// end;
+symbol ≤_trans x y z : π (x ≤ y ⇒ y ≤ z ⇒ x ≤ z) ≔
+begin
+   assume x y z lxy lyz;
+   have H : π (0 ≤ (z + ~ y) + (y + ~ x))
+   { refine ≤_compat_≤ (z - y) (y - x) _ _
+      { rewrite left -_same y; refine ≤_compat_add y z (~ y) _; refine lyz; }
+      { rewrite left -_same x; refine ≤_compat_add x y (~ x) _; refine lxy; } } ;
+   generalize H; refine fold_implies _;
+   rewrite +_assoc; rewrite left +_assoc (~ y) y (~ x);
+   rewrite .[~ y + y] +_com; rewrite -_same;
+   refine (λ p : π ((0 ≤ (z + ~ x)) ⇒ (x ≤ z)), p) _;
+   rewrite left .[in x ≤ z] simpl_inv_right z x;
+   refine ≤_compat_add 0 (z - x) x;
+end;
 
-// symbol <_trans_1 x y z : π (x < y ⇒ y ≤ z ⇒ x < z) ≔
-// begin
-//   assume x y z lxy lyz;
-//   have H : π (0 < (z + ~ y) + (y + ~ x))
-//    { rewrite +_com; apply <_compat_≤ (y - x) (z - y)
-//       { rewrite left -_same x; refine <_compat_add x y (~ x) _; refine lxy; }
-//       { rewrite left -_same y; refine ≤_compat_add y z (~ y) _; refine lyz; } } ;
-//   generalize H; refine fold_implies _;
-//   rewrite +_assoc; rewrite left +_assoc (~ y) y (~ x);
-//   rewrite .[~ y + y] +_com; rewrite -_same;
-//   rewrite left .[in x < z] simpl_inv_right z x;
-//   refine <_compat_add 0 (z - x) x;
-// end;
+symbol <_trans_1 x y z : π (x < y ⇒ y ≤ z ⇒ x < z) ≔
+begin
+  assume x y z lxy lyz;
+  have H : π (0 < (z + ~ y) + (y + ~ x))
+   { rewrite +_com; apply <_compat_≤ (y - x) (z - y)
+      { rewrite left -_same x; refine <_compat_add x y (~ x) _; refine lxy; }
+      { rewrite left -_same y; refine ≤_compat_add y z (~ y) _; refine lyz; } } ;
+  generalize H; refine fold_implies _;
+  rewrite +_assoc; rewrite left +_assoc (~ y) y (~ x);
+  rewrite .[~ y + y] +_com; rewrite -_same;
+  rewrite left .[in x < z] simpl_inv_right z x;
+  refine <_compat_add 0 (z - x) x;
+end;
 
-// symbol <_trans_2 x y z : π (x ≤ y ⇒ y < z ⇒ x < z) ≔
-// begin
-//   assume x y z lxy lyz;
-//   have H : π (0 < (z + ~ y) + (y + ~ x))
-//   { apply <_compat_≤ (z - y) (y - x)
-//      { rewrite left -_same y; refine <_compat_add y z (~ y) _; refine lyz; }
-//      { rewrite left -_same x; refine ≤_compat_add x y (~ x) _; refine lxy; } } ;
-//   generalize H; refine fold_implies _;
-//   rewrite +_assoc; rewrite left +_assoc (~ y) y (~ x);
-//   rewrite .[~ y + y] +_com; rewrite -_same;
-//   rewrite left .[in x < z] simpl_inv_right z x;
-//   refine <_compat_add 0 (z - x) x;
-// end;
+symbol <_trans_2 x y z : π (x ≤ y ⇒ y < z ⇒ x < z) ≔
+begin
+  assume x y z lxy lyz;
+  have H : π (0 < (z + ~ y) + (y + ~ x))
+  { apply <_compat_≤ (z - y) (y - x)
+     { rewrite left -_same y; refine <_compat_add y z (~ y) _; refine lyz; }
+     { rewrite left -_same x; refine ≤_compat_add x y (~ x) _; refine lxy; } } ;
+  generalize H; refine fold_implies _;
+  rewrite +_assoc; rewrite left +_assoc (~ y) y (~ x);
+  rewrite .[~ y + y] +_com; rewrite -_same;
+  rewrite left .[in x < z] simpl_inv_right z x;
+  refine <_compat_add 0 (z - x) x;
+end;
 
 // Multiplication
 
