@@ -12,11 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out library
-        uses: actions/checkout@v2
-        with:
-          ocaml-compiler: 4.14.0
+        uses: actions/checkout@v3
       - name: Install ocaml and opam
         uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: 4.14.0
       - name: Setup opam for testing the development version
         run: opam pin -n --dev-repo lambdapi
         if: matrix.lambdapi-version == 'lambdapi'
