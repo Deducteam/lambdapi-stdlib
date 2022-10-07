@@ -8,12 +8,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ocaml-version: [4.14.0]
         lambdapi-version: [lambdapi.2.0.0, lambdapi.2.1.0, lambdapi.2.2.0, lambdapi.2.2.1, lambdapi]
     runs-on: ubuntu-latest
     steps:
       - name: Check out library
         uses: actions/checkout@v2
+        with:
+          ocaml-compiler: 4.14.0
       - name: Install ocaml and opam
         uses: ocaml/setup-ocaml@v2
       - name: Setup opam for testing the development version
