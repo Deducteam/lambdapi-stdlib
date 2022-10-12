@@ -8,14 +8,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        lambdapi-version: [lambdapi.2.2.1, lambdapi]
+        lambdapi-version: [lambdapi.2.0.0, lambdapi.2.1.0, lambdapi.2.2.0, lambdapi.2.2.1, lambdapi]
     runs-on: ubuntu-latest
     steps:
       - name: Check out library
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install ocaml and opam
         uses: ocaml/setup-ocaml@v2
-      - name: Setup opam for testing the development version
+        with:
+          ocaml-compiler: 4.14.0
+      - name: Setup opam (when testing the development version of lambdapi)
         run: opam pin -n --dev-repo lambdapi
         if: matrix.lambdapi-version == 'lambdapi'
       - name: Install ${{ matrix.lambdapi-version }}
