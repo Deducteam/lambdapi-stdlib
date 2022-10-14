@@ -63,15 +63,15 @@ end;
 
 // boolean equality on lists
 
-symbol =𝕃 [a] : (τ a → τ a → 𝔹) → 𝕃 a → 𝕃 a → 𝔹;
+symbol eql [a] : (τ a → τ a → 𝔹) → 𝕃 a → 𝕃 a → 𝔹;
 
-rule =𝕃 _ □ □ ↪ true
-with =𝕃 _ (_ ⸬ _) □ ↪ false
-with =𝕃 _ □ (_ ⸬ _) ↪ false
-with =𝕃 $beq ($x ⸬ $l) ($y ⸬ $m) ↪ ($beq $x $y) and (=𝕃 $beq $l $m);
+rule eql _ □ □ ↪ true
+with eql _ (_ ⸬ _) □ ↪ false
+with eql _ □ (_ ⸬ _) ↪ false
+with eql $beq ($x ⸬ $l) ($y ⸬ $m) ↪ ($beq $x $y) and (eql $beq $l $m);
 
-opaque symbol =𝕃_correct a beq: π(`∀ x:τ a, `∀ y, istrue(beq x y) ⇒ x = y) →
-  π(`∀ l, `∀ m, istrue(=𝕃 beq l m) ⇒ l = m) ≔
+opaque symbol eql_correct a beq: π(`∀ x:τ a, `∀ y, istrue(beq x y) ⇒ x = y) →
+  π(`∀ l, `∀ m, istrue(eql beq l m) ⇒ l = m) ≔
 begin
   assume a beq beq_correct; induction
   { induction
@@ -84,16 +84,16 @@ begin
       //FIXME: apply feq2 (⸬) fails
       refine feq2 (⸬) _ _
       { apply beq_correct; //FIXME: apply andₑ₁ c fails
-        apply @andₑ₁ (beq x y) (=𝕃 beq l m) c}
+        apply @andₑ₁ (beq x y) (eql beq l m) c}
       { apply h; //FIXME: apply andₑ₂ c fails
-        refine @andₑ₂ (beq x y) (=𝕃 beq l m) c
+        refine @andₑ₂ (beq x y) (eql beq l m) c
       } 
     }
   }
 end;
 
-opaque symbol =𝕃_complete a beq: π(`∀ x:τ a, `∀ y, x = y ⇒ istrue(beq x y)) →
-  π(`∀ l, `∀ m, l = m ⇒ istrue(=𝕃 beq l m)) ≔
+opaque symbol eql_complete a beq: π(`∀ x:τ a, `∀ y, x = y ⇒ istrue(beq x y)) →
+  π(`∀ l, `∀ m, l = m ⇒ istrue(eql beq l m)) ≔
 begin
   simplify; //FIXME: remove
   assume a beq beq_complete; induction
@@ -102,7 +102,7 @@ begin
     { assume j; apply ⸬≠□ j; }
     { assume y m i j; simplify;
       have j': π(x = y ∧ l = m) { apply ⸬_inj j };
-      apply @istrue_and (beq x y) (=𝕃 beq l m) /*FIXME*/; apply ∧ᵢ
+      apply @istrue_and (beq x y) (eql beq l m) /*FIXME*/; apply ∧ᵢ
       { apply beq_complete x y; apply ∧ₑ₁ j' }
       { //FIXME: apply h fails
         refine h m _; apply ∧ₑ₂ j' }
@@ -909,15 +909,15 @@ begin
   refine @orᵢ₂ (∈ beq x (take n l)) (∈ beq x (drop n l)) h;
 end;
 
-//index
+// index
 
 symbol index [a] : (τ a → τ a → 𝔹) → τ a → 𝕃 a → ℕ;
 
 rule index _ _ □ ↪ 0
 with index $beq $x ($y ⸬ $l) ↪ if ($beq $x $y) 0 (s (index $beq $x $l));
 
-assert ⊢ index (=ℕ) 2 (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ □) ≡ 1;
-assert ⊢ index (=ℕ) 26 (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ □) ≡ 4;
+assert ⊢ index eqn 2 (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ □) ≡ 1;
+assert ⊢ index eqn 26 (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ □) ≡ 4;
 
 opaque symbol index_size [a] beq (x:τ a) l :
   π (istrue (index beq x l ≤ size l)) ≔
@@ -946,8 +946,8 @@ symbol has [a] : (τ a → 𝔹) → 𝕃 a → 𝔹;
 rule has _ □ ↪ false
 with has $p ($x ⸬ $l) ↪ if ($p $x) true (has $p $l);
 
-assert ⊢ has (λ x, x + 1 =ℕ 3) (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ □) ≡ true;
-assert ⊢ has (λ x, x + 1 =ℕ 3) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) ≡ false;
+assert ⊢ has (λ x, eqn (x + 1) 3) (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ □) ≡ true;
+assert ⊢ has (λ x, eqn (x + 1) 3) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) ≡ false;
 
 // all
 
@@ -956,8 +956,8 @@ symbol all [a] : (τ a → 𝔹) → 𝕃 a → 𝔹;
 rule all _ □ ↪ true
 with all $p ($x ⸬ $l) ↪ if ($p $x) (all $p $l) false;
 
-assert ⊢ all (λ x, x + 1 =ℕ 3) (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ □) ≡ false;
-assert ⊢ all (λ x, x + 1 =ℕ 3) (2 ⸬ 2 ⸬ 2 ⸬ 2 ⸬ □) ≡ true;
+assert ⊢ all (λ x, eqn (x + 1) 3) (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ □) ≡ false;
+assert ⊢ all (λ x, eqn (x + 1) 3) (2 ⸬ 2 ⸬ 2 ⸬ 2 ⸬ □) ≡ true;
 
 // find
 
@@ -966,8 +966,8 @@ symbol find [a] : (τ a → 𝔹) → 𝕃 a → ℕ;
 rule find _ □ ↪ 0
 with find $p ($x ⸬ $l) ↪ if ($p $x) 0 (s (find $p $l));
 
-assert ⊢ find (λ x, x + 1 =ℕ 3) (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ □) ≡ 1;
-assert ⊢ find (λ x, x + 1 =ℕ 3) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) ≡ 4;
+assert ⊢ find (λ x, eqn (x + 1) 3) (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ □) ≡ 1;
+assert ⊢ find (λ x, eqn (x + 1) 3) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) ≡ 4;
 
 opaque symbol find_size [a] (p:τ a → 𝔹) l :
   π (istrue (find p l ≤ size l)) ≔
@@ -990,8 +990,8 @@ symbol count [a] : (τ a → 𝔹) → 𝕃 a → ℕ;
 rule count _ □ ↪ 0
 with count $p ($x ⸬ $l) ↪ if ($p $x) (s (count $p $l)) (count $p $l);
 
-assert ⊢ count (λ x, x + 1 =ℕ 3) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) ≡ 0;
-assert ⊢ count (λ x, x + 1 =ℕ 3) (2 ⸬ 2 ⸬ 2 ⸬ 2 ⸬ □) ≡ 4;
+assert ⊢ count (λ x, eqn (x + 1) 3) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) ≡ 0;
+assert ⊢ count (λ x, eqn (x + 1) 3) (2 ⸬ 2 ⸬ 2 ⸬ 2 ⸬ □) ≡ 4;
 
 opaque symbol count_size [a] (p:τ a → 𝔹) l : π(istrue (count p l ≤ size l)) ≔
 begin
@@ -1011,8 +1011,8 @@ end;
 
 symbol count_mem [a] (beq : τ a → τ a → 𝔹) e ≔ count (beq e);
 
-assert ⊢ count_mem (=ℕ) 2 (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) ≡ 0;
-assert ⊢ count_mem (=ℕ) 2 (2 ⸬ 2 ⸬ 2 ⸬ 2 ⸬ □) ≡ 4;
+assert ⊢ count_mem eqn 2 (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) ≡ 0;
+assert ⊢ count_mem eqn 2 (2 ⸬ 2 ⸬ 2 ⸬ 2 ⸬ □) ≡ 4;
 
 // is_constant
 
@@ -1021,9 +1021,9 @@ symbol is_constant [a] : (τ a → τ a → 𝔹) → 𝕃 a → 𝔹;
 rule is_constant _ □ ↪ true
 with is_constant $beq ($x ⸬ $l) ↪ if (all ($beq $x) $l) true false;
 
-assert ⊢ is_constant (=ℕ) (2 ⸬ 2 ⸬ 2 ⸬ 2 ⸬ □) ≡ true;
-assert ⊢ is_constant (=ℕ) □ ≡ true;
-assert ⊢ is_constant (=ℕ) (2 ⸬ 2 ⸬ 2 ⸬ 1 ⸬ □) ≡ false;
+assert ⊢ is_constant eqn (2 ⸬ 2 ⸬ 2 ⸬ 2 ⸬ □) ≡ true;
+assert ⊢ is_constant eqn □ ≡ true;
+assert ⊢ is_constant eqn (2 ⸬ 2 ⸬ 2 ⸬ 1 ⸬ □) ≡ false;
 
 // uniq
 
@@ -1032,8 +1032,8 @@ symbol uniq [a] : (τ a → τ a → 𝔹) → 𝕃 a → 𝔹;
 rule uniq _ □ ↪ true
 with uniq $beq ($x ⸬ $l) ↪ if (not (∈ $beq $x $l)) (uniq $beq $l) false;
 
-assert ⊢ uniq (=ℕ) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) ≡ true;
-assert ⊢ uniq (=ℕ) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ false;
+assert ⊢ uniq eqn (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) ≡ true;
+assert ⊢ uniq eqn (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ false;
 
 // subseq
 
@@ -1045,8 +1045,8 @@ with subseq _ (_ ⸬ _) □ ↪ false
 with subseq $beq ($x ⸬ $l1) ($y ⸬ $l2)
      ↪ if ($beq $x $y) (subseq $beq $l1 $l2) false;
 
-assert ⊢ subseq (=ℕ) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ false;
-assert ⊢ subseq (=ℕ) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) ≡ true;
+assert ⊢ subseq eqn (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ false;
+assert ⊢ subseq eqn (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) ≡ true;
 
 // is_prefix
 
@@ -1057,13 +1057,13 @@ with is_prefix _ (_ ⸬ _) □ ↪ false
 with is_prefix $beq ($x ⸬ $l1) ($y ⸬ $l2)
      ↪ if ($beq $x $y) (is_prefix $beq $l1 $l2) false;
 
-assert ⊢ is_prefix (=ℕ) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ true;
+assert ⊢ is_prefix eqn (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ true;
 
 // is_suffix
 
 symbol is_suffix [a] beq l1 l2 ≔ @is_prefix a beq (rev l1) (rev l2);
 
-assert ⊢ is_suffix (=ℕ) (4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ true;
+assert ⊢ is_suffix eqn (4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ true;
 
 // is_infix
 
@@ -1074,7 +1074,7 @@ with is_infix _ (_ ⸬ _) □ ↪ false
 with is_infix $beq ($x ⸬ $l1) ($y ⸬ $l2)
      ↪ if ($beq $x $y) (is_prefix $beq $l1 $l2) (is_infix $beq ($x ⸬ $l1) $l2);
 
-assert ⊢ is_infix (=ℕ) (51 ⸬ 3 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ true;
+assert ⊢ is_infix eqn (51 ⸬ 3 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ true;
 
 // infix_index
 
@@ -1087,16 +1087,16 @@ with infix_index $beq ($x ⸬ $l1) ($y ⸬ $l2) ↪
     (if (is_prefix $beq $l1 $l2) 0 (s (size $l2)))
     (s (infix_index $beq ($x ⸬ $l1) $l2));
 
-assert ⊢ infix_index (=ℕ) (51 ⸬ 3 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ 2;
-assert ⊢ infix_index (=ℕ) (51 ⸬ 4 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ 5;
+assert ⊢ infix_index eqn (51 ⸬ 3 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ 2;
+assert ⊢ infix_index eqn (51 ⸬ 4 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ 5;
 
 // perm_eq
 
 symbol perm_eq [a] beq l1 l2
-  ≔ @all a (λ x, count_mem beq x l1 =ℕ count_mem beq x l2) (l1 ⋅ l2);
+  ≔ @all a (λ x, eqn (count_mem beq x l1) (count_mem beq x l2)) (l1 ⋅ l2);
 
-assert ⊢ perm_eq (=ℕ) (59 ⸬ 58 ⸬ 4 ⸬ 2 ⸬ □) (58 ⸬ 4 ⸬ 2 ⸬ 59 ⸬ □) ≡ true;
-assert ⊢ perm_eq (=ℕ) (59 ⸬ 58 ⸬ 4 ⸬ 2 ⸬ □) (58 ⸬ 4 ⸬ 2 ⸬ 69 ⸬ □) ≡ false;
+assert ⊢ perm_eq eqn (59 ⸬ 58 ⸬ 4 ⸬ 2 ⸬ □) (58 ⸬ 4 ⸬ 2 ⸬ 59 ⸬ □) ≡ true;
+assert ⊢ perm_eq eqn (59 ⸬ 58 ⸬ 4 ⸬ 2 ⸬ □) (58 ⸬ 4 ⸬ 2 ⸬ 69 ⸬ □) ≡ false;
 
 // filter
 
@@ -1105,7 +1105,7 @@ symbol filter [a] : (τ a → 𝔹) → 𝕃 a → 𝕃 a;
 rule filter _ □ ↪ □
 with filter $p ($x ⸬ $l) ↪ if ($p $x) ($x ⸬ (filter $p $l)) (filter $p $l);
 
-assert ⊢ filter (λ x, x + 1 =ℕ 3) (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ 2 ⸬ 68 ⸬ □) ≡ 2 ⸬ 2 ⸬ □;
+assert ⊢ filter (λ x, eqn (x + 1) 3) (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ 2 ⸬ 68 ⸬ □) ≡ 2 ⸬ 2 ⸬ □;
 
 symbol rmfilter [a] : (τ a → 𝔹) → 𝕃 a → 𝕃 a;
 
@@ -1164,7 +1164,7 @@ begin
 end;
 
 opaque symbol eq_find [a] beq p (l1 l2:𝕃 a) :
-  π (istrue (=𝕃 beq l1 l2)) → π (istrue (find p l1 =ℕ find p l2)) ≔
+  π (istrue (eql beq l1 l2)) → π (istrue (eqn (find p l1) (find p l2))) ≔
 begin
 /*  assume a beq p;
   induction
@@ -1174,9 +1174,9 @@ begin
     { simplify; assume i; apply ⊥ₑ i; }
     { assume e2 l2 i; simplify; assume j; 
       type ind_B;
-      apply ind_B (λ b, istrue (if b 0 (s (find p l1)) =ℕ if (p e2) 0 (s (find p l2)))) (p e1) _ _ {
+      apply ind_B (λ b, istrue (if b 0 (s (find p l1)) eqn if (p e2) 0 (s (find p l2)))) (p e1) _ _ {
         assume k; rewrite k; simplify;
-        apply ind_B (λ b:𝔹, istrue (0 =ℕ if b 0 (s (find p l2)))) (p e2) _ _ {
+        apply ind_B (λ b:𝔹, istrue (0 eqn if b 0 (s (find p l2)))) (p e2) _ _ {
           assume m; rewrite m; simplify; apply top;
         } {
           assume m; rewrite m; simplify;
@@ -1185,19 +1185,19 @@ begin
       } {
 
       };
-      /*apply ind_𝔹 (λ b, istrue (if b 0 (s (find p l1)) =ℕ if (p e2) 0 (s (find p l2)))) _ _ (p e1) {
+      /*apply ind_𝔹 (λ b, istrue (if b 0 (s (find p l1)) eqn if (p e2) 0 (s (find p l2)))) _ _ (p e1) {
         simplify; 
-        apply ind_𝔹 (λ b, istrue (0 =ℕ if b 0 (s (find p l2)))) _ _ (p e2) {
+        apply ind_𝔹 (λ b, istrue (0 eqn if b 0 (s (find p l2)))) _ _ (p e2) {
           simplify; apply top;
         } {
           simplify; //rewrite beq e1 e2 = false
         };
       } {
         simplify;
-        apply ind_𝔹 (λ b:𝔹, istrue (s (find p l1) =ℕ if b 0 (s (find p l2)))) _ _ (p e2) {
+        apply ind_𝔹 (λ b:𝔹, istrue (s (find p l1) eqn if b 0 (s (find p l2)))) _ _ (p e2) {
           simplify;
         } {
-          simplify; apply h l2; apply and_el2 (beq e1 e2) (=𝕃 beq l1 l2) j;
+          simplify; apply h l2; apply and_el2 (beq e1 e2) (eql beq l1 l2) j;
         }
       };*/
     }
@@ -1212,7 +1212,7 @@ rule undup _ □ ↪ □
 with undup $beq ($x ⸬ $l)
   ↪ if (∈ $beq $x (undup $beq $l)) (undup $beq $l) ($x ⸬ (undup $beq $l));
 
-assert ⊢ undup (=ℕ) (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ 2 ⸬ 3 ⸬ □) ≡ 42 ⸬ 51 ⸬ 2 ⸬ 3 ⸬ □;
+assert ⊢ undup eqn (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ 2 ⸬ 3 ⸬ □) ≡ 42 ⸬ 51 ⸬ 2 ⸬ 3 ⸬ □;
 
 opaque symbol size_undup [a] beq (l:𝕃 a) :
   π (istrue (size (undup beq l) ≤ size l)) ≔

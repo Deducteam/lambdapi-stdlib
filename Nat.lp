@@ -44,14 +44,14 @@ end;
 
 // boolean equality on ℕ
 
-symbol =ℕ : ℕ → ℕ → 𝔹; notation =ℕ infix 10;
+symbol eqn : ℕ → ℕ → 𝔹;
 
-rule 0 =ℕ 0 ↪ true
-with s $x =ℕ s $y ↪ $x =ℕ $y
-with 0 =ℕ s _ ↪ false
-with s _ =ℕ 0 ↪ false;
+rule eqn 0 0 ↪ true
+with eqn (s $x) (s $y) ↪ eqn $x $y
+with eqn 0 (s _) ↪ false
+with eqn (s _) 0 ↪ false;
 
-opaque symbol =ℕ_correct x y : π(istrue(x =ℕ y)) → π(x = y) ≔
+opaque symbol eqn_correct x y : π(istrue(eqn x y)) → π(x = y) ≔
 begin
   induction
   { induction { reflexivity; } { assume x h i; apply ⊥ₑ i; } }
@@ -61,7 +61,7 @@ begin
   }
 end;
 
-opaque symbol =ℕ_complete x y : π(x = y) → π(istrue(x =ℕ y)) ≔
+opaque symbol eqn_complete x y : π(x = y) → π(istrue(eqn x y)) ≔
 begin
   induction
   { assume y i; rewrite left i; apply top; }
