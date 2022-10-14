@@ -1,10 +1,9 @@
-/* Natural numbers
+/* Library on natural numbers
 
 following https://github.com/math-comp/math-comp/blob/master/mathcomp/ssreflect/ssrnat.v
 
-Some proofs are not finished yet and ended by the keyword abort:
-ltn_neqAle, leq_eqVlt, gtn_max, geq_max, minnE, expn_gt0, ltn_expl.
-*/
+(lemmas with unfinished proofs:
+ltn_neqAle, leq_eqVlt, gtn_max, geq_max, minnE, expn_gt0, ltn_expl). */
 
 require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq
   Blanqui.Lib.Bool;

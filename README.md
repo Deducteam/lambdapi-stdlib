@@ -1,11 +1,17 @@
 [Lambdapi](https://github.com/Deducteam/lambdapi) library on natural numbers and polymorphic lists (in intuitionistic first-order logic)
 =========================================================
 
-- `Set`: type of set codes
-- `Prop`: definition of propositional logic
-- `Eq`: definition of Leibniz equality
-- `FOL`: definition of first-order logic
-- `Bool`: definition of booleans
-- `Nat`: definition and properties of natural numbers
-- `List`: definition and properties of polymorphic lists
-- `NatBool`: some boolean functions on natural numbers
+- `Set`: set codes
+- `Prop`: propositional logic
+- `Eq`: Leibniz equality
+- `FOL`: first-order logic
+- `Bool`: booleans
+- `Nat`: natural numbers
+- `List`: polymorphic lists
+
+The libraries on natural numbers and polymorphic lists follow the
+corresponding Coq SSReflect libraries:
+
+- [ssrnat.v](https://github.com/math-comp/math-comp/blob/master/mathcomp/ssreflect/ssrnat.v)
+
+- [seq.v](https://github.com/math-comp/math-comp/blob/master/mathcomp/ssreflect/seq.v)

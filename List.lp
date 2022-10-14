@@ -1,12 +1,9 @@
-// Polymorphic lists
+/* Library on polymorphic lists
 
-/* Lemmas with incomplete proofs:
- size_take, rotK, rot_inj, eq_find, filter_undup, count_undup
+following https://github.com/math-comp/math-comp/blob/master/mathcomp/ssreflect/seq.v
 
- Lemmas using apply ind_𝔹 or ind_B
- index_size, find_sier, count_size, size_filter, filter_cat, filter_rev, eq_find?, size_undup
- 
- ind_B is an induction principle on booleans demonstrated with ind_ind_𝔹, it allows one to get hypothesis */
+(lemmas with unfinished proofs:
+size_take, rotK, rot_inj, eq_find, filter_undup, count_undup). */
 
 require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq
   Blanqui.Lib.Nat Blanqui.Lib.Bool;

@@ -1,4 +1,4 @@
-// Booleans
+/* Library on booleans. */
 
 require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq;
 
