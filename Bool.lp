@@ -9,6 +9,21 @@ inductive 𝔹 : TYPE ≔
 constant symbol bool : Set;
 rule τ bool ↪ 𝔹;
 
+// induction principle with equalities
+
+opaque symbol case_𝔹 b : π (b = true ∨ b = false) ≔
+begin
+  induction
+  { apply ∨ᵢ₁; reflexivity; }
+  { apply ∨ᵢ₂; reflexivity; }
+end;
+
+opaque symbol ind_𝔹_eq p b:
+ (π(b = true) → π(p b)) → (π(b = false) → π(p b)) → π(p b) ≔
+begin
+  assume p b t f; refine ∨ₑ (case_𝔹 b) t f;
+end;
+
 // non confusion of constructors
 
 symbol istrue : 𝔹 → Prop;
@@ -19,6 +34,11 @@ with istrue false ↪ ⊥;
 opaque symbol false≠true : π (false ≠ true) ≔
 begin
   assume h; refine ind_eq h istrue top
+end;
+
+opaque symbol true≠false : π (true ≠ false) ≔
+begin
+  assume h; apply false≠true; symmetry; apply h
 end;
 
 // not
@@ -139,18 +159,3 @@ symbol if : 𝔹 → Π [a], τ a → τ a → τ a;
 
 rule if true  $x _ ↪ $x
 with if false _ $y ↪ $y;
-
-// induction principle with equalities
-
-opaque symbol case_𝔹 b : π (b = true ∨ b = false) ≔
-begin
-  induction
-  { apply ∨ᵢ₁; reflexivity; }
-  { apply ∨ᵢ₂; reflexivity; }
-end;
-
-opaque symbol ind_𝔹_eq p b:
- (π(b = true) → π(p b)) → (π(b = false) → π(p b)) → π(p b) ≔
-begin
-  assume p b t f; refine ∨ₑ (case_𝔹 b) t f;
-end;

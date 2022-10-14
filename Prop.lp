@@ -22,6 +22,16 @@ constant symbol ⊥ : Prop;
 
 constant symbol ⊥ₑ [p] : π ⊥ → π p;
 
+// implication
+
+constant symbol ⇒ : Prop → Prop → Prop; notation ⇒ infix right 5; // =>
+
+rule π ($p ⇒ $q) ↪ π $p → π $q;
+
+// negation
+
+symbol ¬ p ≔ p ⇒ ⊥;
+
 // conjunction
 
 constant symbol ∧ : Prop → Prop → Prop; notation ∧ infix left 7; // \wedge
@@ -40,16 +50,6 @@ symbol ∨ₑ [p q r] : π (p ∨ q) → (π p → π r) → (π q → π r) →
 
 // check that priorities are correctly set
 assert x y z ⊢ x ∨ y ∧ z ≡ x ∨ (y ∧ z);
-
-// implication
-
-constant symbol ⇒ : Prop → Prop → Prop; notation ⇒ infix right 5; // =>
-
-rule π ($p ⇒ $q) ↪ π $p → π $q;
-
-// negation
-
-symbol ¬ p ≔ p ⇒ ⊥;
 
 // equivalence
 
