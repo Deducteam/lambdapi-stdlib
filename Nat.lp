@@ -1354,12 +1354,6 @@ end;
 
 opaque symbol minnE m n : π (min m n = m - (m - n)) ≔
 begin
-  induction
-  { reflexivity; }
-  { assume m h; induction
-    { reflexivity; }
-    { assume n i; simplify; rewrite h; }
-  }
 abort;
 
 opaque symbol minnn x : π (min x x = x) ≔
@@ -1639,24 +1633,10 @@ end;
 opaque symbol expn_gt0 m n :
   π ((istrue (0 < m ^ n)) ⇔ istrue (0 < m) ∨ (n = 0)) ≔
 begin
-  assume m n; apply ∧ᵢ {
-    generalize n; induction
-    { assume h; apply ∨ᵢ₂ (eq_refl 0); }
-    { assume n h i;
-      have t: π (istrue (0 < m ^ n)) { };
-    }
-  } {
-  };
 abort;
 
 opaque symbol ltn_expl m n : π (istrue (1 < m)) → π (istrue (n < m ^ n)) ≔
 begin
-  assume m; induction
-  { assume h; apply top; }
-  { assume n h i; 
-    have t: π (istrue (n < (m ^ n))) { apply h i; };
-    rewrite expnS; 
-  }
 abort;
 
 // factorial

@@ -669,11 +669,6 @@ end;
 opaque symbol size_take [a] n (l:𝕃 a) :
   π (size (take n l) = if (n < size l) n (size l)) ≔
 begin
-  assume a n l;
-  refine ind_𝔹_eq (λ b, size (take n l) = if b n (size l)) (n < size l) _ _ {
-    assume h; rewrite h; simplify;
-  } {
-  };
 abort;
 
 opaque symbol size_take_min [a] n (l:𝕃 a) :
@@ -847,9 +842,6 @@ abort;
 opaque symbol rot_inj [a] n (l1 l2:𝕃 a) :
   π (rot n l1 = rot n l2) → π (l1 = l2) ≔
 begin
-  assume a; induction
-  { assume l1 l2 h; rewrite left rot0 l1; rewrite left rot0 l2; apply h; }
-  { assume n h l1 l2 i; apply h l1 l2; }
 abort;
 
 // membership
@@ -1166,42 +1158,6 @@ end;
 opaque symbol eq_find [a] beq p (l1 l2:𝕃 a) :
   π (istrue (eql beq l1 l2)) → π (istrue (eqn (find p l1) (find p l2))) ≔
 begin
-/*  assume a beq p;
-  induction
-  { simplify; assume l2 h; apply ⊥ₑ h; }
-  { assume e1 l1 h;
-    induction
-    { simplify; assume i; apply ⊥ₑ i; }
-    { assume e2 l2 i; simplify; assume j; 
-      type ind_B;
-      apply ind_B (λ b, istrue (if b 0 (s (find p l1)) eqn if (p e2) 0 (s (find p l2)))) (p e1) _ _ {
-        assume k; rewrite k; simplify;
-        apply ind_B (λ b:𝔹, istrue (0 eqn if b 0 (s (find p l2)))) (p e2) _ _ {
-          assume m; rewrite m; simplify; apply top;
-        } {
-          assume m; rewrite m; simplify;
-
-        }
-      } {
-
-      };
-      /*apply ind_𝔹 (λ b, istrue (if b 0 (s (find p l1)) eqn if (p e2) 0 (s (find p l2)))) _ _ (p e1) {
-        simplify; 
-        apply ind_𝔹 (λ b, istrue (0 eqn if b 0 (s (find p l2)))) _ _ (p e2) {
-          simplify; apply top;
-        } {
-          simplify; //rewrite beq e1 e2 = false
-        };
-      } {
-        simplify;
-        apply ind_𝔹 (λ b:𝔹, istrue (s (find p l1) eqn if b 0 (s (find p l2)))) _ _ (p e2) {
-          simplify;
-        } {
-          simplify; apply h l2; apply and_el2 (beq e1 e2) (eql beq l1 l2) j;
-        }
-      };*/
-    }
-  }*/
 abort;
 
 // undup
@@ -1246,14 +1202,11 @@ end;
 opaque symbol filter_undup [a] beq p (l:𝕃 a) :
   π (filter p (undup beq l) = undup beq (filter p l)) ≔
 begin
-  assume a beq p;
 abort;
 
 opaque symbol count_undup [a] beq p (l:𝕃 a) :
   π (istrue (count p (undup beq l) ≤ count p l)) ≔
 begin
-  assume a beq p l; rewrite left size_filter p l;
-  rewrite left size_filter p (undup beq l);
 abort;
 
 // map
