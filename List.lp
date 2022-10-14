@@ -9,7 +9,7 @@
  ind_B is an induction principle on booleans demonstrated with ind_ind_𝔹, it allows one to get hypothesis */
 
 require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq
-  Blanqui.Lib.Nat Blanqui.Lib.Bool Blanqui.Lib.Pair;
+  Blanqui.Lib.Nat Blanqui.Lib.Bool;
 
 (a:Set) inductive 𝕃:TYPE ≔
 | □ : 𝕃 a // \Box
