@@ -4,55 +4,70 @@ constant symbol Prop : TYPE;
 
 builtin "Prop" ≔ Prop;
 
-// Interpretation of propositions in TYPE
+// interpretation of propositions in TYPE
 
 injective symbol π : Prop → TYPE;
 
 builtin "P" ≔ π;
 
-// True
+// true
 
 constant symbol ⊤ : Prop;
 
 constant symbol top : π ⊤;
 
-// False
+// false
 
 constant symbol ⊥ : Prop;
 
-constant symbol ⊥ₑ p : π ⊥ → π p;
+constant symbol ⊥ₑ [p] : π ⊥ → π p;
 
-// Conjunction
+// implication
 
-constant symbol ∧ : Prop → Prop → Prop; // \wedge
+constant symbol ⇒ : Prop → Prop → Prop; notation ⇒ infix right 5; // =>
 
-notation ∧ infix left 7;
+rule π ($p ⇒ $q) ↪ π $p → π $q;
 
-constant symbol ∧ᵢ p q : π p → π q → π (p ∧ q);
-symbol ∧ₑ₁ p q : π (p ∧ q) → π p;
-symbol ∧ₑ₂ p q : π (p ∧ q) → π q;
+// negation
 
-// Disjunction
+symbol ¬ p ≔ p ⇒ ⊥;
 
-constant symbol ∨ : Prop → Prop → Prop; // \vee
+// conjunction
 
-notation ∨ infix left 6;
+constant symbol ∧ : Prop → Prop → Prop; notation ∧ infix left 7; // \wedge
 
-constant symbol ∨ᵢ₁ p q : π p → π (p ∨ q);
-constant symbol ∨ᵢ₂ p q : π q → π (p ∨ q);
-symbol ∨ₑ p q r : π (p ∨ q) → (π p → π r) → (π q → π r) → π r;
+constant symbol ∧ᵢ [p q] : π p → π q → π (p ∧ q);
+symbol ∧ₑ₁ [p q] : π (p ∧ q) → π p;
+symbol ∧ₑ₂ [p q] : π (p ∧ q) → π q;
+
+// disjunction
+
+constant symbol ∨ : Prop → Prop → Prop; notation ∨ infix left 6; // \vee
+
+constant symbol ∨ᵢ₁ [p q] : π p → π (p ∨ q);
+constant symbol ∨ᵢ₂ [p q] : π q → π (p ∨ q);
+symbol ∨ₑ [p q r] : π (p ∨ q) → (π p → π r) → (π q → π r) → π r;
 
 // check that priorities are correctly set
 assert x y z ⊢ x ∨ y ∧ z ≡ x ∨ (y ∧ z);
 
-// Implication
+// equivalence
 
-constant symbol ⇒ : Prop → Prop → Prop; // =>
+symbol ⇔ p q ≔ (p ⇒ q) ∧ (q ⇒ p); notation ⇔ infix right 5;
 
-notation ⇒ infix right 5;
+opaque symbol ⇔_refl [p] : π (p ⇔ p) ≔
+begin
+  assume p; apply ∧ᵢ { assume h; apply h } { assume h; apply h }
+end;
 
-rule π ($p ⇒ $q) ↪ π $p → π $q;
+opaque symbol ⇔_sym [p q] : π (p ⇔ q) → π (q ⇔ p) ≔
+begin
+  assume p q h; apply ∧ᵢ { apply ∧ₑ₂ h } { apply ∧ₑ₁ h };
+end;
 
-// Negation
-
-symbol ¬ p ≔ p ⇒ ⊥;
+opaque symbol ⇔_trans p q r : π (p ⇔ q) → π (q ⇔ r) → π (p ⇔ r) ≔
+begin
+  assume p q r epq eqr; apply ∧ᵢ
+    { assume hp; apply ∧ₑ₁ eqr _; apply ∧ₑ₁ epq hp }
+    { assume hr; apply ∧ₑ₂ epq _; apply ∧ₑ₂ eqr hr }
+end;
