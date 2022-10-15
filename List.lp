@@ -2,6 +2,8 @@
 
 following https://github.com/math-comp/math-comp/blob/master/mathcomp/ssreflect/seq.v
 
+by Quentin Buzet (July 2022)
+
 (lemmas with unfinished proofs:
 size_take, rotK, rot_inj, eq_find, filter_undup, count_undup). */
 
