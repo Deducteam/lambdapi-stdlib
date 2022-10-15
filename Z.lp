@@ -1,6 +1,9 @@
-// Binary integers
+/* Binary integers
 
-require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq Blanqui.Lib.Pos;
+by Quentin Garchery (May 2021). */
+
+require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq
+  Blanqui.Lib.Pos;
 
 inductive ℤ : TYPE ≔ // \BbbZ
 | Z0 : ℤ
@@ -39,21 +42,21 @@ symbol discr_Zpos_Z0 p : π (Zpos p ≠ Z0) ≔
 begin
   assume p H;
   have f : π (is_Zpos Z0) { rewrite left H; refine top; } ;
-  refine ⊥ₑ _ f;
+  refine ⊥ₑ f;
 end;
 
 symbol discr_Zneg_Z0 p : π (Zneg p ≠ Z0) ≔
 begin
   assume p H;
   have f : π (is_Zneg Z0) { rewrite left H; refine top } ;
-  refine ⊥ₑ _ f;
+  refine ⊥ₑ f;
 end;
 
 symbol discr_Zpos_Zneg p q : π (Zpos p ≠ Zneg q) ≔
 begin
   assume p q H;
   have f : π (is_Zpos (Zneg q)) { rewrite left H; refine top } ;
-  refine ⊥ₑ _ f;
+  refine ⊥ₑ f;
 end;
 
 // Unary opposite
@@ -543,11 +546,11 @@ end;
 symbol ≤_compat_add x y a : π (x ≤ y ⇒ x + a ≤ y + a) ≔
 begin
   assume x y a; simplify;
-  assume H; refine fold_implies _; rewrite ≐_sub;
-  simplify; refine fold_implies _; rewrite +_assoc;
+  assume H; refine fold_⇒ _; rewrite ≐_sub;
+  simplify; refine fold_⇒ _; rewrite +_assoc;
   rewrite .[y + a] +_com; rewrite distr_~_+;
   rewrite left +_assoc a (~ a) (~ y); rewrite -_same;
-  rewrite left +_assoc x 0 (~ y); simplify; refine fold_implies _;
+  rewrite left +_assoc x 0 (~ y); simplify; refine fold_⇒ _;
   rewrite left ≐_sub x y; refine H;
 end;
 
@@ -614,7 +617,7 @@ begin
    { refine ≤_compat_≤ (z - y) (y - x) _ _
       { rewrite left -_same y; refine ≤_compat_add y z (~ y) _; refine lyz; }
       { rewrite left -_same x; refine ≤_compat_add x y (~ x) _; refine lxy; } } ;
-   generalize H; refine fold_implies _;
+   generalize H; refine fold_⇒ _;
    rewrite +_assoc; rewrite left +_assoc (~ y) y (~ x);
    rewrite .[~ y + y] +_com; rewrite -_same;
    refine (λ p : π ((0 ≤ (z + ~ x)) ⇒ (x ≤ z)), p) _;
@@ -629,7 +632,7 @@ begin
    { rewrite +_com; apply <_compat_≤ (y - x) (z - y)
       { rewrite left -_same x; refine <_compat_add x y (~ x) _; refine lxy; }
       { rewrite left -_same y; refine ≤_compat_add y z (~ y) _; refine lyz; } } ;
-  generalize H; refine fold_implies _;
+  generalize H; refine fold_⇒ _;
   rewrite +_assoc; rewrite left +_assoc (~ y) y (~ x);
   rewrite .[~ y + y] +_com; rewrite -_same;
   rewrite left .[in x < z] simpl_inv_right z x;
@@ -643,7 +646,7 @@ begin
   { apply <_compat_≤ (z - y) (y - x)
      { rewrite left -_same y; refine <_compat_add y z (~ y) _; refine lyz; }
      { rewrite left -_same x; refine ≤_compat_add x y (~ x) _; refine lxy; } } ;
-  generalize H; refine fold_implies _;
+  generalize H; refine fold_⇒ _;
   rewrite +_assoc; rewrite left +_assoc (~ y) y (~ x);
   rewrite .[~ y + y] +_com; rewrite -_same;
   rewrite left .[in x < z] simpl_inv_right z x;

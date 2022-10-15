@@ -1,4 +1,6 @@
-// Comparison datatype
+/* Comparison datatype
+
+By Quentin Garchery (May 2021). */
 
 require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq;
 
@@ -40,7 +42,7 @@ begin
   assume H;
   have f : π (is_Eq Lt)
   { rewrite H; refine top; } ;
-  refine ⊥ₑ _ f;
+  refine ⊥ₑ f;
 end;
 
 symbol discr_Gt_Eq : π (Gt ≠ Eq) ≔
@@ -48,7 +50,7 @@ begin
   assume H;
   have f : π (is_Eq Gt)
   { rewrite H; refine top; } ;
-  refine ⊥ₑ _ f;
+  refine ⊥ₑ f;
 end;
 
 symbol discr_Gt_Lt : π (Gt ≠ Lt) ≔
@@ -56,7 +58,7 @@ begin
   assume H;
   have f : π (is_Lt Gt)
   { rewrite H; refine top; } ;
-  refine ⊥ₑ _ f;
+  refine ⊥ₑ f;
 end;
 
 // Reverse a comparison

@@ -1,6 +1,9 @@
-// Positive binary integers
+/* Positive binary integers
 
-require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.CoC Blanqui.Lib.Eq Blanqui.Lib.Comp;
+by Quentin Garchery (May 2021). */
+
+require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.CoC
+  Blanqui.Lib.Eq Blanqui.Lib.Comp;
 
 inductive positive : TYPE ≔
 | xI : positive → positive
@@ -40,7 +43,7 @@ begin
   assume p H;
   have f : π (is_xI xH)
   { rewrite left H; refine top; } ;
-  refine ⊥ₑ _ f;
+  refine ⊥ₑ f;
 end;
 
 symbol discr_xO_xH p : π (xO p ≠ xH) ≔
@@ -48,7 +51,7 @@ begin
   assume p H;
   have f : π (is_xO xH)
   { rewrite left H; refine top; } ;
-  refine ⊥ₑ _ f;
+  refine ⊥ₑ f;
 end;
 
 symbol discr_xI_xO p q : π (xI p ≠ xO q) ≔
@@ -56,7 +59,7 @@ begin
   assume p q H;
   have f : π (is_xI (xO q))
   { rewrite left H; refine top; } ;
-  refine ⊥ₑ _ f;
+  refine ⊥ₑ f;
 end;
 
 // Successor function
