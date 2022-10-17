@@ -11,6 +11,8 @@ It provides the following modules:
 - Bool: booleans
 - Nat: natural numbers
 - List: polymorphic lists
+- Comp: comparison result data type
+- Pos: binary positive numbers
 - Z: integers
 """
 maintainer: ["frederic.blanqui@inria.fr"]
