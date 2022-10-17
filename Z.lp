@@ -3,12 +3,12 @@
 by Quentin Garchery (May 2021). */
 
 require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq
-  Blanqui.Lib.Pos;
+  Blanqui.Lib.Pos Blanqui.Lib.Bool;
 
 inductive ℤ : TYPE ≔ // \BbbZ
 | Z0 : ℤ
-| Zpos : positive → ℤ
-| Zneg : positive → ℤ;
+| Zpos : ℙ → ℤ
+| Zneg : ℙ → ℤ;
 
 // set code for ℤ
 
@@ -16,47 +16,41 @@ constant symbol int : Set;
 
 rule τ int ↪ ℤ;
 
-// Injections in Prop
+// boolean functions for testing constructors
 
-symbol is_Z0 : ℤ → Prop;
+symbol isZ0 : ℤ → 𝔹;
 
-rule is_Z0 Z0       ↪ ⊤
-with is_Z0 (Zpos _) ↪ ⊥
-with is_Z0 (Zneg _) ↪ ⊥;
+rule isZ0 Z0       ↪ true
+with isZ0 (Zpos _) ↪ false
+with isZ0 (Zneg _) ↪ false;
 
-symbol is_Zpos : ℤ → Prop;
+symbol isZpos : ℤ → 𝔹;
 
-rule is_Zpos Z0       ↪ ⊥
-with is_Zpos (Zpos _) ↪ ⊤
-with is_Zpos (Zneg _) ↪ ⊥;
+rule isZpos Z0       ↪ false
+with isZpos (Zpos _) ↪ true
+with isZpos (Zneg _) ↪ false;
 
-symbol is_Zneg : ℤ → Prop;
+symbol isZneg : ℤ → 𝔹;
 
-rule is_Zneg Z0       ↪ ⊥
-with is_Zneg (Zpos _) ↪ ⊥
-with is_Zneg (Zneg _) ↪ ⊤;
+rule isZneg Z0       ↪ false
+with isZneg (Zpos _) ↪ false
+with isZneg (Zneg _) ↪ true;
 
 // Discriminate constructors
 
-symbol discr_Zpos_Z0 p : π (Zpos p ≠ Z0) ≔
+symbol Zpos≠Z0 p : π (Zpos p ≠ Z0) ≔
 begin
-  assume p H;
-  have f : π (is_Zpos Z0) { rewrite left H; refine top; } ;
-  refine ⊥ₑ f;
+  assume n h; refine ind_eq h (λ n, istrue(isZ0 n)) top
 end;
 
-symbol discr_Zneg_Z0 p : π (Zneg p ≠ Z0) ≔
+symbol Zneg≠Z0 p : π (Zneg p ≠ Z0) ≔
 begin
-  assume p H;
-  have f : π (is_Zneg Z0) { rewrite left H; refine top } ;
-  refine ⊥ₑ f;
+  assume n h; refine ind_eq h (λ n, istrue(isZ0 n)) top
 end;
 
-symbol discr_Zpos_Zneg p q : π (Zpos p ≠ Zneg q) ≔
+symbol Zpos≠Zneg p q : π (Zpos p ≠ Zneg q) ≔
 begin
-  assume p q H;
-  have f : π (is_Zpos (Zneg q)) { rewrite left H; refine top } ;
-  refine ⊥ₑ f;
+  assume x y h; refine ind_eq h (λ n, istrue(isZneg n)) top
 end;
 
 // Unary opposite
@@ -78,20 +72,20 @@ end;
 symbol double : ℤ → ℤ;
 
 rule double Z0 ↪ Z0
-with double (Zpos $p) ↪ Zpos (xO $p)
-with double (Zneg $p) ↪ Zneg (xO $p);
+with double (Zpos $p) ↪ Zpos (O $p)
+with double (Zneg $p) ↪ Zneg (O $p);
 
 symbol succ_double : ℤ → ℤ;
 
-rule succ_double Z0 ↪ Zpos xH
-with succ_double (Zpos $p) ↪ Zpos (xI $p)
+rule succ_double Z0 ↪ Zpos H
+with succ_double (Zpos $p) ↪ Zpos (I $p)
 with succ_double (Zneg $p) ↪ Zneg (pos_pred_double $p);
 
 symbol pred_double : ℤ → ℤ;
 
-rule pred_double Z0 ↪ Zneg xH
+rule pred_double Z0 ↪ Zneg H
 with pred_double (Zpos $p) ↪ Zpos (pos_pred_double $p)
-with pred_double (Zneg $p) ↪ Zneg (xI $p);
+with pred_double (Zneg $p) ↪ Zneg (I $p);
 
 // Interaction of opp and doubling functions
 
@@ -110,19 +104,19 @@ begin
   induction { reflexivity; } { reflexivity; } { reflexivity; }
 end;
 
-// Binary negation on positive
+// Binary negation on ℙ
 
-symbol sub : positive → positive → ℤ;
+symbol sub : ℙ → ℙ → ℤ;
 
-rule sub (xI $p) (xI $q) ↪ double (sub $p $q)
-with sub (xI $p) (xO $q) ↪ succ_double (sub $p $q)
-with sub (xI $p) xH      ↪ Zpos (xO $p)
-with sub (xO $p) (xI $q) ↪ pred_double (sub $p $q)
-with sub (xO $p) (xO $q) ↪ double (sub $p $q)
-with sub (xO $p) xH      ↪ Zpos (pos_pred_double $p)
-with sub xH      (xI $q) ↪ Zneg (xO $q)
-with sub xH      (xO $q) ↪ Zneg (pos_pred_double $q)
-with sub xH       xH     ↪ Z0;
+rule sub (I $p) (I $q) ↪ double (sub $p $q)
+with sub (I $p) (O $q) ↪ succ_double (sub $p $q)
+with sub (I $p) H      ↪ Zpos (O $p)
+with sub (O $p) (I $q) ↪ pred_double (sub $p $q)
+with sub (O $p) (O $q) ↪ double (sub $p $q)
+with sub (O $p) H      ↪ Zpos (pos_pred_double $p)
+with sub H      (I $q) ↪ Zneg (O $q)
+with sub H      (O $q) ↪ Zneg (pos_pred_double $q)
+with sub H       H     ↪ Z0;
 
 symbol sub_same z : π (sub z z = Z0) ≔
 begin
@@ -135,19 +129,19 @@ end;
 symbol sub_opp x y : π (~ sub x y = sub y x) ≔
 begin
   induction
-  // case xI
+  // case I
   { assume x xrec;
     induction
      { assume y _; simplify; rewrite left xrec y; rewrite double_opp; reflexivity; }
      { assume y _; simplify; rewrite left xrec y; rewrite pred_double_opp; reflexivity; }
      { reflexivity; } }
-  // case xO
+  // case O
   { assume x xrec;
     induction
      { assume y _; simplify; rewrite left xrec y; rewrite succ_double_opp; reflexivity; }
      { assume y _; simplify; rewrite left xrec y; rewrite double_opp; reflexivity; }
      { reflexivity; } }
-  // case xH
+  // case H
   { induction { reflexivity; } { reflexivity; } { reflexivity; } }
 end;
 
@@ -163,7 +157,7 @@ with Zpos $x + Zneg $y ↪ sub $x $y
 with Zneg $x + Zpos $y ↪ sub $y $x
 with Zneg $x + Zneg $y ↪ Zneg (add $x $y);
 
-symbol +1 x ≔ x + Zpos xH;
+symbol +1 x ≔ x + Zpos H;
 
 builtin "0" ≔ Z0;
 builtin "+1" ≔ +1;
@@ -259,20 +253,20 @@ end;
 symbol sub_succ x y : π (sub (succ x) y = sub x y + 1) ≔
 begin
   induction
-  // case xI
+  // case I
   { assume x xrec;
     induction
       { assume y _; simplify; rewrite xrec; rewrite pred_double_succ;
         rewrite succ_double_carac; reflexivity; }
       { assume y _; simplify; rewrite xrec; rewrite double_succ; reflexivity; }
       { simplify; rewrite pos_pred_double_succ; reflexivity; } }
-  // case xO
+  // case O
   { assume x xrec;
     induction
       { assume y _; simplify; rewrite left succ_pred_double; reflexivity; }
       { assume y _; simplify; rewrite succ_double_carac; reflexivity; }
       { simplify; rewrite succ_pos_pred_double; reflexivity; } }
-  // case xH
+  // case H
   { induction
      { induction { reflexivity; } { reflexivity; } { reflexivity; } }
      { induction { reflexivity; } { reflexivity; } { reflexivity; } }
@@ -290,8 +284,8 @@ end;
 symbol sub_add_Zpos a b c : π (sub a b + Zpos c = sub (add a c) b) ≔
 begin
   assume a b c;
-  refine ind_positive_peano (λ c, sub a b + Zpos c = sub (add a c) b) _ _ c
-  // case xH
+  refine ind_ℙeano (λ c, sub a b + Zpos c = sub (add a c) b) _ _ c
+  // case H
   { simplify; rewrite sub_succ; reflexivity; }
   // case succ
   { assume r rrec; rewrite add_Zpos_succ; rewrite rrec;
@@ -357,8 +351,7 @@ end;
 
 require open Blanqui.Lib.Comp;
 
-symbol ≐ : ℤ → ℤ → comparison; // \doteq
-notation ≐ infix 12;
+symbol ≐ : ℤ → ℤ → Comp; notation ≐ infix 12; // \doteq
 
 rule Z0      ≐ Z0      ↪ Eq
 with Z0      ≐ Zpos _  ↪ Lt
@@ -378,25 +371,25 @@ begin
   // case Z0
   { induction
       { reflexivity; }
-      { assume y H; apply ⊥ₑ; refine discr_Lt_Eq H; }
-      { assume y H; apply ⊥ₑ; refine discr_Gt_Eq H; } }
+      { assume y H; apply ⊥ₑ; refine Lt≠Eq H; }
+      { assume y H; apply ⊥ₑ; refine Gt≠Eq H; } }
   // case Zpos
   { assume x;
     induction
-     { assume H; apply ⊥ₑ; refine discr_Gt_Eq H; }
+     { assume H; apply ⊥ₑ; refine Gt≠Eq H; }
      { assume y H; rewrite compare_decides x y H; reflexivity; }
-     { assume y H; apply ⊥ₑ; refine discr_Gt_Eq H; } }
+     { assume y H; apply ⊥ₑ; refine Gt≠Eq H; } }
   // case Zneg
   { assume x;
     induction
-     { assume H; apply ⊥ₑ; refine discr_Lt_Eq H; }
-     { assume y H; apply ⊥ₑ; refine discr_Lt_Eq H; }
+     { assume H; apply ⊥ₑ; refine Lt≠Eq H; }
+     { assume y H; apply ⊥ₑ; refine Lt≠Eq H; }
      { assume y H; rewrite compare_decides y x H; reflexivity; } }
 end;
 
 // Commutative properties of ≐
 
-symbol ≐_com x y : π (x ≐ y = revcomp (y ≐ x)) ≔
+symbol ≐_com x y : π (x ≐ y = opp (y ≐ x)) ≔
 begin
   induction
   // case Z0
@@ -415,7 +408,7 @@ begin
      { assume y; simplify; rewrite compare_acc_com; reflexivity; } }
 end;
 
-symbol ≐_opp x y : π (~ x ≐ ~ y = revcomp (x ≐ y)) ≔
+symbol ≐_opp x y : π (~ x ≐ ~ y = opp (x ≐ y)) ≔
 begin
   induction
   // case Z0
@@ -456,13 +449,13 @@ begin
 end;
 
 symbol ≐_pred_double x :
-  π (pred_double x ≐ 0 = comparison_case (x ≐ 0) Lt Lt Gt) ≔
+  π (pred_double x ≐ 0 = case_Comp (x ≐ 0) Lt Lt Gt) ≔
 begin
   induction { reflexivity; } { reflexivity; } { reflexivity; }
 end;
 
 symbol ≐_succ_double x :
-  π (succ_double x ≐ 0 = comparison_case (x ≐ 0) Gt Lt Gt) ≔
+  π (succ_double x ≐ 0 = case_Comp (x ≐ 0) Gt Lt Gt) ≔
 begin
   induction { reflexivity; } { reflexivity; } { reflexivity; }
 end;
@@ -470,21 +463,21 @@ end;
 symbol ≐_pos_sub x y : π ((sub x y ≐ 0) = compare x y) ≔
 begin
   induction
-  // case xI
+  // case I
   { assume x xrec;
     induction
      { assume y _; simplify; rewrite ≐_double; refine xrec y; }
      { assume y _; simplify; rewrite ≐_succ_double; rewrite xrec;
        rewrite compare_Gt; reflexivity; }
      { reflexivity; } }
-  // case xO
+  // case O
   { assume x xrec;
     induction
      { assume y _; simplify; rewrite ≐_pred_double; rewrite xrec;
         rewrite compare_Lt; reflexivity; }
      { assume y _; simplify; rewrite ≐_double; refine xrec y; }
      { reflexivity; } }
-  // case xH
+  // case H
   { induction { reflexivity; } { reflexivity; } { reflexivity; } }
 end;
 
@@ -520,10 +513,10 @@ end;
 
 // Directional comparison operators
 
-symbol ≤ x y ≔ ¬ (is_Gt (x ≐ y));
+symbol ≤ x y ≔ ¬ (istrue(isGt (x ≐ y)));
 notation ≤ infix 10;
 
-symbol < x y ≔ is_Lt (x ≐ y);
+symbol < x y ≔ istrue(isLt (x ≐ y));
 notation < infix 10;
 
 symbol ≥ x y ≔ ¬ (x < y);
@@ -535,7 +528,7 @@ notation > infix 10;
 symbol <_≤ x y : π (x < y ⇒ x ≤ y) ≔
 begin
   assume x y;
-  refine ind_comparison (λ u, is_Lt u ⇒ is_Gt u ⇒ ⊥) _ _ _ (x ≐ y)
+  refine ind_Comp (λ u, istrue(isLt u) ⇒ istrue(isGt u) ⇒ ⊥) _ _ _ (x ≐ y)
    { refine (λ x _, x); }
    { refine (λ _ y, y); }
    { refine (λ x _, x); }
@@ -599,9 +592,9 @@ end;
 symbol ≤_antisym x y : π (x ≤ y ⇒ y ≤ x ⇒ x = y) ≔
 begin
   assume x y;
-  have e : π (¬ (is_Gt (x ≐ y)) ⇒ ¬ (is_Gt (y ≐ x)) ⇒ x = y)
+  have e : π (¬ (istrue(isGt (x ≐ y))) ⇒ ¬ (istrue(isGt (y ≐ x))) ⇒ x = y)
   { rewrite ≐_com; } ;
-  refine ind_comparison (λ c, (y ≐ x) = c ⇒ ¬ (is_Gt (revcomp c)) ⇒ ¬ (is_Gt c) ⇒ x = y) _ _ _ (y ≐ x) _
+  refine ind_Comp (λ c, (y ≐ x) = c ⇒ ¬ (istrue(isGt (opp c))) ⇒ ¬ (istrue(isGt c)) ⇒ x = y) _ _ _ (y ≐ x) _
    { assume H _ _; symmetry; refine ≐_decides y x H; }
    { assume _ f _; apply ⊥ₑ; refine f top; }
    { assume _ _ f; apply ⊥ₑ; refine f top; }

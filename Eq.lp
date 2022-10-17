@@ -25,3 +25,8 @@ opaque symbol feq2 [a b c] (f:τ a → τ b → τ c):
 begin
   assume a b c f x x' xx' y y' yy'; rewrite xx'; rewrite yy'; reflexivity
 end;
+
+opaque symbol eq_sym [a] [x y:τ a] : π(x = y) → π(y = x) ≔
+begin
+  assume a x y h; symmetry; apply h
+end;

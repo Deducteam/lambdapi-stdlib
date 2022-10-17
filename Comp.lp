@@ -2,82 +2,74 @@
 
 By Quentin Garchery (May 2021). */
 
-require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq;
+require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq
+  Blanqui.Lib.Bool;
 
-inductive comparison : TYPE ≔
-| Eq : comparison
-| Lt : comparison
-| Gt : comparison;
+inductive Comp : TYPE ≔
+| Eq : Comp
+| Lt : Comp
+| Gt : Comp;
 
-// set code for comparison
+// set code for Comp
 
 constant symbol comp : Set;
 
-rule τ comp ↪ comparison;
+rule τ comp ↪ Comp;
 
-// Injections in Prop
+// Boolean functions for testing head constructor
 
-symbol is_Eq : comparison → Prop;
+symbol isEq : Comp → 𝔹;
 
-rule is_Eq Eq ↪ ⊤
-with is_Eq Lt ↪ ⊥
-with is_Eq Gt ↪ ⊥;
+rule isEq Eq ↪ true
+with isEq Lt ↪ false
+with isEq Gt ↪ false;
 
-symbol is_Lt : comparison → Prop;
+symbol isLt : Comp → 𝔹;
 
-rule is_Lt Eq ↪ ⊥
-with is_Lt Lt ↪ ⊤
-with is_Lt Gt ↪ ⊥;
+rule isLt Eq ↪ false
+with isLt Lt ↪ true
+with isLt Gt ↪ false;
 
-symbol is_Gt : comparison → Prop;
+symbol isGt : Comp → 𝔹;
 
-rule is_Gt Eq ↪ ⊥
-with is_Gt Lt ↪ ⊥
-with is_Gt Gt ↪ ⊤;
+rule isGt Eq ↪ false
+with isGt Lt ↪ false
+with isGt Gt ↪ true;
 
 // Discriminate constructors
 
-symbol discr_Lt_Eq : π (Lt ≠ Eq) ≔
+symbol Lt≠Eq : π (Lt ≠ Eq) ≔
 begin
-  assume H;
-  have f : π (is_Eq Lt)
-  { rewrite H; refine top; } ;
-  refine ⊥ₑ f;
+  assume h; refine ind_eq h (λ n, istrue(isEq n)) top
 end;
 
-symbol discr_Gt_Eq : π (Gt ≠ Eq) ≔
+symbol Gt≠Eq : π (Gt ≠ Eq) ≔
 begin
-  assume H;
-  have f : π (is_Eq Gt)
-  { rewrite H; refine top; } ;
-  refine ⊥ₑ f;
+  assume h; refine ind_eq h (λ n, istrue(isEq n)) top
 end;
 
-symbol discr_Gt_Lt : π (Gt ≠ Lt) ≔
+symbol Gt≠Lt : π (Gt ≠ Lt) ≔
 begin
-  assume H;
-  have f : π (is_Lt Gt)
-  { rewrite H; refine top; } ;
-  refine ⊥ₑ f;
+  assume h; refine ind_eq h (λ n, istrue(isLt n)) top
 end;
 
-// Reverse a comparison
+// Opposite of a Comp
 
-symbol revcomp : comparison → comparison;
+symbol opp : Comp → Comp;
 
-rule revcomp Eq ↪ Eq
-with revcomp Lt ↪ Gt
-with revcomp Gt ↪ Lt;
+rule opp Eq ↪ Eq
+with opp Lt ↪ Gt
+with opp Gt ↪ Lt;
 
-symbol revcomp_idem c : π (revcomp (revcomp c) = c) ≔
+symbol opp_idem c : π (opp (opp c) = c) ≔
 begin
   induction { reflexivity; } { reflexivity; } { reflexivity; }
 end;
 
 // Conditional
 
-symbol comparison_case [A] : comparison → τ A → τ A → τ A → τ A;
+symbol case_Comp [A] : Comp → τ A → τ A → τ A → τ A;
 
-rule comparison_case Eq $fEq _ _ ↪ $fEq
-with comparison_case Lt _ $fLt _ ↪ $fLt
-with comparison_case Gt _ _ $fGt ↪ $fGt;
+rule case_Comp Eq $x _ _ ↪ $x
+with case_Comp Lt _ $x _ ↪ $x
+with case_Comp Gt _ _ $x ↪ $x;

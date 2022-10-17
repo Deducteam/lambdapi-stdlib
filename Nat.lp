@@ -27,9 +27,14 @@ constant symbol nat : Set;
 
 rule τ nat ↪ ℕ;
 
-symbol is0 : ℕ → 𝔹;
+opaque symbol ≠SS [x y] : π (s x ≠ s y) → π (x ≠ y) ≔
+begin
+  assume x y h i; apply h; rewrite i; reflexivity 
+end;
 
 // non confusion of constructors
+
+symbol is0 : ℕ → 𝔹;
 
 rule is0 0 ↪ true
 with is0 (s _) ↪ false;
@@ -42,6 +47,13 @@ end;
 opaque symbol 0≠s [n] : π (0 ≠ s n) ≔
 begin
   assume n h; apply @s≠0 n; symmetry; apply h
+end;
+
+opaque symbol casen n : π(n = 0 ∨ n ≠ 0) ≔
+begin
+  induction
+  { apply ∨ᵢ₁; reflexivity }
+  { assume n h; apply ∨ᵢ₂; refine s≠0 }
 end;
 
 // boolean equality on ℕ
@@ -224,6 +236,34 @@ end;
 opaque symbol eqn_add2r p m n : π ((m + p = n + p) ⇔ (m = n)) ≔
 begin
   assume p m n; rewrite addnC m p; rewrite addnC n p; apply eqn_add2l p m n;
+end;
+
+opaque symbol 2*=0 n : π(n + n = 0) → π(n = 0) ≔
+begin
+  assume n h; apply ∧ₑ₁ (∧ₑ₁ (addn_eq0 n n) h)
+end;
+
+opaque symbol 2*_inj x y : π(x + x = y + y) → π(x = y) ≔
+begin
+  induction
+  { assume y h; symmetry; apply 2*=0; symmetry; apply h }
+  { assume x h; induction
+    { assume i; apply ⊥ₑ (s≠0 i) }
+    { assume y i j; apply feq s; apply h; apply s_inj; apply s_inj; apply j }
+}
+end;
+
+opaque symbol odd≠even p q : π(s (p + p) ≠ q + q) ≔
+begin
+  induction
+  { induction
+    { refine s≠0 }
+    { assume x h; simplify; assume i; apply 0≠s (s_inj i) }
+  }
+  { assume x h; induction
+    { refine s≠0 }
+    { assume y i j; apply h y; apply s_inj; apply s_inj; apply j }
+  }
 end;
 
 // substraction
