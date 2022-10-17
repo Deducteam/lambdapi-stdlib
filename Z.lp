@@ -16,7 +16,7 @@ constant symbol int : Set;
 
 rule τ int ↪ ℤ;
 
-// boolean functions for testing constructors
+// boolean functions for testing head constructor
 
 symbol isZ0 : ℤ → 𝔹;
 

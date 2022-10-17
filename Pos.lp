@@ -16,7 +16,7 @@ constant symbol pos : Set;
 
 rule τ pos ↪ ℙ;
 
-// boolean functions for testing constructors
+// boolean functions for testing head constructor
 
 symbol isI : ℙ → 𝔹;
 

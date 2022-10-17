@@ -1,22 +1,103 @@
 /* Library on natural numbers
 
-following https://github.com/math-comp/math-comp/blob/master/mathcomp/ssreflect/ssrnat.v
-
 by Quentin Buzet (July 2022)
 
-(lemmas with unfinished proofs:
-ltn_neqAle, leq_eqVlt, gtn_max, geq_max, minnE, expn_gt0, ltn_expl). */
+following https://github.com/math-comp/math-comp/blob/master/mathcomp/ssreflect/ssrnat.v
+
+Documentation of ssrnat.v
+-------------------------
+
+The following operations and notations are provided: 
+
+successor and predecessor
+     s n and pred n
+
+basic arithmetic
+  m + n, m - n, m * n
+Important: m - n denotes TRUNCATED subtraction: m - n = 0 if m <= n.
+
+exponentiation, factorial
+     m ^ n, n !
+     m ^ 1 is convertible to m, and m ^ 2 to m * m
+
+comparison
+   m <= n, m < n, m >= n, m > n, m == n, m <= n <= p, etc.,
+comparisons are BOOLEAN operators.
+  Most compatibility lemmas are stated as boolean equalities; this keeps
+the size of the library down. All the inequalities refer to the same
+constant "leq"; in particular m < n is identical to m.+1 <= n.
+
+maximum and minimum
+   maxn m n, minn m n
+Note that maxn m n = m + (n - m), due to the truncating subtraction.
+
+Not available
+-------------
+
+doubling, halving, and parity
+   n.*2, n./2, odd n, uphalf n,  with uphalf n = n.+1./2
+bool coerces to nat so we can write, e.g., n = odd n + n./2.*2.
+
+iteration
+          iter n f x0  == f ( .. (f x0))
+          iteri n g x0 == g n.-1 (g ... (g 0 x0))
+      iterop n op x x0 == op x (... op x x) (n x's) or x0 if n = 0
+
+conditionally strict inequality `leqif'
+   m <= n ?= iff condition   ==   (m <= n) and ((m == n) = condition)
+This is actually a pair of boolean equalities, so rewriting with an
+`leqif' lemma can affect several kinds of comparison. The transitivity
+lemma for leqif aggregates the conditions, allowing for arguments of
+the form ``m <= n <= p <= m, so equality holds throughout''.
+
+countable choice
+  ex_minn : forall P : pred nat, (exists n, P n) -> nat
+This returns the smallest n such that P n holds.
+  ex_maxn : forall (P : pred nat) m,
+     (exists n, P n) -> (forall n, P n -> n <= m) -> nat
+This returns the largest n such that P n holds (given an explicit upper
+bound).
+
+Naming convention
+-----------------
+
+This file adds the following suffix conventions to those documented in
+ssrbool.v and eqtype.v:
+A (infix) -- conjunction, as in
+   ltn_neqAle : (m < n) = (m != n) && (m <= n).
+B -- subtraction, as in subBn : (m - n) - p = m - (n + p).
+D -- addition, as in mulnDl : (m + n) * p = m * p + n * p.
+M -- multiplication, as in expnMn : (m * n) ^ p = m ^ p * n ^ p.
+p (prefix) -- positive, as in
+   eqn_pmul2l : m > 0 -> (m * n1 == m * n2) = (n1 == n2).
+P  -- greater than 1, as in
+   ltn_Pmull : 1 < n -> 0 < m -> m < n * m.
+S -- successor, as in addSn : n +1 + m = (n + m) +1.
+V (infix) -- disjunction, as in
+   leq_eqVlt : (m <= n) = (m == n) || (m < n).
+X - exponentiation, as in lognX : logn p (m ^ n) = logn p m * n in
+      file prime.v (the suffix is not used in this file).
+Suffixes that abbreviate operations (D, B, M and X) are used to abbreviate
+second-rank operations in equational lemma names that describe left-hand
+sides (e.g., mulnDl); they are not used to abbreviate the main operation
+of relational lemmas (e.g., leq_add2l).
+For the asymmetrical exponentiation operator expn (m ^ n) a right suffix
+indicates an operation on the exponent, e.g., expnM : m ^ (n1 * n2) = ...;
+a trailing "n" is used to indicate the left operand, e.g.,
+expnMn : (m1 * m2) ^ n = ... The operands of other operators are selected
+using the l/r suffixes.
+*/
 
 require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq
   Blanqui.Lib.Bool;
 
 inductive ℕ : TYPE ≔
-| zero : ℕ
+| 0 : ℕ
 | s : ℕ → ℕ;
 
 // enable decimal notation
 
-builtin "0"  ≔ zero;
+builtin "0"  ≔ 0;
 builtin "+1" ≔ s;
 
 assert ⊢ 42 : ℕ;
@@ -26,11 +107,6 @@ assert ⊢ 42 : ℕ;
 constant symbol nat : Set;
 
 rule τ nat ↪ ℕ;
-
-opaque symbol ≠SS [x y] : π (s x ≠ s y) → π (x ≠ y) ≔
-begin
-  assume x y h i; apply h; rewrite i; reflexivity 
-end;
 
 // non confusion of constructors
 

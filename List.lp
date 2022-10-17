@@ -1,11 +1,198 @@
 /* Library on polymorphic lists
 
-following https://github.com/math-comp/math-comp/blob/master/mathcomp/ssreflect/seq.v
-
 by Quentin Buzet (July 2022)
 
-(lemmas with unfinished proofs:
-size_take, rotK, rot_inj, eq_find, filter_undup, count_undup). */
+following https://github.com/math-comp/math-comp/blob/master/mathcomp/ssreflect/seq.v
+
+seq.v documentation
+-------------------
+
+The library provides many operations. The operations are geared towards
+reflection: they generally expect and provide boolean predicates.
+  As there is no true subtyping, we don't use a type for non-empty
+sequences; rather, we pass explicitly the head and tail of the sequence.
+  The empty sequence is especially bothersome for subscripting, since it
+forces us to pass a default value. This default value can often be hidden
+by a notation.
+  Here is the list of seq operations:
+ ** Constructors:
+                       seq T == the type of sequences of items of type T.
+                      bitseq == seq bool.
+                           □ == the empty sequence (of type T).
+                       x ⸬ s == the sequence x followed by s (of type T).
+                   rcons s x == the sequence s, followed by x.
+All of the above, except rcons, can be used in patterns.
+ ** Factories:
+            nseq n x == a sequence of n x's.
+         ncons n x s == a sequence of n x's, followed by s.
+seqn n x_0 ... x_n-1 == the sequence of the x_i; can be partially applied.
+            iota m n == the sequence m, m + 1, ..., m + n - 1.
+           mkseq f n == the sequence f 0, f 1, ..., f (n - 1).
+ ** Sequential access:
+     head x0 s == the head (zero'th item) of s if s is non-empty, else x0.
+      behead s == s minus its head, i.e., s' if s = x :: s', else [::].
+      last x s == the last element of x :: s (which is non-empty).
+    belast x s == x :: s minus its last item.
+ ** Dimensions:
+        size s == the number of items (length) in s.
+ ** Random access:
+        nth x0 s i == the item i of s (numbered from 0), or x0 if s does
+                      not have at least i+1 items (i.e., size x <= i)
+              s`_i == standard notation for nth x0 s i for a default x0,
+                      e.g., 0 for rings.
+  set_nth x0 s i y == s where item i has been changed to y; if s does not
+                      have an item i, it is first padded with copies of x0
+                      to size i+1.
+      incr_nth s i == the nat sequence s with item i incremented (s is
+                      first padded with 0's to size i+1, if needed).
+ ** Predicates:
+         nilp s <=> s is [::].
+                := (size s == 0).
+          x ∈ s == x appears in s (this requires an eqType for T).
+      index x s == the first index at which x appears in s, or size s if
+                   x \notin s.
+        has a s <=> a holds for some item in s, where a is an applicative
+                    bool predicate.
+        all a s <=> a holds for all items in s.
+     all2 r s t <=> the (bool) relation r holds for all _respective_ items
+                   in s and t, which must also have the same size, i.e.,
+                   for s := [:: x1; ...; x_m] and t := [:: y1; ...; y_n],
+                   the condition [&& r x_1 y_1, ..., r x_n y_n & m == n].
+       find p s == the index of the first item in s for which p holds,
+                   or size s if no such item is found.
+      count p s == the number of items of s for which p holds.
+  count_mem x s == the multiplicity of x in s, i.e., count (pred1 x) s.
+     constant s <=> all items in s are identical (trivial if s = [::]).
+         uniq s <=> all the items in s are pairwise different.
+   subseq s1 s2 <=> s1 is a subsequence of s2, i.e., s1 = mask m s2 for
+                   some m : bitseq (see below).
+    infix s1 s2 <=> s1 is a contiguous subsequence of s2, i.e.,
+                      s ++ s1 ++ s' = s2 for some sequences s, s'.
+   prefix s1 s2 <=> s1 is a subchain of s2 appearing at the beginning
+                      of s2.
+   suffix s1 s2 <=> s1 is a subchain of s2 appearing at the end of s2.
+infix_index s1 s2 <=> the first index at which s1 appears in s2,
+                      or (size s2).+1 if infix s1 s2 is false.
+  perm_eq s1 s2 <=> s2 is a permutation of s1, i.e., s1 and s2 have the
+                   items (with the same repetitions), but possibly in a
+                   different order.
+ ** Filtering:
+          filter p s == the subsequence of s consisting of all the items
+                        for which the (boolean) predicate p holds.
+             rem x s == the subsequence of s, where the first occurrence
+                        of x has been removed (compare filter (predC1 x) s
+                        where ALL occurrences of x are removed).
+             undup s == the subsequence of s containing only the first
+                        occurrence of each item in s, i.e., s with all
+                        duplicates removed.
+            mask m s == the subsequence of s selected by m : bitseq, with
+                        item i of s selected by bit i in m (extra items or
+                        bits are ignored.
+ ** Surgery:
+            s1 ⋅ s2 == the concatenation of s1 and s2.
+           take n s == the sequence containing only the first n items of s
+                       (or all of s if size s <= n).
+           drop n s == s minus its first n items ([::] if size s <= n)
+            rot n s == s rotated left n times (or s if size s <= n).
+                    := drop n s ++ take n s
+           rotr n s == s rotated right n times (or s if size s <= n).
+              rev s == the (linear time) reversal of s.
+ ** Iterators: for s == [:: x_1, ..., x_n], t == [:: y_1, ..., y_m],
+       map f s == the sequence [:: f x_1, ..., f x_n].
+      zip s t == itemwise pairing of s and t (dropping any extra items).
+              := [:: (x_1, y_1); ...; (x_mn, y_mn)] with mn = minn n m.
+     unzip1 s == [:: (x_1).1; ...; (x_n).1] when s : seq (S * T).
+     unzip2 s == [:: (x_1).2; ...; (x_n).2] when s : seq (S * T).
+
+Not available
+-------------
+
+       ohead s == None if s is empty, else Some x when the head of s is x.
+      shape ss == the sequence of sizes of the items of the sequence of
+                  sequences ss.
+        'has_aP <-> the view reflect (exists2 x, x \in s & A x) (has a s),
+                    where aP x : reflect (A x) (a x).
+        'all_aP <=> the view for reflect {in s, forall x, A x} (all a s).
+        tally s == a tally of s, i.e., a sequence of (item, multiplicity)
+                   pairs for all items in sequence s (without duplicates).
+incr_tally bs x == increment the multiplicity of x in the tally bs, or add
+                   x with multiplicity 1 at then end if x is not in bs.
+bs \is a wf_tally <=> bs is well-formed tally, with no duplicate items or
+                   null multiplicities.
+   tally_seq bs == the expansion of a tally bs into a sequence where each
+                   (x, n) pair expands into a sequence of n x's.
+ perm_eql s1 s2 <-> s1 and s2 behave identically on the left of perm_eq.
+ perm_eqr s1 s2 <-> s1 and s2 behave identically on the right of perm_eq.
+--> These left/right transitive versions of perm_eq make it easier to
+ chain a sequence of equivalences.
+  permutations s == a duplicate-free list of all permutations of s.
+       catrev s1 s2 == the reversal of s1 followed by s2 (this is the
+                       recursive form of rev).
+
+ ** Dependent iterator: for s : seq S and t : S -> seq T
+[seq E | x <- s, y <- t] := flatten [seq [seq E | x <- t] | y <- s]
+               == the sequence of all the f x y, with x and y drawn from
+                  s and t, respectively, in row-major order,
+                  and where t is possibly dependent in elements of s
+allpairs_dep f s t := self expanding definition for
+                      [seq f x y | x <- s, y <- t y]
+ ** Iterators: for s == [:: x_1, ..., x_n], t == [:: y_1, ..., y_m],
+allpairs f s t := same as allpairs_dep but where t is non dependent,
+                   i.e. self expanding definition for
+                     [seq f x y | x <- s, y <- t]
+              := [:: f x_1 y_1; ...; f x_1 y_m; f x_2 y_1; ...; f x_n y_m]
+allrel r xs ys := all [pred x | all (r x) ys] xs
+               <=> r x y holds whenever x is in xs and y is in ys
+  all2rel r xs := allrel r xs xs
+               <=> the proposition r x y holds for all possible x, y in xs.
+ pairwise r xs <=> the relation r holds for any i-th and j-th element of
+                   xs such that i < j.
+     pmap pf s == the sequence [:: y_i1, ..., y_ik] where i1 < ... < ik,
+                  pf x_i = Some y_i, and pf x_j = None iff j is not in
+                  {i1, ..., ik}.
+  foldr f a s == the right fold of s by f (i.e., the natural iterator).
+              := f x_1 (f x_2 ... (f x_n a))
+       sumn s == x_1 + (x_2 + ... + (x_n + 0)) (when s : seq nat).
+  foldl f a s == the left fold of s by f.
+              := f (f ... (f a x_1) ... x_n-1) x_n
+  scanl f a s == the sequence of partial accumulators of foldl f a s.
+              := [:: f a x_1; ...; foldl f a s]
+pairmap f a s == the sequence of f applied to consecutive items in a :: s.
+              := [:: f a x_1; f x_1 x_2; ...; f x_n-1 x_n]
+    flatten s == x_1 ++ ... ++ x_n ++ [::] when s : seq (seq T).
+  reshape r s == s reshaped into a sequence of sequences whose sizes are
+                 given by r (truncating if s is too long or too short).
+              := [:: [:: x_1; ...; x_r1];
+                     [:: x_(r1 + 1); ...; x_(r0 + r1)];
+                     ...;
+                     [:: x_(r1 + ... + r(k-1) + 1); ...; x_(r0 + ... rk)]]
+flatten_index sh r c == the index, in flatten ss, of the item of indexes
+                 (r, c) in any sequence of sequences ss of shape sh
+              := sh_1 + sh_2 + ... + sh_r + c
+reshape_index sh i == the index, in reshape sh s, of the sequence
+                 containing the i-th item of s.
+reshape_offset sh i == the offset, in the (reshape_index sh i)-th
+                 sequence of reshape sh s of the i-th item of s
+ ** Notation for manifest comprehensions:
+        [seq x <- s | C] := filter (fun x => C) s.
+        [seq E | x <- s] := map (fun x => E) s.
+  [seq x <- s | C1 & C2] := [seq x <- s | C1 && C2].
+    [seq E | x <- s & C] := [seq E | x <- [seq x | C]].
+ --> The above allow optional type casts on the eigenvariables, as in
+ [seq x : T <- s | C] or [seq E | x : T <- s, y : U <- t]. The cast may be
+ needed as type inference considers E or C before s.
+  We are quite systematic in providing lemmas to rewrite any composition
+of two operations. "rev", whose simplifications are not natural, is
+protected with nosimpl.
+ ** The following are equivalent:
+ [<-> P0; P1; ..; Pn] <-> P0, P1, ..., Pn are all equivalent.
+                      := P0 -> P1 -> ... -> Pn -> P0
+ if T : [<-> P0; P1; ..; Pn]  is such an equivalence, and i, j are in nat
+ then T i j is a proof of the equivalence Pi <-> Pj between Pi and Pj;
+ when i (resp. j) is out of bounds, Pi (resp. Pj) defaults to P0.
+ The tactic tfae splits the goal into n+1 implications to prove.
+ An example of use can be found in fingraph theorem orbitPcycle.
+*/
 
 require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq
   Blanqui.Lib.Nat Blanqui.Lib.Bool;
@@ -377,9 +564,9 @@ assert ⊢ set_nth 42 (3 ⸬ 2 ⸬ 1 ⸬ □) 5 6 ≡ 3 ⸬ 2 ⸬ 1 ⸬ 42 ⸬ 4
 symbol incr_nth : 𝕃 nat → τ nat → 𝕃 nat;
 
 rule incr_nth □ 0 ↪ 1 ⸬ □
-with incr_nth □ (s $i) ↪ 0 ⸬ (incr_nth □ $i)
-with incr_nth ($n ⸬ $l) 0 ↪ (s $n) ⸬ $l
-with incr_nth ($n ⸬ $l) (s $i) ↪ $n ⸬ (incr_nth $l $i);
+with incr_nth □ (s $i) ↪ 0 ⸬ incr_nth □ $i
+with incr_nth ($n ⸬ $l) 0 ↪ s $n ⸬ $l
+with incr_nth ($n ⸬ $l) (s $i) ↪ $n ⸬ incr_nth $l $i;
 
 assert ⊢ incr_nth (3 ⸬ 2 ⸬ 1 ⸬ □) 1 ≡ 3 ⸬ 3 ⸬ 1 ⸬ □;
 assert ⊢ incr_nth (3 ⸬ 2 ⸬ 1 ⸬ □) 2 ≡ 3 ⸬ 2 ⸬ 2 ⸬ □;
