@@ -315,7 +315,7 @@ end;
 
 symbol nilp [a] l ≔ is0 (@size a l);
 
-opaque symbol size_behead [a] (l:𝕃 a) : π (size (behead l) = p (size l)) ≔
+opaque symbol size_behead [a] (l:𝕃 a) : π (size (behead l) = size l -1) ≔
 begin
   assume a; induction
   { reflexivity; }

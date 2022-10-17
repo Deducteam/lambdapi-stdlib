@@ -10,7 +10,7 @@ Documentation of ssrnat.v
 The following operations and notations are provided: 
 
 successor and predecessor
-     s n and pred n
+     s n and n -1
 
 basic arithmetic
   m + n, m - n, m * n
@@ -163,14 +163,14 @@ abort;
 
 // predecessor
 
-symbol p : ℕ → ℕ;
+symbol -1 : ℕ → ℕ; notation -1 postfix 100;
 
-rule p 0 ↪ 0
-with p (s $x) ↪ $x;
+rule 0 -1 ↪ 0
+with (s $x) -1 ↪ $x;
 
 opaque symbol s_inj [x y] : π (s x = s y) → π (x = y) ≔
 begin
-  assume x y h; apply feq p h
+  assume x y h; apply feq (-1) h
 end;
 
 // addition
@@ -374,14 +374,14 @@ begin
   reflexivity;
 end;
 
-opaque symbol subn1 n : π (n - 1 = p n) ≔
+opaque symbol subn1 n : π (n - 1 = n -1) ≔
 begin
   induction
   { reflexivity; }
   { assume n h; reflexivity;  }
 end;
 
-opaque symbol subnS x y : π (x - s y = p (x - y)) ≔
+opaque symbol subnS x y : π (x - s y = (x - y) -1) ≔
 begin
   induction
   { reflexivity; }
@@ -398,7 +398,7 @@ begin
   { assume n h; simplify; apply h; }
 end;
 
-opaque symbol predn_sub x y : π (p (x - y) = p x - y) ≔
+opaque symbol predn_sub x y : π ((x - y) -1 = x -1 - y) ≔
 begin
   induction
   { reflexivity; }
@@ -465,7 +465,7 @@ begin
   reflexivity;
 end;
 
-opaque symbol subSKn m n : π (p (s m - n) = m - n) ≔
+opaque symbol subSKn m n : π ((s m - n) -1 = m - n) ≔
 begin
   assume m n; rewrite left subnS; reflexivity;
 end;
@@ -747,7 +747,7 @@ begin
   { assume n h; simplify; apply h; }
 end;
 
-opaque symbol leq_pred n : π (istrue (p n ≤ n)) ≔
+opaque symbol leq_pred n : π (istrue (n -1 ≤ n)) ≔
 begin
   induction
   { apply top;}
@@ -1212,14 +1212,14 @@ opaque symbol geq_max m n1 n2 :
 begin
 abort;
 
-opaque symbol ltn_predK m n : π (istrue (m < n)) → π (s (p n) = n) ≔
+opaque symbol ltn_predK m n : π (istrue (m < n)) → π (s (n -1) = n) ≔
 begin
   assume m; induction
   { assume h; refine ⊥ₑ h; }
   { assume n h i; reflexivity; }
 end;
 
-opaque symbol prednK n : π (istrue (0 < n)) → π (s (p n) = n) ≔
+opaque symbol prednK n : π (istrue (0 < n)) → π (s (n -1) = n) ≔
 begin
   refine ltn_predK 0; 
 end;
@@ -1227,8 +1227,8 @@ end;
 opaque symbol leq_pmull m n : π (istrue (n > 0)) → π (istrue (m ≤ n * m)) ≔
 begin
   assume m n h; 
-  have t: π (s (p n) = n) { apply prednK n h; };
-  rewrite left t; simplify; apply leq_addr (p n * m) m; 
+  have t: π (s (n -1) = n) { apply prednK n h; };
+  rewrite left t; simplify; apply leq_addr ((n -1) * m) m; 
 end;
 
 opaque symbol leq_pmulr m n : π (istrue (n > 0)) → π (istrue (m ≤ m * n)) ≔
