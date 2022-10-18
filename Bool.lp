@@ -2,11 +2,12 @@
 
 require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq;
 
-inductive 𝔹 : TYPE ≔
+inductive 𝔹 : TYPE ≔ // `dB or \BbbB
 | true : 𝔹
 | false : 𝔹;
 
 constant symbol bool : Set;
+
 rule τ bool ↪ 𝔹;
 
 // induction principle with equalities
@@ -159,3 +160,4 @@ symbol if : 𝔹 → Π [a], τ a → τ a → τ a;
 
 rule if true  $x _ ↪ $x
 with if false _ $y ↪ $y;
+

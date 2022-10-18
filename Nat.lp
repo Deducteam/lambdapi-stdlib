@@ -1,20 +1,103 @@
 /* Library on natural numbers
 
+by Quentin Buzet (July 2022)
+
 following https://github.com/math-comp/math-comp/blob/master/mathcomp/ssreflect/ssrnat.v
 
-(lemmas with unfinished proofs:
-ltn_neqAle, leq_eqVlt, gtn_max, geq_max, minnE, expn_gt0, ltn_expl). */
+Documentation of ssrnat.v
+-------------------------
+
+The following operations and notations are provided: 
+
+successor and predecessor
+     s n and n -1
+
+basic arithmetic
+  m + n, m - n, m * n
+Important: m - n denotes TRUNCATED subtraction: m - n = 0 if m <= n.
+
+exponentiation, factorial
+     m ^ n, n !
+     m ^ 1 is convertible to m, and m ^ 2 to m * m
+
+comparison
+   m <= n, m < n, m >= n, m > n, m == n, m <= n <= p, etc.,
+comparisons are BOOLEAN operators.
+  Most compatibility lemmas are stated as boolean equalities; this keeps
+the size of the library down. All the inequalities refer to the same
+constant "leq"; in particular m < n is identical to m.+1 <= n.
+
+maximum and minimum
+   maxn m n, minn m n
+Note that maxn m n = m + (n - m), due to the truncating subtraction.
+
+Not available
+-------------
+
+doubling, halving, and parity
+   n.*2, n./2, odd n, uphalf n,  with uphalf n = n.+1./2
+bool coerces to nat so we can write, e.g., n = odd n + n./2.*2.
+
+iteration
+          iter n f x0  == f ( .. (f x0))
+          iteri n g x0 == g n.-1 (g ... (g 0 x0))
+      iterop n op x x0 == op x (... op x x) (n x's) or x0 if n = 0
+
+conditionally strict inequality `leqif'
+   m <= n ?= iff condition   ==   (m <= n) and ((m == n) = condition)
+This is actually a pair of boolean equalities, so rewriting with an
+`leqif' lemma can affect several kinds of comparison. The transitivity
+lemma for leqif aggregates the conditions, allowing for arguments of
+the form ``m <= n <= p <= m, so equality holds throughout''.
+
+countable choice
+  ex_minn : forall P : pred nat, (exists n, P n) -> nat
+This returns the smallest n such that P n holds.
+  ex_maxn : forall (P : pred nat) m,
+     (exists n, P n) -> (forall n, P n -> n <= m) -> nat
+This returns the largest n such that P n holds (given an explicit upper
+bound).
+
+Naming convention
+-----------------
+
+This file adds the following suffix conventions to those documented in
+ssrbool.v and eqtype.v:
+A (infix) -- conjunction, as in
+   ltn_neqAle : (m < n) = (m != n) && (m <= n).
+B -- subtraction, as in subBn : (m - n) - p = m - (n + p).
+D -- addition, as in mulnDl : (m + n) * p = m * p + n * p.
+M -- multiplication, as in expnMn : (m * n) ^ p = m ^ p * n ^ p.
+p (prefix) -- positive, as in
+   eqn_pmul2l : m > 0 -> (m * n1 == m * n2) = (n1 == n2).
+P  -- greater than 1, as in
+   ltn_Pmull : 1 < n -> 0 < m -> m < n * m.
+S -- successor, as in addSn : n +1 + m = (n + m) +1.
+V (infix) -- disjunction, as in
+   leq_eqVlt : (m <= n) = (m == n) || (m < n).
+X - exponentiation, as in lognX : logn p (m ^ n) = logn p m * n in
+      file prime.v (the suffix is not used in this file).
+Suffixes that abbreviate operations (D, B, M and X) are used to abbreviate
+second-rank operations in equational lemma names that describe left-hand
+sides (e.g., mulnDl); they are not used to abbreviate the main operation
+of relational lemmas (e.g., leq_add2l).
+For the asymmetrical exponentiation operator expn (m ^ n) a right suffix
+indicates an operation on the exponent, e.g., expnM : m ^ (n1 * n2) = ...;
+a trailing "n" is used to indicate the left operand, e.g.,
+expnMn : (m1 * m2) ^ n = ... The operands of other operators are selected
+using the l/r suffixes.
+*/
 
 require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq
   Blanqui.Lib.Bool;
 
 inductive ℕ : TYPE ≔
-| zero : ℕ
+| 0 : ℕ
 | s : ℕ → ℕ;
 
 // enable decimal notation
 
-builtin "0"  ≔ zero;
+builtin "0"  ≔ 0;
 builtin "+1" ≔ s;
 
 assert ⊢ 42 : ℕ;
@@ -25,9 +108,9 @@ constant symbol nat : Set;
 
 rule τ nat ↪ ℕ;
 
-symbol is0 : ℕ → 𝔹;
-
 // non confusion of constructors
+
+symbol is0 : ℕ → 𝔹;
 
 rule is0 0 ↪ true
 with is0 (s _) ↪ false;
@@ -40,6 +123,13 @@ end;
 opaque symbol 0≠s [n] : π (0 ≠ s n) ≔
 begin
   assume n h; apply @s≠0 n; symmetry; apply h
+end;
+
+opaque symbol casen n : π(n = 0 ∨ n ≠ 0) ≔
+begin
+  induction
+  { apply ∨ᵢ₁; reflexivity }
+  { assume n h; apply ∨ᵢ₂; refine s≠0 }
 end;
 
 // boolean equality on ℕ
@@ -73,21 +163,19 @@ abort;
 
 // predecessor
 
-symbol p : ℕ → ℕ;
+symbol -1 : ℕ → ℕ; notation -1 postfix 100;
 
-rule p 0 ↪ 0
-with p (s $x) ↪ $x;
+rule 0 -1 ↪ 0
+with (s $x) -1 ↪ $x;
 
 opaque symbol s_inj [x y] : π (s x = s y) → π (x = y) ≔
 begin
-  assume x y h; apply feq p h
+  assume x y h; apply feq (-1) h
 end;
 
 // addition
 
 symbol + : ℕ → ℕ → ℕ; notation + infix left 20;
-
-assert x y z ⊢ x + y + z ≡ (x + y) + z;
 
 rule 0 + $y ↪ $y
 with s $x + $y ↪ s ($x + $y);
@@ -226,6 +314,34 @@ begin
   assume p m n; rewrite addnC m p; rewrite addnC n p; apply eqn_add2l p m n;
 end;
 
+opaque symbol 2*=0 n : π(n + n = 0) → π(n = 0) ≔
+begin
+  assume n h; apply ∧ₑ₁ (∧ₑ₁ (addn_eq0 n n) h)
+end;
+
+opaque symbol 2*_inj x y : π(x + x = y + y) → π(x = y) ≔
+begin
+  induction
+  { assume y h; symmetry; apply 2*=0; symmetry; apply h }
+  { assume x h; induction
+    { assume i; apply ⊥ₑ (s≠0 i) }
+    { assume y i j; apply feq s; apply h; apply s_inj; apply s_inj; apply j }
+}
+end;
+
+opaque symbol odd≠even p q : π(s (p + p) ≠ q + q) ≔
+begin
+  induction
+  { induction
+    { refine s≠0 }
+    { assume x h; simplify; assume i; apply 0≠s (s_inj i) }
+  }
+  { assume x h; induction
+    { refine s≠0 }
+    { assume y i j; apply h y; apply s_inj; apply s_inj; apply j }
+  }
+end;
+
 // substraction
 
 symbol - : ℕ → ℕ → ℕ; notation - infix left 20;
@@ -258,14 +374,14 @@ begin
   reflexivity;
 end;
 
-opaque symbol subn1 n : π (n - 1 = p n) ≔
+opaque symbol subn1 n : π (n - 1 = n -1) ≔
 begin
   induction
   { reflexivity; }
   { assume n h; reflexivity;  }
 end;
 
-opaque symbol subnS x y : π (x - s y = p (x - y)) ≔
+opaque symbol subnS x y : π (x - s y = (x - y) -1) ≔
 begin
   induction
   { reflexivity; }
@@ -282,7 +398,7 @@ begin
   { assume n h; simplify; apply h; }
 end;
 
-opaque symbol predn_sub x y : π (p (x - y) = p x - y) ≔
+opaque symbol predn_sub x y : π ((x - y) -1 = x -1 - y) ≔
 begin
   induction
   { reflexivity; }
@@ -349,7 +465,7 @@ begin
   reflexivity;
 end;
 
-opaque symbol subSKn m n : π (p (s m - n) = m - n) ≔
+opaque symbol subSKn m n : π ((s m - n) -1 = m - n) ≔
 begin
   assume m n; rewrite left subnS; reflexivity;
 end;
@@ -631,7 +747,7 @@ begin
   { assume n h; simplify; apply h; }
 end;
 
-opaque symbol leq_pred n : π (istrue (p n ≤ n)) ≔
+opaque symbol leq_pred n : π (istrue (n -1 ≤ n)) ≔
 begin
   induction
   { apply top;}
@@ -1096,14 +1212,14 @@ opaque symbol geq_max m n1 n2 :
 begin
 abort;
 
-opaque symbol ltn_predK m n : π (istrue (m < n)) → π (s (p n) = n) ≔
+opaque symbol ltn_predK m n : π (istrue (m < n)) → π (s (n -1) = n) ≔
 begin
   assume m; induction
   { assume h; refine ⊥ₑ h; }
   { assume n h i; reflexivity; }
 end;
 
-opaque symbol prednK n : π (istrue (0 < n)) → π (s (p n) = n) ≔
+opaque symbol prednK n : π (istrue (0 < n)) → π (s (n -1) = n) ≔
 begin
   refine ltn_predK 0; 
 end;
@@ -1111,8 +1227,8 @@ end;
 opaque symbol leq_pmull m n : π (istrue (n > 0)) → π (istrue (m ≤ n * m)) ≔
 begin
   assume m n h; 
-  have t: π (s (p n) = n) { apply prednK n h; };
-  rewrite left t; simplify; apply leq_addr (p n * m) m; 
+  have t: π (s (n -1) = n) { apply prednK n h; };
+  rewrite left t; simplify; apply leq_addr ((n -1) * m) m; 
 end;
 
 opaque symbol leq_pmulr m n : π (istrue (n > 0)) → π (istrue (m ≤ m * n)) ≔
