@@ -1,7 +1,7 @@
 [Lambdapi](https://github.com/Deducteam/lambdapi) library on natural numbers and polymorphic lists (in intuitionistic first-order logic)
 =========================================================
 
-- `Set`: set codes
+- `Set`: type of set codes (for polymorphism)
 - `Prop`: propositional logic
 - `Eq`: Leibniz equality
 - `FOL`: first-order logic
