@@ -304,7 +304,7 @@ end;
 symbol size [a] : 𝕃 a → ℕ;
 
 rule size □ ↪ 0
-with size (_ ⸬ $l) ↪ s (size $l);
+with size (_ ⸬ $l) ↪ size $l +1;
 
 opaque symbol size0nil [a] (l:𝕃 a) : π (size l = 0) → π (l = □) ≔
 begin
@@ -352,27 +352,27 @@ end;
 symbol nseq [a] : ℕ → τ a → 𝕃 a;
 
 rule nseq 0 _ ↪ □
-with nseq (s $n) $x ↪ $x ⸬ (nseq $n $x);
+with nseq ($n +1) $x ↪ $x ⸬ (nseq $n $x);
 
 // ncons
 
 symbol ncons [a] : ℕ → τ a → 𝕃 a → 𝕃 a;
 
 rule ncons 0 _ $l ↪ $l
-with ncons (s $n) $x $l ↪ $x ⸬ ncons $n $x $l;
+with ncons ($n +1) $x $l ↪ $x ⸬ ncons $n $x $l;
 
 opaque symbol size_ncons [a] n (x:τ a) l : π (size (ncons n x l) = n + size l) ≔
 begin
   assume a; induction
   { reflexivity; }
-  { assume n h x l; simplify; apply feq s (h x l); }
+  { assume n h x l; simplify; apply feq (+1) (h x l); }
 end;
 
 opaque symbol size_nseq [a] n (x:τ a) : π (size (nseq n x) = n) ≔
 begin
   assume a; induction
   { reflexivity; }
-  { assume n h x; simplify; apply feq s (h x); }
+  { assume n h x; simplify; apply feq (+1) (h x); }
 end;
 
 opaque symbol cat_nseq [a] n (x:τ a) l : π (nseq n x ++ l = ncons n x l) ≔
@@ -503,12 +503,12 @@ end;
 symbol Seqn : ℕ → Set → TYPE;
 
 rule Seqn 0 $a ↪ 𝕃 $a
-with Seqn (s $n) $a ↪ τ $a → Seqn $n $a;
+with Seqn ($n +1) $a ↪ τ $a → Seqn $n $a;
 
 symbol seqn' [a] n : 𝕃 a → Seqn n a;
 
 rule seqn' 0 $l ↪ rev $l
-with seqn' (s $n) $l $x ↪ seqn' $n ($x ⸬ $l);
+with seqn' ($n +1) $l $x ↪ seqn' $n ($x ⸬ $l);
 
 symbol seqn [a] n ≔ @seqn' a n □;
 
@@ -539,7 +539,7 @@ symbol nth [a] : τ a → 𝕃 a → ℕ → τ a;
 
 rule nth $x □ _ ↪ $x
 with nth _ ($e ⸬ _) 0 ↪ $e
-with nth $x (_ ⸬ $l) (s $n) ↪ nth $x $l $n;
+with nth $x (_ ⸬ $l) ($n +1) ↪ nth $x $l $n;
 
 assert ⊢ nth 4 (3 ⸬ 2 ⸬ 1 ⸬ □) 0 ≡ 3;
 assert ⊢ nth 4 (3 ⸬ 2 ⸬ 1 ⸬ □) 2 ≡ 1;
@@ -552,8 +552,8 @@ symbol set_nth [a] : τ a → 𝕃 a → ℕ → τ a → 𝕃 a;
 
 rule set_nth _ □ 0 $y ↪ $y ⸬ □
 with set_nth _ (_ ⸬ $l) 0 $y ↪ $y ⸬ $l
-with set_nth $x □ (s $i) $y ↪ $x ⸬ set_nth $x □ $i $y
-with set_nth $x ($e ⸬ $l) (s $i) $y ↪ $e ⸬ set_nth $x $l $i $y;
+with set_nth $x □ ($i +1) $y ↪ $x ⸬ set_nth $x □ $i $y
+with set_nth $x ($e ⸬ $l) ($i +1) $y ↪ $e ⸬ set_nth $x $l $i $y;
 
 assert ⊢ set_nth 42 (3 ⸬ 2 ⸬ 1 ⸬ □) 1 6 ≡ 3 ⸬ 6 ⸬ 1 ⸬ □;
 assert ⊢ set_nth 42 (3 ⸬ 2 ⸬ 1 ⸬ □) 2 6 ≡ 3 ⸬ 2 ⸬ 6 ⸬ □;
@@ -564,9 +564,9 @@ assert ⊢ set_nth 42 (3 ⸬ 2 ⸬ 1 ⸬ □) 5 6 ≡ 3 ⸬ 2 ⸬ 1 ⸬ 42 ⸬ 4
 symbol incr_nth : 𝕃 nat → τ nat → 𝕃 nat;
 
 rule incr_nth □ 0 ↪ 1 ⸬ □
-with incr_nth □ (s $i) ↪ 0 ⸬ incr_nth □ $i
-with incr_nth ($n ⸬ $l) 0 ↪ s $n ⸬ $l
-with incr_nth ($n ⸬ $l) (s $i) ↪ $n ⸬ incr_nth $l $i;
+with incr_nth □ ($i +1) ↪ 0 ⸬ incr_nth □ $i
+with incr_nth ($n ⸬ $l) 0 ↪ $n +1 ⸬ $l
+with incr_nth ($n ⸬ $l) ($i +1) ↪ $n ⸬ incr_nth $l $i;
 
 assert ⊢ incr_nth (3 ⸬ 2 ⸬ 1 ⸬ □) 1 ≡ 3 ⸬ 3 ⸬ 1 ⸬ □;
 assert ⊢ incr_nth (3 ⸬ 2 ⸬ 1 ⸬ □) 2 ≡ 3 ⸬ 2 ⸬ 2 ⸬ □;
@@ -630,7 +630,7 @@ begin
   { reflexivity; }
   { assume ea la h; induction
     { assume i; apply ⊥ₑ i; }
-    { assume eb lb i j; apply feq s (h lb j); }
+    { assume eb lb i j; apply feq (+1) (h lb j); }
   }
 end;
 
@@ -641,7 +641,7 @@ begin
   { assume lb h; symmetry; apply ≤0 (size lb) h; }
   { assume ea la h; induction
     { reflexivity; }
-    { assume eb lb i j; apply feq s (h lb j); }
+    { assume eb lb i j; apply feq (+1) (h lb j); }
   }
 end;
 
@@ -652,7 +652,7 @@ begin
   { reflexivity }
   { assume ea la h; induction
     { reflexivity; }
-    { assume eb lb i; simplify; apply feq s (h lb); }
+    { assume eb lb i; simplify; apply feq (+1) (h lb); }
   }
 end;
 
@@ -671,7 +671,7 @@ begin
   { assume ea la h; induction
     { assume i; apply ⊥ₑ (s≠0 i); }
     { assume eb lb i j;
-      have t:π (size la = size lb) { apply s_inj j; };
+      have t:π (size la = size lb) { apply +1_inj j; };
       apply pH la lb ea eb t (h lb t); }
   }
 end;
@@ -698,7 +698,7 @@ begin
     { assume i j; apply ⊥ₑ (s≠0 j); }
     { assume eb lb k; induction
       { assume m; reflexivity; }
-      { assume i m n; apply h lb i _; apply s_inj n; }
+      { assume i m n; apply h lb i _; apply +1_inj n; }
     }
   }
 end;
@@ -724,7 +724,7 @@ symbol drop [a] : ℕ → 𝕃 a → 𝕃 a;
 
 rule drop 0 $l ↪ $l
 with drop _ □ ↪ □
-with drop (s $n) (_ ⸬ $l) ↪ drop $n $l;
+with drop ($n +1) (_ ⸬ $l) ↪ drop $n $l;
 
 assert ⊢ drop 3 (7 ⸬ 2 ⸬ 3 ⸬ 1 ⸬ 41 ⸬ □) ≡ 1 ⸬ 41 ⸬ □;
 assert ⊢ drop 10 (7 ⸬ 2 ⸬ 3 ⸬ 1 ⸬ 41 ⸬ □) ≡ □;
@@ -758,7 +758,7 @@ end;
 
 //rule drop (size $l) $l ↪ □;
 
-opaque symbol drop_cons [a] (e:τ a) l n : π (drop (s n) (e ⸬ l) = drop n l) ≔
+opaque symbol drop_cons [a] (e:τ a) l n : π (drop (n +1) (e ⸬ l) = drop n l) ≔
 begin
   assume a e l n; reflexivity;
 end;
@@ -773,16 +773,16 @@ begin
   }
 end;
 
-opaque symbol size_cons [a] (e:τ a) n l : π (size l = n ⇔ size (e ⸬ l) = s n) ≔
+opaque symbol size_cons [a] (e:τ a) n l : π (size l = n ⇔ size (e ⸬ l) = n +1) ≔
 begin
   assume a e n l; apply ∧ᵢ {
     generalize n; induction
     { assume l h; simplify; rewrite h; reflexivity; }
-    { assume n h l i; simplify; apply feq s i;}
+    { assume n h l i; simplify; apply feq (+1) i;}
   } {
     generalize n; induction
-    { assume l i; apply s_inj i;}
-    { assume n h l i; apply s_inj i; }
+    { assume l i; apply +1_inj i;}
+    { assume n h l i; apply +1_inj i; }
   };
 end;
 
@@ -794,7 +794,7 @@ begin
     have t:π (l1 = □) { apply size0nil l1 h }; rewrite t; reflexivity; }
   { assume n h; induction
     { assume l2 i; apply ⊥ₑ; apply s≠0 [n]; symmetry; apply i; }
-    { assume e l1 i l2 j; apply h l1 l2; apply s_inj j; }
+    { assume e l1 i l2 j; apply h l1 l2; apply +1_inj j; }
   }
 end;
 
@@ -815,7 +815,7 @@ symbol take [a] : ℕ → 𝕃 a → 𝕃 a;
 
 rule take 0 _ ↪ □
 with take _ □ ↪ □
-with take (s $n) ($x ⸬ $l) ↪ $x ⸬ (take $n $l);
+with take ($n +1) ($x ⸬ $l) ↪ $x ⸬ (take $n $l);
 
 assert ⊢ take 3 (7 ⸬ 2 ⸬ 3 ⸬ 1 ⸬ 41 ⸬ □) ≡ 7 ⸬ 2 ⸬ 3 ⸬ □;
 assert ⊢ take 10 (7 ⸬ 2 ⸬ 3 ⸬ 1 ⸬ 41 ⸬ □) ≡ 7 ⸬ 2 ⸬ 3 ⸬ 1 ⸬ 41 ⸬ □;
@@ -826,7 +826,7 @@ begin
 end;
 
 opaque symbol take_cons [a] n (x:τ a) l :
-  π (take (s n) (x ⸬ l) = (x ⸬ take n l)) ≔
+  π (take (n +1) (x ⸬ l) = (x ⸬ take n l)) ≔
 begin
   assume a l; reflexivity;
 end;
@@ -866,7 +866,7 @@ begin
   { reflexivity; }
   { assume n h; induction
     { simplify; assume i; apply ⊥ₑ i; }
-    { assume e l i; simplify; assume j; apply feq s; apply h l j; }
+    { assume e l i; simplify; assume j; apply feq (+1); apply h l j; }
   }
 end;
 
@@ -882,7 +882,7 @@ begin
   { reflexivity; }
   { assume n h; induction
     { reflexivity; }
-    { assume e l i; simplify; apply feq s (h l); }
+    { assume e l i; simplify; apply feq (+1) (h l); }
   }
 end;
 
@@ -941,7 +941,7 @@ begin
     { assume n i; induction
       { reflexivity; }
       { assume e l j; simplify; apply feq (λ l:𝕃 a, e ⸬ l);
-        rewrite left addnS; apply h (s n) l; }
+        rewrite left addnS; apply h (n +1) l; }
     }
   }
 end;
@@ -1110,7 +1110,7 @@ end;
 symbol index [a] : (τ a → τ a → 𝔹) → τ a → 𝕃 a → ℕ;
 
 rule index _ _ □ ↪ 0
-with index $beq $x ($y ⸬ $l) ↪ if ($beq $x $y) 0 (s (index $beq $x $l));
+with index $beq $x ($y ⸬ $l) ↪ if ($beq $x $y) 0 (index $beq $x $l +1);
 
 assert ⊢ index eqn 2 (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ □) ≡ 1;
 assert ⊢ index eqn 26 (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ □) ≡ 4;
@@ -1121,7 +1121,7 @@ begin
   assume a beq x; induction
   { apply top; }
   { assume e l h; simplify;
-    refine ind_𝔹 (λ b, istrue (if b 0 (s (index beq x l)) ≤ s (size l))) _ _ (beq x e) {
+    refine ind_𝔹 (λ b, istrue (if b 0 (index beq x l +1) ≤ size l +1)) _ _ (beq x e) {
       apply top;
     } {
       simplify; apply h;
@@ -1160,7 +1160,7 @@ assert ⊢ all (λ x, eqn (x + 1) 3) (2 ⸬ 2 ⸬ 2 ⸬ 2 ⸬ □) ≡ true;
 symbol find [a] : (τ a → 𝔹) → 𝕃 a → ℕ;
 
 rule find _ □ ↪ 0
-with find $p ($x ⸬ $l) ↪ if ($p $x) 0 (s (find $p $l));
+with find $p ($x ⸬ $l) ↪ if ($p $x) 0 (find $p $l +1);
 
 assert ⊢ find (λ x, eqn (x + 1) 3) (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ □) ≡ 1;
 assert ⊢ find (λ x, eqn (x + 1) 3) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) ≡ 4;
@@ -1171,7 +1171,7 @@ begin
   assume a p; induction
   { apply top; }
   { assume e l h;
-    refine ind_𝔹 (λ x:𝔹, istrue (if x 0 (s (find p l)) ≤ s (size l))) _ _ (p e) {
+    refine ind_𝔹 (λ x:𝔹, istrue (if x 0 (find p l +1) ≤ size l +1)) _ _ (p e) {
       apply top;
     } {
       simplify; apply h;
@@ -1184,7 +1184,7 @@ end;
 symbol count [a] : (τ a → 𝔹) → 𝕃 a → ℕ;
 
 rule count _ □ ↪ 0
-with count $p ($x ⸬ $l) ↪ if ($p $x) (s (count $p $l)) (count $p $l);
+with count $p ($x ⸬ $l) ↪ if ($p $x) (count $p $l +1) (count $p $l);
 
 assert ⊢ count (λ x, eqn (x + 1) 3) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) ≡ 0;
 assert ⊢ count (λ x, eqn (x + 1) 3) (2 ⸬ 2 ⸬ 2 ⸬ 2 ⸬ □) ≡ 4;
@@ -1194,11 +1194,11 @@ begin
   assume a p; induction
   { apply top; }
   { assume e l h; simplify;
-    refine ind_𝔹 (λ x:𝔹, istrue (if x (s (count p l)) (count p l) ≤ s (size l))) _ _ (p e) {
+    refine ind_𝔹 (λ x:𝔹, istrue (if x (count p l +1) (count p l) ≤ size l +1)) _ _ (p e) {
       simplify; apply h;
     } {
       simplify;
-      refine @leq_trans (count p l) (size l) (s (size l)) h (leqnSn (size l)); 
+      refine @leq_trans (count p l) (size l) (size l +1) h (leqnSn (size l)); 
     };
   }
 end;
@@ -1280,8 +1280,8 @@ rule infix_index _ □ _ ↪ 0
 with infix_index _ (_ ⸬ _) □ ↪ 0
 with infix_index $beq ($x ⸬ $l1) ($y ⸬ $l2) ↪
   if ($beq $x $y)
-    (if (is_prefix $beq $l1 $l2) 0 (s (size $l2)))
-    (s (infix_index $beq ($x ⸬ $l1) $l2));
+    (if (is_prefix $beq $l1 $l2) 0 (size $l2 +1))
+    (infix_index $beq ($x ⸬ $l1) $l2 +1);
 
 assert ⊢ infix_index eqn (51 ⸬ 3 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ 2;
 assert ⊢ infix_index eqn (51 ⸬ 4 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ 5;
@@ -1314,8 +1314,8 @@ begin
   assume a p; induction
   { reflexivity; }
   { assume e l h; simplify;
-    refine ind_𝔹 (λ x, size (if x (e ⸬ filter p l) (filter p l)) = (if x (s (count p l)) (count p l))) _ _ (p e) {
-      simplify; apply feq s h;
+    refine ind_𝔹 (λ x, size (if x (e ⸬ filter p l) (filter p l)) = (if x (count p l +1) (count p l))) _ _ (p e) {
+      simplify; apply feq (+1) h;
     } {
       simplify; apply h;
     };
@@ -1380,9 +1380,9 @@ begin
   assume a beq; induction
   { apply top; }
   { assume e l h; simplify;
-    refine ind_𝔹 (λ x, istrue (size (if x (undup beq l) (e ⸬ undup beq l)) ≤ s (size l))) _ _ (∈ beq e (undup beq l)) {
+    refine ind_𝔹 (λ x, istrue (size (if x (undup beq l) (e ⸬ undup beq l)) ≤ size l +1)) _ _ (∈ beq e (undup beq l)) {
       simplify;
-      refine @leq_trans (size (undup beq l)) (size l) (s (size l)) h (leqnSn (size l));
+      refine @leq_trans (size (undup beq l)) (size l) (size l +1) h (leqnSn (size l));
     } {
       simplify; apply h;
     };
@@ -1440,7 +1440,7 @@ opaque symbol size_map [a b] (f:τ a → τ b) l : π (size (map f l) = size l) 
 begin
   assume a b f; induction
   { reflexivity; }
-  { assume e l h; simplify; apply feq s h; }
+  { assume e l h; simplify; apply feq (+1) h; }
 end;
 
 opaque symbol behead_map [a b] (f:τ a → τ b) l :
