@@ -1,10 +1,7 @@
-SRC = $(wildcard *.lp)
-OBJ = $(SRC:%.lp=%.lpo)
+SRC := $(wildcard *.lp)
+OBJ := $(SRC:%.lp=%.lpo)
 
-default:
-	lambdapi check $(SRC)
-
-lpo: $(OBJ)
+default: $(OBJ)
 
 $(OBJ)&: $(SRC)
 	lambdapi check -c $^
@@ -12,7 +9,7 @@ $(OBJ)&: $(SRC)
 clean:
 	rm -f $(OBJ)
 
-install: lpo
+install: $(OBJ)
 	lambdapi install lambdapi.pkg $(SRC) $(OBJ)
 
 uninstall:

@@ -99,11 +99,11 @@ symbol val : ℙ → ℕ;
 
 rule val H ↪ 1
 with val (O $x) ↪ 2 * val $x
-with val (I $x) ↪ s (val (O $x));
+with val (I $x) ↪ val (O $x) +1;
 
 assert ⊢ val (O (I H)) ≡ 6;
 
-opaque symbol valS x : π(val (succ x) = s (val x)) ≔
+opaque symbol valS x : π(val (succ x) = val x +1) ≔
 begin
   induction
   { assume x h; simplify; rewrite h; reflexivity }
@@ -142,11 +142,11 @@ begin
   induction
   { assume x h; induction
     { simplify; assume y i j; rewrite h y _
-        { apply 2*_inj; apply s_inj; apply j }
+        { apply 2*_inj; apply +1_inj; apply j }
         { reflexivity }
     }
     { simplify; assume y i j; apply ⊥ₑ; apply odd≠even (val x) (val y) j }
-    { simplify; assume i; apply ⊥ₑ; apply 2*val≠0 x; apply s_inj; apply i }
+    { simplify; assume i; apply ⊥ₑ; apply 2*val≠0 x; apply +1_inj; apply i }
   }
   { assume x h; induction
     { simplify; assume y i j; apply ⊥ₑ;
@@ -155,7 +155,7 @@ begin
     { assume i; apply ⊥ₑ; apply odd≠even 0 (val x); symmetry; apply i }
   }
   { induction
-    { simplify; assume x h i; apply ⊥ₑ; apply val≠0 x; apply 2*=0; apply s_inj;
+    { simplify; assume x h i; apply ⊥ₑ; apply val≠0 x; apply 2*=0; apply +1_inj;
       symmetry; apply i }
     { simplify; assume x h i; apply ⊥ₑ; apply odd≠even 0 (val x); apply i }
     { reflexivity }
