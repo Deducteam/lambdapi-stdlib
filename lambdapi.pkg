@@ -1,2 +1,2 @@
-package_name = blanqui-lib
-root_path = Blanqui.Lib
+package_name = stdlib
+root_path = Stdlib

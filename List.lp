@@ -194,8 +194,8 @@ protected with nosimpl.
  An example of use can be found in fingraph theorem orbitPcycle.
 */
 
-require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq
-  Blanqui.Lib.Nat Blanqui.Lib.Bool;
+require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq
+  Stdlib.Nat Stdlib.Bool;
 
 (a:Set) inductive 𝕃:TYPE ≔
 | □ : 𝕃 a // \Box

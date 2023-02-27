@@ -88,8 +88,8 @@ expnMn : (m1 * m2) ^ n = ... The operands of other operators are selected
 using the l/r suffixes.
 */
 
-require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq
-  Blanqui.Lib.Bool;
+require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq
+  Stdlib.Bool;
 
 inductive ℕ : TYPE ≔
 | 0 : ℕ

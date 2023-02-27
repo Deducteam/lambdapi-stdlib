@@ -1,6 +1,6 @@
 /* Library on booleans. */
 
-require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq;
+require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq;
 
 inductive 𝔹 : TYPE ≔ // `dB or \BbbB
 | true : 𝔹
