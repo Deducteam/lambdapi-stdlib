@@ -2,8 +2,8 @@
 
 by Quentin Garchery (May 2021). */
 
-require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq
-  Blanqui.Lib.Nat Blanqui.Lib.Bool Blanqui.Lib.Comp;
+require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq
+  Stdlib.Nat Stdlib.Bool Stdlib.Comp;
 
 inductive ℙ : TYPE ≔
 | I : ℙ → ℙ

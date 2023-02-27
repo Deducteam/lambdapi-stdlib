@@ -2,8 +2,8 @@
 
 by Quentin Garchery (May 2021). */
 
-require open Blanqui.Lib.Set Blanqui.Lib.Prop Blanqui.Lib.FOL Blanqui.Lib.Eq
-  Blanqui.Lib.Pos Blanqui.Lib.Bool;
+require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq
+  Stdlib.Pos Stdlib.Bool;
 
 inductive ℤ : TYPE ≔ // \BbbZ
 | Z0 : ℤ
@@ -349,7 +349,7 @@ end;
 
 // Comparison of integers
 
-require open Blanqui.Lib.Comp;
+require open Stdlib.Comp;
 
 symbol ≐ : ℤ → ℤ → Comp; notation ≐ infix 12; // \doteq
 

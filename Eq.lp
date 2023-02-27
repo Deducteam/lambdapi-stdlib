@@ -1,6 +1,6 @@
 // polymorphic Leibniz equality
 
-require open Blanqui.Lib.Set Blanqui.Lib.Prop;
+require open Stdlib.Set Stdlib.Prop;
 
 constant symbol = [a] : τ a → τ a → Prop;
 
