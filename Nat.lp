@@ -155,7 +155,7 @@ opaque symbol eqn_complete x y : π(x = y) → π(istrue(eqn x y)) ≔
 begin
   induction
   { assume y i; rewrite left i; apply top; }
-  { simplify; assume x h; /*FIXME: x0 is replaced by x!*/ induction
+  { simplify; assume x h; induction
     { assume i; apply s≠0 i; }
     { assume y i j; simplify; }
   }
@@ -302,8 +302,7 @@ begin
   apply ∧ᵢ {
     refine addnI m n p
   } {
-    //FIXME: generalize p fails
-    generalize m; generalize p; induction
+    generalize p; induction
     { assume m n h; apply h }
     { assume z h m n i; simplify; rewrite h m n i; reflexivity }  
   };
@@ -856,12 +855,11 @@ end;
 opaque symbol leq_add2l p m n : π (istrue (p + m ≤ p + n) ⇔ istrue (m ≤ n)) ≔
 begin
   assume p m n; apply ∧ᵢ {
-    //FIXME: generalize p fails
-    generalize m; generalize p; induction
+    generalize p; induction
     { assume m n h; apply h; }
     { assume p h m n i; apply h m n i; }
   } {
-    generalize m; generalize p; induction
+    generalize p; induction
     { assume m n h; apply h; }
     { assume p h m n i; apply h m n i; }
   }; 
