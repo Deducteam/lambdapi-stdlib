@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        lambdapi-version: [lambdapi.2.0.0, lambdapi.2.1.0, lambdapi.2.2.0, lambdapi.2.2.1, lambdapi.2.3.0, lambdapi]
+        lambdapi-version: [lambdapi.2.3.0, lambdapi]
     runs-on: ubuntu-latest
     steps:
       - name: Check out library
