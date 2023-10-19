@@ -18,7 +18,7 @@ jobs:
         with:
           ocaml-compiler: 5.1.0
       - name: Install required libraries
-        run: apt-get install libev-dev
+        run: sudo apt-get install libev-dev
       - name: Setup opam (when testing the development version of lambdapi)
         run: opam pin -n --dev-repo lambdapi
         if: matrix.lambdapi-version == 'lambdapi'
