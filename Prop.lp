@@ -36,6 +36,7 @@ end;
 // negation
 
 symbol ¬ p ≔ p ⇒ ⊥; // ~~ or \neg
+notation ¬ prefix 35;
 
 // conjunction
 
