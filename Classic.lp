@@ -55,9 +55,9 @@ end;
 
 symbol ∀ᶜ [a] p ≔ `∀ x : τ a, ¬ ¬ (p x); notation ∀ᶜ quantifier;
 
-opaque symbol ∀ᶜᵢ p : (Π x, πᶜ (p x)) → πᶜ (∀ᶜ p) ≔
+opaque symbol ∀ᶜᵢ [a] p : (Π (x: τ a), πᶜ (p x)) → πᶜ (∀ᶜ p) ≔
 begin
-  assume p Hnnpx Hnnnpx;
+  assume a p Hnnpx Hnnnpx;
   apply Hnnnpx;
   assume x Hnnp;
   apply Hnnpx x;
@@ -66,9 +66,9 @@ begin
   apply Hnp
 end;
 
-opaque symbol ∀ᶜₑ [p] x : πᶜ (∀ᶜ p) → πᶜ (p x) ≔
+opaque symbol ∀ᶜₑ [a p] (x: τ a) : πᶜ (∀ᶜ p) → πᶜ (p x) ≔
 begin
-  assume p x Hnnforallnnp Hnnpx;
+  assume a p x Hnnforallnnp Hnnpx;
   apply Hnnforallnnp;
   assume Hforallnnp;
   refine Hforallnnp x Hnnpx
@@ -145,7 +145,18 @@ begin
   refine Hnnnp Hnnp 
 end;
 
-constant symbol classic [p] : πᶜ (p ∨ᶜ ¬ p);
+opaque symbol classic [p] : πᶜ (p ∨ᶜ ¬ p) ≔
+begin
+  assume p H;
+  apply H;
+  apply ∨ᵢ₁;
+  assume Hnp;
+  apply H;
+  apply ∨ᵢ₂;
+  assume Hnnp;
+  apply Hnnp;
+  refine Hnp
+end;
 
 opaque symbol nnpp [p] : πᶜ (¬ ¬ p) → πᶜ p ≔
 begin
