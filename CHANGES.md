@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - Add classical logic
 - Rename top into ⊤ᵢ
+- Declare more arguments of ∃ᵢ and ∃ₑ implicit
 
 ## 1.0.0 (2023-10-19)
 
