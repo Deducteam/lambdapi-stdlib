@@ -116,8 +116,8 @@ begin
   induction
   { assume h; apply ⊥ₑ; apply h; reflexivity }
   { assume n h i; apply ∨ₑ (casen n)
-    { assume j; apply ∃ᵢ _ H; rewrite j; reflexivity }
-    { assume j; apply ∃ₑ _ (h j); assume p k; apply ∃ᵢ _ (succ p);
+    { assume j; apply ∃ᵢ H; rewrite j; reflexivity }
+    { assume j; apply ∃ₑ (h j); assume p k; apply ∃ᵢ (succ p);
       rewrite left k; apply valS p /*FIXME*/ } 
   }
 end;
@@ -179,9 +179,9 @@ begin
         have k: π(x = H) { apply val_inj; apply j };
         rewrite k; apply pH
       }
-      { assume i; apply ∃ₑ _ (val_surj i); assume y j; rewrite left j;
+      { assume i; apply ∃ₑ (val_surj i); assume y j; rewrite left j;
         rewrite left valS; assume k; have l: π(x = succ y) { apply val_inj k };
-        rewrite l; apply psucc /*FIXME*/y; apply h; apply j
+        rewrite l; apply psucc y; apply h; apply j
       }
     }
   };
