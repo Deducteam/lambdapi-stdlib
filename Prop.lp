@@ -39,7 +39,7 @@ end;
 
 symbol ¬ p ≔ p ⇒ ⊥; // ~~ or \neg
 
-notation ¬ prefix 10;
+notation ¬ prefix 35;
 
 // conjunction
 
@@ -60,9 +60,6 @@ notation ∨ infix left 6;
 constant symbol ∨ᵢ₁ [p q] : π p → π (p ∨ q);
 constant symbol ∨ᵢ₂ [p q] : π q → π (p ∨ q);
 symbol ∨ₑ [p q r] : π (p ∨ q) → (π p → π r) → (π q → π r) → π r;
-
-// check that priorities are correctly set
-assert x y z ⊢ x ∨ y ∧ z ≡ x ∨ (y ∧ z);
 
 // equivalence
 
@@ -86,3 +83,12 @@ begin
     { assume hp; apply ∧ₑ₁ eqr _; apply ∧ₑ₁ epq hp }
     { assume hr; apply ∧ₑ₂ epq _; apply ∧ₑ₂ eqr hr }
 end;
+
+// check that priorities are correctly set
+assert x y z ⊢ x ∨ y ∧ z ≡ x ∨ (y ∧ z);
+assert p q ⊢ ¬ p ∧ q ≡ (¬ p) ∧ q;
+assert p q ⊢ ¬ p ∨ q ≡ (¬ p) ∨ q;
+assert p q ⊢ ¬ p ⇒ q ≡ (¬ p) ⇒ q;
+assert p q ⊢ ¬ p ⇔ q ≡ (¬ p) ⇔ q;
+assert p q r ⊢ p ⇒ q ∧ r ≡ p ⇒ (q ∧ r);
+assert p q r ⊢ p ⇒ q ∨ r ≡ p ⇒ (q ∨ r);
