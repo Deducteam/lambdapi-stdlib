@@ -14,4 +14,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## 0.0.0 (2022-01-27)
 
-- First release
+- Add natural numbers and lists (Quentin Buzet)
