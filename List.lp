@@ -220,7 +220,7 @@ with is□ (_ ⸬ _) ↪ false;
 
 opaque symbol ⸬≠□ [a] [x:τ a] [l] : π (x ⸬ l ≠ □) ≔
 begin
-  assume a x l h; refine ind_eq h (λ l, istrue(is□ l)) top
+  assume a x l h; refine ind_eq h (λ l, istrue(is□ l)) ⊤ᵢ
 end;
 
 opaque symbol □≠⸬ [a] [x:τ a] [l] : π (□ ≠ x ⸬ l) ≔
@@ -286,7 +286,7 @@ opaque symbol eql_complete a beq: π(`∀ x:τ a, `∀ y, x = y ⇒ istrue(beq x
 begin
   simplify; //FIXME: remove
   assume a beq beq_complete; induction
-  { assume m i; rewrite left i; apply top; }
+  { assume m i; rewrite left i; apply ⊤ᵢ; }
   { simplify /*FIXME*/; assume x l h; induction
     { assume j; apply ⸬≠□ j; }
     { assume y m i j; simplify;
@@ -1086,7 +1086,7 @@ end;
 opaque symbol mem_head [a] beq (x:τ a) l :
   π (beq x x = true) → π (istrue (∈ beq x (x ⸬ l))) ≔
 begin
-  assume a beq x l hrefl; simplify; rewrite hrefl; apply top;
+  assume a beq x l hrefl; simplify; rewrite hrefl; apply ⊤ᵢ;
 end;
 
 opaque symbol mem_take [a] beq n l (x:τ a) :
@@ -1119,10 +1119,10 @@ opaque symbol index_size [a] beq (x:τ a) l :
   π (istrue (index beq x l ≤ size l)) ≔
 begin
   assume a beq x; induction
-  { apply top; }
+  { apply ⊤ᵢ; }
   { assume e l h; simplify;
     refine ind_𝔹 (λ b, istrue (if b 0 (index beq x l +1) ≤ size l +1)) _ _ (beq x e) {
-      apply top;
+      apply ⊤ᵢ;
     } {
       simplify; apply h;
     };
@@ -1169,10 +1169,10 @@ opaque symbol find_size [a] (p:τ a → 𝔹) l :
   π (istrue (find p l ≤ size l)) ≔
 begin
   assume a p; induction
-  { apply top; }
+  { apply ⊤ᵢ; }
   { assume e l h;
     refine ind_𝔹 (λ x:𝔹, istrue (if x 0 (find p l +1) ≤ size l +1)) _ _ (p e) {
-      apply top;
+      apply ⊤ᵢ;
     } {
       simplify; apply h;
     };
@@ -1192,7 +1192,7 @@ assert ⊢ count (λ x, eqn (x + 1) 3) (2 ⸬ 2 ⸬ 2 ⸬ 2 ⸬ □) ≡ 4;
 opaque symbol count_size [a] (p:τ a → 𝔹) l : π(istrue (count p l ≤ size l)) ≔
 begin
   assume a p; induction
-  { apply top; }
+  { apply ⊤ᵢ; }
   { assume e l h; simplify;
     refine ind_𝔹 (λ x:𝔹, istrue (if x (count p l +1) (count p l) ≤ size l +1)) _ _ (p e) {
       simplify; apply h;
@@ -1378,7 +1378,7 @@ opaque symbol size_undup [a] beq (l:𝕃 a) :
   π (istrue (size (undup beq l) ≤ size l)) ≔
 begin
   assume a beq; induction
-  { apply top; }
+  { apply ⊤ᵢ; }
   { assume e l h; simplify;
     refine ind_𝔹 (λ x, istrue (size (if x (undup beq l) (e ⸬ undup beq l)) ≤ size l +1)) _ _ (∈ beq e (undup beq l)) {
       simplify;
@@ -1393,7 +1393,7 @@ opaque symbol undup_uniq [a] beq (l:𝕃 a) :
   π (istrue (uniq beq (undup beq l))) ≔
 begin
   assume a beq; induction
-  { apply top; }
+  { apply ⊤ᵢ; }
   { assume e l h; simplify;
     refine ind_𝔹_eq (λ b, (istrue(uniq beq (if b (undup beq l) (e ⸬ (undup beq l)))))) (∈ beq e (undup beq l)) _ _ {
       assume i; rewrite i; simplify; apply h;

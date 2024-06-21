@@ -40,17 +40,17 @@ with isZneg (Zneg _) ↪ true;
 
 symbol Zpos≠Z0 p : π (Zpos p ≠ Z0) ≔
 begin
-  assume n h; refine ind_eq h (λ n, istrue(isZ0 n)) top
+  assume n h; refine ind_eq h (λ n, istrue(isZ0 n)) ⊤ᵢ
 end;
 
 symbol Zneg≠Z0 p : π (Zneg p ≠ Z0) ≔
 begin
-  assume n h; refine ind_eq h (λ n, istrue(isZ0 n)) top
+  assume n h; refine ind_eq h (λ n, istrue(isZ0 n)) ⊤ᵢ
 end;
 
 symbol Zpos≠Zneg p q : π (Zpos p ≠ Zneg q) ≔
 begin
-  assume x y h; refine ind_eq h (λ n, istrue(isZneg n)) top
+  assume x y h; refine ind_eq h (λ n, istrue(isZneg n)) ⊤ᵢ
 end;
 
 // Unary opposite
@@ -564,8 +564,8 @@ begin
      induction
       { assume _ _; refine λ x, x;   }
       { assume y _ _; refine λ x, x; }
-      { simplify; assume y _ f; apply ⊥ₑ; refine f top; } }
-  { assume x; assume y f _; apply ⊥ₑ; refine f top; }
+      { simplify; assume y _ f; apply ⊥ₑ; refine f ⊤ᵢ; } }
+  { assume x; assume y f _; apply ⊥ₑ; refine f ⊤ᵢ; }
 end;
 
 symbol <_compat_≤ x y : π (0 < x ⇒ 0 ≤ y ⇒ 0 < x + y) ≔
@@ -574,9 +574,9 @@ begin
    { assume y f _; apply ⊥ₑ; refine f; }
    { assume x;
      induction
-      { assume _ _; refine top; }
-      { assume y _ _; refine top; }
-      { simplify; assume y _ f; apply ⊥ₑ; refine f top; } }
+      { assume _ _; refine ⊤ᵢ; }
+      { assume y _ _; refine ⊤ᵢ; }
+      { simplify; assume y _ f; apply ⊥ₑ; refine f ⊤ᵢ; } }
   { assume x; assume y f _; apply ⊥ₑ; refine f; }
 end;
 
@@ -596,8 +596,8 @@ begin
   { rewrite ≐_com; } ;
   refine ind_Comp (λ c, (y ≐ x) = c ⇒ ¬ (istrue(isGt (opp c))) ⇒ ¬ (istrue(isGt c)) ⇒ x = y) _ _ _ (y ≐ x) _
    { assume H _ _; symmetry; refine ≐_decides y x H; }
-   { assume _ f _; apply ⊥ₑ; refine f top; }
-   { assume _ _ f; apply ⊥ₑ; refine f top; }
+   { assume _ f _; apply ⊥ₑ; refine f ⊤ᵢ; }
+   { assume _ _ f; apply ⊥ₑ; refine f ⊤ᵢ; }
    { reflexivity; refine e; }
 end;
 

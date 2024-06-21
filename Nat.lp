@@ -117,7 +117,7 @@ with is0 (_ +1) ↪ false;
 
 opaque symbol s≠0 [n] : π (n +1 ≠ 0) ≔
 begin
-  assume n h; refine ind_eq h (λ n, istrue(is0 n)) top
+  assume n h; refine ind_eq h (λ n, istrue(is0 n)) ⊤ᵢ
 end;
 
 opaque symbol 0≠s [n] : π (0 ≠ n +1) ≔
@@ -154,7 +154,7 @@ end;
 opaque symbol eqn_complete x y : π(x = y) → π(istrue(eqn x y)) ≔
 begin
   induction
-  { assume y i; rewrite left i; apply top; }
+  { assume y i; rewrite left i; apply ⊤ᵢ; }
   { simplify; assume x h; induction
     { assume i; apply s≠0 i; }
     { assume y i j; simplify; }
@@ -654,7 +654,7 @@ end;
 opaque symbol ≤_refl x : π (istrue (x ≤ x)) ≔
 begin
   induction
-  { simplify; apply top;}
+  { simplify; apply ⊤ᵢ;}
   { assume x h; simplify; apply h; }
 end;
 
@@ -749,14 +749,14 @@ end;
 opaque symbol leq_pred n : π (istrue (n -1 ≤ n)) ≔
 begin
   induction
-  { apply top;}
+  { apply ⊤ᵢ;}
   { assume n h; simplify; apply leqnSn n;} 
 end;
 
 opaque symbol ltnW m n : π (istrue (m < n)) → π (istrue (m ≤ n)) ≔
 begin
   induction
-  { assume m h; apply top;}
+  { assume m h; apply ⊤ᵢ;}
   { assume m h; induction
     { assume i; apply i;}
     { assume n i j; apply h n; apply j;}
@@ -798,9 +798,9 @@ end;
 opaque symbol leq_total x y : π (istrue (x ≤ y) ∨ istrue (y ≤ x)) ≔
 begin
   induction
-  { assume y; simplify; apply ∨ᵢ₁; apply top; }
+  { assume y; simplify; apply ∨ᵢ₁; apply ⊤ᵢ; }
   { assume x h; induction
-    { simplify; apply ∨ᵢ₂; apply top; }
+    { simplify; apply ∨ᵢ₂; apply ⊤ᵢ; }
     { assume y i; simplify; apply h y; }
   }
 end;
@@ -814,7 +814,7 @@ begin
   } {
     generalize n; induction
     { assume h; apply h (eq_refl 0); }
-    { assume n h i; apply top; }
+    { assume n h i; apply ⊤ᵢ; }
   };
 end;
 
@@ -824,7 +824,7 @@ begin
     generalize m; induction
     { induction
       { assume h; apply ∨ᵢ₁ (eq_refl 0) }
-      { assume n h i; apply ∨ᵢ₂ top }
+      { assume n h i; apply ∨ᵢ₂ ⊤ᵢ }
     }
     { assume m h; induction
       { assume i; apply ∨ᵢ₂ i }
@@ -883,7 +883,7 @@ end;
 opaque symbol leq_addl m n : π (istrue (n ≤ m + n)) ≔
 begin
   assume m; induction
-  { apply top; }
+  { apply ⊤ᵢ; }
   { assume n h; apply h; }
 end;
 
@@ -897,7 +897,7 @@ begin
   induction
   { assume n; apply ≤_refl n; }
   { assume m h; induction
-    { apply top; }
+    { apply ⊤ᵢ; }
     { assume n i; simplify; 
       have t: π (istrue (n ≤ n +1)) { apply leqnSn n };
       apply @leq_trans (n - m) n (n +1) (h n) t;
@@ -909,7 +909,7 @@ opaque symbol subn_eq0 m n : π ((m - n = 0) ⇔ istrue (m ≤ n)) ≔
 begin
   assume m n; apply ∧ᵢ {
     generalize m; induction
-    { assume n h; apply top; }
+    { assume n h; apply ⊤ᵢ; }
     { assume m h; induction
       { assume i; apply s≠0 i; }
       { assume n i j; apply h n j; }
@@ -1188,7 +1188,7 @@ rule max $x $x ↪ $x;
 opaque symbol leq_maxl m n : π (istrue (m ≤ max m n)) ≔
 begin
   induction
-  { assume n; apply top; }
+  { assume n; apply ⊤ᵢ; }
   { assume m h; induction
     { simplify; apply ≤_refl m; }
     { assume n i; simplify; apply h n; }
@@ -1352,7 +1352,7 @@ begin
   } {
     generalize m; induction
     { assume h; apply h (eq_refl 0); }
-    { assume m h i; apply top; }
+    { assume m h i; apply ⊤ᵢ; }
   };
 end;
 
@@ -1482,9 +1482,9 @@ rule min $x $x ↪ $x;
 opaque symbol geq_minl m n : π (istrue (min m n ≤ m)) ≔
 begin
   induction
-  { assume n; apply top; }
+  { assume n; apply ⊤ᵢ; }
   { assume m h; induction
-    { apply top; }
+    { apply ⊤ᵢ; }
     { assume n i; simplify; apply h n; }
   }
 end;
@@ -1777,7 +1777,7 @@ end;
 opaque symbol fact_gt0 n : π (istrue (n ! > 0)) ≔
 begin
   induction
-  { apply top; }
+  { apply ⊤ᵢ; }
   { assume n h; rewrite factS n; rewrite mulSnr n (n !);
     apply ltn_addl 0 (n !) (n * n !); apply h; }
 end;
@@ -1790,6 +1790,6 @@ end;
 opaque symbol fact_geq n : π (istrue (n ≤ n !)) ≔
 begin
   induction
-  { apply top; }
+  { apply ⊤ᵢ; }
   { assume n h; rewrite factS n; apply leq_pmulr (n +1) (n !) (fact_gt0 n); }
 end;

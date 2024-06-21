@@ -34,7 +34,7 @@ with istrue false ↪ ⊥;
 
 opaque symbol false≠true : π (false ≠ true) ≔
 begin
-  assume h; refine ind_eq h istrue top
+  assume h; refine ind_eq h istrue ⊤ᵢ
 end;
 
 opaque symbol true≠false : π (true ≠ false) ≔
@@ -61,28 +61,28 @@ with $b    or false ↪ $b;
 opaque symbol ∨_istrue [p q] : π(istrue(p or q)) → π(istrue p ∨ istrue q) ≔
 begin
   induction
-  { assume q h; apply ∨ᵢ₁; apply top; }
+  { assume q h; apply ∨ᵢ₁; apply ⊤ᵢ; }
   { assume q h; apply ∨ᵢ₂; apply h; }
 end;
 
 opaque symbol istrue_or [p q] : π(istrue p ∨ istrue q) → π(istrue(p or q)) ≔
 begin
   induction
-  { assume q h; apply top; }
+  { assume q h; apply ⊤ᵢ; }
   { assume q h; apply ∨ₑ h { assume i; apply ⊥ₑ i; } { assume i; apply i; } }
 end;
 
 opaque symbol orᵢ₁ [p] q : π (istrue p) → π (istrue (p or q)) ≔
 begin
   induction
-  { simplify; assume b h; apply top }
+  { simplify; assume b h; apply ⊤ᵢ }
   { simplify; assume b h; apply ⊥ₑ h }
 end;
 
 opaque symbol orᵢ₂ p [q] : π (istrue q) → π (istrue (p or q)) ≔
 begin
   induction
-  { simplify; assume b h; apply top }
+  { simplify; assume b h; apply ⊤ᵢ }
   { simplify; assume b h; apply h }
 end;
 
@@ -121,7 +121,7 @@ opaque symbol ∧_istrue [p q] : π(istrue (p and q)) → π(istrue p ∧ istrue
 begin
   induction
   { induction
-    { assume h; apply ∧ᵢ { apply top } { apply top } }
+    { assume h; apply ∧ᵢ { apply ⊤ᵢ } { apply ⊤ᵢ } }
     { assume h; apply ⊥ₑ h; }
   }
   { assume q h; apply ⊥ₑ h; }
@@ -143,7 +143,7 @@ end;
 opaque symbol andₑ₁ [p q] : π (istrue (p and q)) → π (istrue p) ≔
 begin
   induction
-  { assume q i; apply top; }
+  { assume q i; apply ⊤ᵢ; }
   { assume q i; apply i; }
 end;
 

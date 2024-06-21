@@ -40,17 +40,17 @@ with isGt Gt ↪ true;
 
 symbol Lt≠Eq : π (Lt ≠ Eq) ≔
 begin
-  assume h; refine ind_eq h (λ n, istrue(isEq n)) top
+  assume h; refine ind_eq h (λ n, istrue(isEq n)) ⊤ᵢ
 end;
 
 symbol Gt≠Eq : π (Gt ≠ Eq) ≔
 begin
-  assume h; refine ind_eq h (λ n, istrue(isEq n)) top
+  assume h; refine ind_eq h (λ n, istrue(isEq n)) ⊤ᵢ
 end;
 
 symbol Gt≠Lt : π (Gt ≠ Lt) ≔
 begin
-  assume h; refine ind_eq h (λ n, istrue(isLt n)) top
+  assume h; refine ind_eq h (λ n, istrue(isLt n)) ⊤ᵢ
 end;
 
 // Opposite of a Comp

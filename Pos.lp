@@ -40,23 +40,23 @@ with isH H     ↪ true;
 
 symbol I≠H [x] : π (I x ≠ H) ≔
 begin
-  assume x h; refine ind_eq h (λ x, istrue(isH x)) top;
+  assume x h; refine ind_eq h (λ x, istrue(isH x)) ⊤ᵢ;
 end;
 
 symbol O≠H [x] : π (O x ≠ H) ≔
 begin
-  assume x h; refine ind_eq h (λ x, istrue(isH x)) top;
+  assume x h; refine ind_eq h (λ x, istrue(isH x)) ⊤ᵢ;
 end;
 
 symbol I≠O [x y] : π (I x ≠ O y) ≔
 begin
-  assume x y h; refine ind_eq h (λ x, istrue(isO x)) top;
+  assume x y h; refine ind_eq h (λ x, istrue(isO x)) ⊤ᵢ;
 end;
 
 opaque symbol caseH x : π(x = H ∨ x ≠ H) ≔
 begin
   induction
-  { assume x h; apply ∨ᵢ₂; refine I≠H; /*FIXME:apply fails*/}
+  { assume x h; apply ∨ᵢ₂; refine I≠H; }
   { assume x h; apply ∨ᵢ₂; refine O≠H; }
   { apply ∨ᵢ₁; reflexivity }
 end;

@@ -14,7 +14,7 @@ builtin "P" ≔ π;
 
 constant symbol ⊤ : Prop; // \top
 
-constant symbol top : π ⊤;
+constant symbol ⊤ᵢ : π ⊤;
 
 // false
 
@@ -24,7 +24,9 @@ constant symbol ⊥ₑ [p] : π ⊥ → π p;
 
 // implication
 
-constant symbol ⇒ : Prop → Prop → Prop; notation ⇒ infix right 5; // =>
+constant symbol ⇒ : Prop → Prop → Prop; // =>
+
+notation ⇒ infix right 5;
 
 rule π ($p ⇒ $q) ↪ π $p → π $q;
 
@@ -37,9 +39,13 @@ end;
 
 symbol ¬ p ≔ p ⇒ ⊥; // ~~ or \neg
 
+notation ¬ prefix 10;
+
 // conjunction
 
-constant symbol ∧ : Prop → Prop → Prop; notation ∧ infix left 7; // /\ or \wedge
+constant symbol ∧ : Prop → Prop → Prop; // /\ or \wedge
+
+notation ∧ infix left 7;
 
 constant symbol ∧ᵢ [p q] : π p → π q → π (p ∧ q);
 symbol ∧ₑ₁ [p q] : π (p ∧ q) → π p;
@@ -47,7 +53,9 @@ symbol ∧ₑ₂ [p q] : π (p ∧ q) → π q;
 
 // disjunction
 
-constant symbol ∨ : Prop → Prop → Prop; notation ∨ infix left 6; // \/ or \vee
+constant symbol ∨ : Prop → Prop → Prop; // \/ or \vee
+
+notation ∨ infix left 6;
 
 constant symbol ∨ᵢ₁ [p q] : π p → π (p ∨ q);
 constant symbol ∨ᵢ₂ [p q] : π q → π (p ∨ q);
@@ -58,7 +66,9 @@ assert x y z ⊢ x ∨ y ∧ z ≡ x ∨ (y ∧ z);
 
 // equivalence
 
-symbol ⇔ p q ≔ (p ⇒ q) ∧ (q ⇒ p); notation ⇔ infix right 5;
+symbol ⇔ p q ≔ (p ⇒ q) ∧ (q ⇒ p); // \Leftrightarrow
+
+notation ⇔ infix right 5;
 
 opaque symbol ⇔_refl [p] : π (p ⇔ p) ≔
 begin
