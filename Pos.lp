@@ -40,23 +40,23 @@ with isH H     ↪ true;
 
 symbol I≠H [x] : π (I x ≠ H) ≔
 begin
-  assume x h; refine ind_eq h (λ x, istrue(isH x)) top;
+  assume x h; refine ind_eq h (λ x, istrue(isH x)) ⊤ᵢ;
 end;
 
 symbol O≠H [x] : π (O x ≠ H) ≔
 begin
-  assume x h; refine ind_eq h (λ x, istrue(isH x)) top;
+  assume x h; refine ind_eq h (λ x, istrue(isH x)) ⊤ᵢ;
 end;
 
 symbol I≠O [x y] : π (I x ≠ O y) ≔
 begin
-  assume x y h; refine ind_eq h (λ x, istrue(isO x)) top;
+  assume x y h; refine ind_eq h (λ x, istrue(isO x)) ⊤ᵢ;
 end;
 
 opaque symbol caseH x : π(x = H ∨ x ≠ H) ≔
 begin
   induction
-  { assume x h; apply ∨ᵢ₂; refine I≠H; /*FIXME:apply fails*/}
+  { assume x h; apply ∨ᵢ₂; refine I≠H; }
   { assume x h; apply ∨ᵢ₂; refine O≠H; }
   { apply ∨ᵢ₁; reflexivity }
 end;
@@ -116,8 +116,8 @@ begin
   induction
   { assume h; apply ⊥ₑ; apply h; reflexivity }
   { assume n h i; apply ∨ₑ (casen n)
-    { assume j; apply ∃ᵢ _ H; rewrite j; reflexivity }
-    { assume j; apply ∃ₑ _ (h j); assume p k; apply ∃ᵢ _ (succ p);
+    { assume j; apply ∃ᵢ H; rewrite j; reflexivity }
+    { assume j; apply ∃ₑ (h j); assume p k; apply ∃ᵢ (succ p);
       rewrite left k; apply valS p /*FIXME*/ } 
   }
 end;
@@ -179,9 +179,9 @@ begin
         have k: π(x = H) { apply val_inj; apply j };
         rewrite k; apply pH
       }
-      { assume i; apply ∃ₑ _ (val_surj i); assume y j; rewrite left j;
+      { assume i; apply ∃ₑ (val_surj i); assume y j; rewrite left j;
         rewrite left valS; assume k; have l: π(x = succ y) { apply val_inj k };
-        rewrite l; apply psucc /*FIXME*/y; apply h; apply j
+        rewrite l; apply psucc y; apply h; apply j
       }
     }
   };
