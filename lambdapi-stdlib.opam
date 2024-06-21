@@ -1,5 +1,5 @@
 opam-version: "2.0"
-synopsis: "Lambdapi library on natural numbers, integers and polymorphic lists"
+synopsis: "Standard library of Lambdapi"
 description: """
 This package provides a Lambdapi library on natural numbers,
 integers and polymorphic lists (in intuitionistic first-order logic).
