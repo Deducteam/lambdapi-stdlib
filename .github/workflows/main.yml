@@ -15,7 +15,7 @@ jobs:
       - name: Check out library
         uses: actions/checkout@v4
       - name: Install ocaml and opam
-        uses: ocaml/setup-ocaml@v2
+        uses: ocaml/setup-ocaml@v3
         with:
           ocaml-compiler: 4.14.1
       - name: Install required libraries
