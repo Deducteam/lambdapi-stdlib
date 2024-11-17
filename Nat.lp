@@ -132,6 +132,18 @@ begin
   { assume n h; apply ∨ᵢ₂; refine s≠0 }
 end;
 
+// predecessor
+
+symbol -1 : ℕ → ℕ; notation -1 postfix 100;
+
+rule 0 -1 ↪ 0
+with ($x +1) -1 ↪ $x;
+
+opaque symbol +1_inj [x y] : π (x +1 = y +1) → π (x = y) ≔
+begin
+  assume x y h; apply feq (-1) h
+end;
+
 // boolean equality on ℕ
 
 symbol eqn : ℕ → ℕ → 𝔹;
@@ -157,20 +169,8 @@ begin
   { assume y i; rewrite left i; apply ⊤ᵢ; }
   { simplify; assume x h; induction
     { assume i; apply s≠0 i; }
-    { assume y i j; simplify; }
+    { assume y i j; simplify; refine h y _; apply +1_inj; refine j }
   }
-abort;
-
-// predecessor
-
-symbol -1 : ℕ → ℕ; notation -1 postfix 100;
-
-rule 0 -1 ↪ 0
-with ($x +1) -1 ↪ $x;
-
-opaque symbol +1_inj [x y] : π (x +1 = y +1) → π (x = y) ≔
-begin
-  assume x y h; apply feq (-1) h
 end;
 
 // addition
