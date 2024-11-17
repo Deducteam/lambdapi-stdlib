@@ -45,7 +45,7 @@ notation ¬ prefix 35;
 
 constant symbol ∧ : Prop → Prop → Prop; // /\ or \wedge
 
-notation ∧ infix left 7;
+notation ∧ infix right 7;
 
 constant symbol ∧ᵢ [p q] : π p → π q → π (p ∧ q);
 symbol ∧ₑ₁ [p q] : π (p ∧ q) → π p;
@@ -55,7 +55,7 @@ symbol ∧ₑ₂ [p q] : π (p ∧ q) → π q;
 
 constant symbol ∨ : Prop → Prop → Prop; // \/ or \vee
 
-notation ∨ infix left 6;
+notation ∨ infix right 6;
 
 constant symbol ∨ᵢ₁ [p q] : π p → π (p ∨ q);
 constant symbol ∨ᵢ₂ [p q] : π q → π (p ∨ q);
