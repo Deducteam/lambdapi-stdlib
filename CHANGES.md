@@ -5,6 +5,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+- Bool: declare istrue as a coercion
 - Add files for higher-order logic:
   HOL: Set constructor ⤳ for quantifying over function types
   Impred: Set constructor o for quantifying over propositions
