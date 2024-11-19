@@ -5,18 +5,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
-- Declare istrue as injective
+- Add files for higher-order logic:
+  HOL: Set constructor ⤳ for quantifying over function types
+  Impred: Set constructor o for quantifying over propositions
+  Epsilon: Hilbert's ε operator
+- Set: add ι:Set
+- Bool: declare istrue as injective
 
 ## 1.1.0 (2024-06-21)
 
-- Add classical logic
-- Rename top into ⊤ᵢ
-- Declare more arguments of ∃ᵢ and ∃ₑ implicit
+- Classic: classical logic
+- Prop: rename top into ⊤ᵢ
+- FOL: declare more arguments of ∃ᵢ and ∃ₑ implicit
 
 ## 1.0.0 (2023-10-19)
 
-- Add integers (Quentin Garchery)
+- Z: integers (Quentin Garchery)
 
 ## 0.0.0 (2022-01-27)
 
-- Add natural numbers and lists (Quentin Buzet)
+- Nat, List: natural numbers and lists (Quentin Buzet)

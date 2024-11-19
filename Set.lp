@@ -2,6 +2,8 @@
 
 constant symbol Set : TYPE;
 
+constant symbol ι : Set;
+
 // Interpretation of set codes in TYPE
 
 injective symbol τ : Set → TYPE; // `t or \tau
