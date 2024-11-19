@@ -225,8 +225,7 @@ end;
 
 opaque symbol □≠⸬ [a] [x:τ a] [l] : π (□ ≠ x ⸬ l) ≔
 begin
-  assume a x l h; /*FIXME:apply ⸬≠□ fails*/ refine @⸬≠□ a x l _;
-  symmetry; apply h
+  assume a x l h; refine @⸬≠□ a x l _; symmetry; apply h
 end;
 
 // head
@@ -270,12 +269,9 @@ begin
   { assume x l h; induction
     { simplify; assume c; refine ⊥ₑ c; }
     { simplify; assume y m i c;
-      //FIXME: apply feq2 (⸬) fails
-      refine feq2 (⸬) _ _
-      { apply beq_correct; //FIXME: apply andₑ₁ c fails
-        apply @andₑ₁ (beq x y) (eql beq l m) c}
-      { apply h; //FIXME: apply andₑ₂ c fails
-        refine @andₑ₂ (beq x y) (eql beq l m) c
+      apply feq2 (⸬) _ _
+      { apply beq_correct; apply @andₑ₁ _ (eql beq l m) c}
+      { apply h; refine @andₑ₂ (beq x y) _ c
       } 
     }
   }
@@ -284,17 +280,15 @@ end;
 opaque symbol eql_complete a beq: π(`∀ x:τ a, `∀ y, x = y ⇒ istrue(beq x y)) →
   π(`∀ l, `∀ m, l = m ⇒ istrue(eql beq l m)) ≔
 begin
-  simplify; //FIXME: remove
   assume a beq beq_complete; induction
   { assume m i; rewrite left i; apply ⊤ᵢ; }
-  { simplify /*FIXME*/; assume x l h; induction
+  { assume x l h; induction
     { assume j; apply ⸬≠□ j; }
     { assume y m i j; simplify;
       have j': π(x = y ∧ l = m) { apply ⸬_inj j };
-      apply @istrue_and (beq x y) (eql beq l m) /*FIXME*/; apply ∧ᵢ
+      apply @istrue_and (beq x y) (eql beq l m); apply ∧ᵢ
       { apply beq_complete x y; apply ∧ₑ₁ j' }
-      { //FIXME: apply h fails
-        refine h m _; apply ∧ₑ₂ j' }
+      { apply h m; apply ∧ₑ₂ j' }
     }
   }
 end;
@@ -457,14 +451,8 @@ opaque symbol rev_idem [a] (l :𝕃 a) : π(rev (rev l) = l) ≔
 begin
   assume a; induction
   { reflexivity }
-  { assume x l h;
-    /*FIXME: if no rule rev_concat, rewrite rev_concat fails:
-      Uncaught [File "src/handle/rewrite.ml", line 166
-    rewrite @rev_concat a;*/
-    simplify; rewrite h; reflexivity }
+  { assume x l h; simplify; rewrite h; reflexivity }
 end;
-
-//rule rev (rev $l) ↪ $l; creates confluence problems
 
 opaque symbol size_rev [a] (l : 𝕃 a) : π(size (rev l) = size l) ≔
 begin
@@ -475,8 +463,6 @@ begin
     // case l = ⸬
     { assume x l h; simplify; rewrite h; reflexivity; }
 end;
-
-//rule size (rev $l) ↪ size $l; // confluence modulo C
 
 // rcons
 
@@ -756,8 +742,6 @@ begin
   { assume e l h; simplify; apply h; }
 end;
 
-//rule drop (size $l) $l ↪ □;
-
 opaque symbol drop_cons [a] (e:τ a) l n : π (drop (n +1) (e ⸬ l) = drop n l) ≔
 begin
   assume a e l n; reflexivity;
@@ -992,10 +976,7 @@ end;
 
 opaque symbol rot_size [a] (l:𝕃 a) : π (rot (size l) l = l) ≔
 begin
-  assume a l; simplify; rewrite take_size l;
-  /*FIXME: Uncaught [File "src/core/infer.ml", line 101
-  rewrite @drop_size;*/
-  rewrite @drop_size a; reflexivity;
+  assume a l; simplify; rewrite take_size l; rewrite @drop_size a; reflexivity;
 end;
 
 opaque symbol rot_size_cat [a] (l1 l2:𝕃 a) :
@@ -1035,8 +1016,7 @@ end;
 
 opaque symbol rotr0 [a] (l:𝕃 a) : π (rotr 0 l = l) ≔
 begin
-  assume a l; simplify; rewrite take_size l; rewrite @drop_size a; //FIXME
-  reflexivity;
+  assume a l; simplify; rewrite take_size l; rewrite @drop_size a; reflexivity;
 end;
 
 opaque symbol rotK [a] n (l:𝕃 a) : π (rot n (rotr n l) = l) ≔
