@@ -484,21 +484,39 @@ begin
   reflexivity;
 end;
 
+// Arr
+
+symbol Arr : ℕ → Set → Set → TYPE;
+
+rule Arr 0 $a $b ↪ τ $b
+with Arr ($n +1) $a $b ↪ τ $a → Arr $n $a $b;
+
 // seqn
 
-symbol Seqn : ℕ → Set → TYPE;
+symbol seqn_acc [a] n : 𝕃 a → Arr n a (list a);
 
-rule Seqn 0 $a ↪ 𝕃 $a
-with Seqn ($n +1) $a ↪ τ $a → Seqn $n $a;
+rule seqn_acc 0 $l ↪ rev $l
+with seqn_acc ($n +1) $l $x ↪ seqn_acc $n ($x ⸬ $l);
 
-symbol seqn' [a] n : 𝕃 a → Seqn n a;
+symbol seqn [a] n ≔ @seqn_acc a n □;
 
-rule seqn' 0 $l ↪ rev $l
-with seqn' ($n +1) $l $x ↪ seqn' $n ($x ⸬ $l);
+assert a (x y : τ a) ⊢ seqn 2 x y ≡ x ⸬ y ⸬ □;
 
-symbol seqn [a] n ≔ @seqn' a n □;
+// iota
 
-assert ⊢ seqn 2 1 2 ≡ 1 ⸬ 2 ⸬ □;
+symbol iota : ℕ → ℕ → 𝕃 nat;
+rule iota $n 0 ↪ □
+with iota $n ($k +1) ↪ $n ⸬ iota ($n +1) $k;
+
+assert ⊢ iota 1 2 ≡ 1 ⸬ 2 ⸬ □;
+
+// indexes
+
+symbol indexes [a] : 𝕃 a → 𝕃 nat;
+
+rule indexes $l ↪ iota 0 (size $l);
+
+assert x ⊢ indexes (x ⸬ x ⸬ x  ⸬ x ⸬ □) ≡ 0 ⸬ 1 ⸬ 2 ⸬ 3 ⸬ □;
 
 // last
 
@@ -1045,8 +1063,7 @@ begin
   assume a beq x; reflexivity;
 end;
 
-opaque symbol mem_seq1 [a] beq (x y:τ a) :
-  π (∈ beq x (y ⸬ □) = (beq x y)) ≔
+opaque symbol mem_seq1 [a] beq (x y:τ a) : π (∈ beq x (y ⸬ □) = beq x y) ≔
 begin
   assume a beq x y; reflexivity;
 end;
@@ -1080,6 +1097,66 @@ begin
   assume a beq n l x h; rewrite left cat_take_drop n l;
   rewrite mem_cat beq x (take n l) (drop n l);
   refine @orᵢ₂ (∈ beq x (take n l)) (∈ beq x (drop n l)) h;
+end;
+
+opaque symbol mem_rcons_left [a] beq (n m : τ a) (l : 𝕃 a) :
+  π (∈ beq n l) → π (∈ beq n (rcons l m)) ≔
+begin
+  assume a beq n m;
+  induction
+    { assume h; refine ⊥ₑ h }
+    { assume n0 l h1 h2;
+      have H0: π (beq n n0) → π (beq n n0 or ∈ beq n (rcons l m))
+        { assume h3;
+          refine (orᵢ₁ [beq n n0] (∈ beq n (rcons l m)) h3) };
+          have H1: π (∈ beq n l) →  π (beq n n0 or ∈ beq n (rcons l m))
+            { assume h3;
+              refine (orᵢ₂ (beq n n0) [∈ beq n (rcons l m)] (h1 h3)) };
+          refine orₑ [beq n n0] [∈ beq n l] (beq n n0 or ∈ beq n (rcons l m)) h2 H0 H1 }
+end;
+
+opaque symbol 0∈indexes⸬ [a] (x : τ a) (l: 𝕃 a) :
+  π (∈ eqn 0 (indexes (x ⸬ l))) ≔
+begin
+    assume a x;
+    induction
+        {refine ⊤ᵢ}
+        {assume y l h;
+        refine mem_rcons_left eqn 0 (size l +1) (indexes (x ⸬ l)) h }
+end;
+
+symbol +1∈iota+1 n m k :
+  π (∈ eqn n (iota m k)) → π (∈ eqn (n +1) (iota (m +1) k)) ≔
+begin
+  assume n;
+  have h: Π k m, π (∈ eqn n (iota m k)) → π (∈ eqn (n +1) (iota (m +1) k))
+    { induction
+      { assume m; simplify; assume h; refine h }
+      { assume k h1 m; simplify; assume h2;
+        refine orₑ [eqn n m] [∈ eqn n (iota (m +1) k)] (eqn n m or ∈ eqn (n +1) (iota ((m +1) +1) k)) h2 _ _
+          { assume h3;
+            refine orᵢ₁ [eqn n m] (∈ eqn (n +1) (iota ((m +1) +1) k)) h3 }
+          { assume h3;
+            refine orᵢ₂ (eqn n m) [∈ eqn (n +1) (iota ((m +1) +1) k)] _;
+            refine h1 (m +1) _; refine h3
+          }
+      }
+    };
+  assume m k; refine h k m
+end;
+
+opaque symbol +1∈indexes⸬ a (n: τ nat) (l: 𝕃 a) (y: τ a) :
+  π (∈ eqn n (indexes l)) → π (∈ eqn (n +1) (indexes (y ⸬ l))) ≔
+begin
+  assume a n; induction
+  { simplify; assume x h; refine h }
+  { assume x l h y; simplify; assume i;
+    refine orₑ [eqn n 0] [∈ eqn n (iota 1 (size l))] _ i _ _
+      { assume j; apply orᵢ₁ [eqn n 0] (∈ eqn (n +1) (iota 2 (size l))) j }
+      { assume j; apply orᵢ₂ (eqn n 0) [∈ eqn (n +1) (iota 2 (size l))] _;
+        refine +1∈iota+1 n 1 (size l) j;
+      }
+  }
 end;
 
 // index

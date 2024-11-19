@@ -5,6 +5,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+- List: add iota and indexes
 - Bool: declare istrue as a coercion
 - Add files for higher-order logic:
   HOL: Set constructor ⤳ for quantifying over function types
