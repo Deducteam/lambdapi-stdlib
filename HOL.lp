@@ -1,5 +1,7 @@
 require open Stdlib.Set;
 
-symbol ⤳ : Set → Set → Set; notation ⤳ infix right 10;
+symbol ⤳ : Set → Set → Set; // \leadsto
+
+notation ⤳ infix right 20;
 
 rule τ ($x ⤳ $y) ↪ τ $x → τ $y;
