@@ -772,7 +772,7 @@ opaque symbol ltn_trans x y z : π (istrue (x < y)) → π (istrue (y < z)) → 
 begin
   assume x y z h i;
   have v:π (istrue (x +1 ≤ y +1)) { apply leqW (x +1) y h; };
-  apply @leq_trans (x +1) (y +1) z v i; //FIXME
+  apply @leq_trans (x +1) (y +1) z v i;
 end;
 
 opaque symbol <_asym x y : π (istrue (x < y)) → π (¬ (istrue (y < x))) ≔

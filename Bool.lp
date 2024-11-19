@@ -27,7 +27,7 @@ end;
 
 // non confusion of constructors
 
-symbol istrue : 𝔹 → Prop;
+injective symbol istrue : 𝔹 → Prop;
 
 rule istrue true ↪ ⊤
 with istrue false ↪ ⊥;
@@ -136,8 +136,7 @@ end;
 
 opaque symbol andᵢ [p q] : π(istrue p) → π(istrue q) → π(istrue (p and q)) ≔
 begin
-  assume p q h i; //FIXME: apply istrue_and fails
-  apply @istrue_and p q; apply ∧ᵢ h i;
+  assume p q h i; apply @istrue_and p q; apply ∧ᵢ h i;
 end;
 
 opaque symbol andₑ₁ [p q] : π (istrue (p and q)) → π (istrue p) ≔
