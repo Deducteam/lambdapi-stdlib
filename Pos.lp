@@ -56,8 +56,8 @@ end;
 opaque symbol caseH x : π(x = H ∨ x ≠ H) ≔
 begin
   induction
-  { assume x h; apply ∨ᵢ₂; refine I≠H; }
-  { assume x h; apply ∨ᵢ₂; refine O≠H; }
+  { assume x h; apply ∨ᵢ₂; refine I≠H }
+  { assume x h; apply ∨ᵢ₂; refine O≠H }
   { apply ∨ᵢ₁; reflexivity }
 end;
 
@@ -125,7 +125,7 @@ end;
 opaque symbol val≠0 x : π(val x ≠ 0) ≔
 begin
   induction
-  { assume x h; refine s≠0; }
+  { assume x h; refine s≠0 }
   { assume x h; simplify; assume i;
     apply h (∧ₑ₁ (∧ₑ₁ (addn_eq0 (val x) (val x)) i))
   }
@@ -224,17 +224,17 @@ begin
   // case I
   { assume p prec;
     induction
-      { reflexivity; }
-      { assume q _; simplify; rewrite prec; reflexivity; }
-      { reflexivity; } }
+      { reflexivity }
+      { assume q h; simplify; rewrite prec; reflexivity }
+      { reflexivity } }
   // case O
   { assume p prec;
     induction
-      { assume q _; simplify; rewrite prec; reflexivity; }
-      { reflexivity; }
-      { reflexivity; } }
+      { assume q h; simplify; rewrite prec; reflexivity }
+      { reflexivity }
+      { reflexivity } }
   // case H
-  { induction { reflexivity; } { reflexivity; } { reflexivity; } ; }
+  { induction { reflexivity } { reflexivity } { reflexivity }  }
 end;
 
 symbol add_succ x y : π (add (succ x) y = succ (add x y)) ≔
@@ -243,27 +243,27 @@ begin
   // case I
   { assume p prec;
     induction
-     { assume q _; simplify; rewrite prec; rewrite succ_add; reflexivity; }
-     { assume q _; simplify; rewrite prec; reflexivity; }
-     { reflexivity; } }
+     { assume q h; simplify; rewrite prec; rewrite succ_add; reflexivity }
+     { assume q h; simplify; rewrite prec; reflexivity }
+     { reflexivity } }
   // case O
   { assume p prec;
     induction
-      { assume q _; simplify; rewrite succ_add; reflexivity; }
-      { reflexivity; }
-      { reflexivity; } }
+      { assume q h; simplify; rewrite succ_add; reflexivity }
+      { reflexivity }
+      { reflexivity } }
   // case H
-  { induction { reflexivity; } { reflexivity; } { reflexivity; } }
+  { induction { reflexivity } { reflexivity } { reflexivity } }
 end;
 
 symbol add_succ_right x y : π (add x (succ y) = succ (add x y)) ≔
 begin
   refine ind_ℙeano (λ x, `∀ y, add x (succ y) = succ (add x y)) _ _
   // case H
-  { reflexivity; }
+  { reflexivity }
   // case succ
   { assume x xrec y;
-    rewrite add_succ; rewrite add_succ; rewrite xrec; reflexivity; }
+    rewrite add_succ; rewrite add_succ; rewrite xrec; reflexivity }
 end;
 
 // Associativity of the addition
@@ -272,11 +272,11 @@ symbol add_assoc x y z : π (add (add x y) z = add x (add y z)) ≔
 begin
   refine ind_ℙeano (λ x, `∀ y, `∀ z, add (add x y) z = add x (add y z)) _ _
   // case H
-  { refine add_succ; }
+  { refine add_succ }
   // case succ
   { assume x xrec y z;
     rewrite add_succ; rewrite add_succ; rewrite add_succ;
-    rewrite xrec; reflexivity; }
+    rewrite xrec; reflexivity }
 end;
 
 // Commutativity of the addition
@@ -285,10 +285,10 @@ symbol add_com x y : π (add x y = add y x) ≔
 begin
   refine ind_ℙeano (λ x, `∀ y, add x y = add y x) _ _
   // case H
-  { reflexivity; }
+  { reflexivity }
   // case succ
   { assume x xrec y;
-    rewrite add_succ; rewrite add_succ_right; rewrite xrec; reflexivity; }
+    rewrite add_succ; rewrite add_succ_right; rewrite xrec; reflexivity }
 end;
 
 // function λ x, 2 * x - 1
@@ -303,17 +303,17 @@ with pos_pred_double H      ↪ H;
 symbol pos_pred_double_succ x : π (pos_pred_double (succ x) = I x) ≔
 begin
   induction
-  { assume x xrec; simplify; rewrite xrec; reflexivity; }
-  { reflexivity; }
-  { reflexivity; }
+  { assume x xrec; simplify; rewrite xrec; reflexivity }
+  { reflexivity }
+  { reflexivity }
 end;
 
 symbol succ_pos_pred_double x : π (succ (pos_pred_double x) = O x) ≔
 begin
   induction
-   { reflexivity; }
-   { assume x xrec; simplify; rewrite xrec; reflexivity; }
-   { reflexivity; }
+   { reflexivity }
+   { assume x xrec; simplify; rewrite xrec; reflexivity }
+   { reflexivity }
 end;
 
 // Comparison of ℙ numbers
@@ -342,20 +342,20 @@ begin
   // case I
   { assume x xrec;
     induction
-     { assume y _ c; simplify; rewrite xrec; reflexivity; }
-     { assume y _ c; simplify; rewrite xrec; reflexivity; }
-     { reflexivity; } }
+     { assume y h c; simplify; rewrite xrec; reflexivity }
+     { assume y h c; simplify; rewrite xrec; reflexivity }
+     { reflexivity } }
   // case O
   { assume x xrec;
     induction
-     { assume y _ c; simplify; rewrite xrec; reflexivity; }
-     { assume y _ c; simplify; rewrite xrec; reflexivity; }
-     { reflexivity; } }
+     { assume y h c; simplify; rewrite xrec; reflexivity }
+     { assume y h c; simplify; rewrite xrec; reflexivity }
+     { reflexivity } }
   // case H
   { induction
-     { reflexivity; }
-     { reflexivity; }
-     { assume c; simplify; rewrite opp_idem; reflexivity; } }
+     { reflexivity }
+     { reflexivity }
+     { assume c; simplify; rewrite opp_idem; reflexivity } }
 end;
 
 symbol compare_com x y : π (compare y x = opp (compare x y)) ≔
@@ -371,20 +371,20 @@ begin
   // case I
   { assume x xrec;
     induction
-     { assume y _ c H; refine xrec y c H; }
-     { assume y _ c H; refine xrec y Gt _; refine Gt≠Eq; }
-     { assume c _; refine Gt≠Eq; } }
+     { assume y h c H; refine xrec y c H }
+     { assume y h c H; refine xrec y Gt _; refine Gt≠Eq }
+     { assume c h; refine Gt≠Eq } }
   // case O
   { assume x xrec;
     induction
-     { assume y _ c H; refine xrec y Lt _; refine Lt≠Eq; }
-     { assume y _ c H; refine xrec y c H; }
-     { assume c _; refine Gt≠Eq; } }
+     { assume y h c H; refine xrec y Lt _; refine Lt≠Eq }
+     { assume y h c H; refine xrec y c H }
+     { assume c h; refine Gt≠Eq } }
   // case H
   { induction
-     { assume y _ c H; refine Lt≠Eq; }
-     { assume y _ c H; refine Lt≠Eq; }
-     { assume c Hc; refine Hc; } }
+     { assume y h c H; refine Lt≠Eq }
+     { assume y h c H; refine Lt≠Eq }
+     { assume c Hc; refine Hc } }
 end;
 
 symbol compare_decides x y : π (compare x y = Eq ⇒ x = y) ≔
@@ -393,20 +393,20 @@ begin
   // case I
   { assume x xrec;
     induction
-     { assume y _ H; rewrite xrec y H; reflexivity; }
-     { assume y _ H; apply ⊥ₑ; refine compare_acc_nEq x y Gt _ H; refine Gt≠Eq; }
-     { assume H; apply ⊥ₑ; refine Gt≠Eq H; } }
+     { assume y h H; rewrite xrec y H; reflexivity }
+     { assume y h H; apply ⊥ₑ; refine compare_acc_nEq x y Gt _ H; refine Gt≠Eq }
+     { assume H; apply ⊥ₑ; refine Gt≠Eq H } }
   // case O
   { assume x xrec;
     induction
-     { assume y _ H; apply ⊥ₑ; refine compare_acc_nEq x y Lt _ H; refine Lt≠Eq; }
-     { assume y _ H; rewrite xrec y H; reflexivity; }
-     { assume H; apply ⊥ₑ; refine Gt≠Eq H; } }
+     { assume y h H; apply ⊥ₑ; refine compare_acc_nEq x y Lt _ H; refine Lt≠Eq }
+     { assume y h H; rewrite xrec y H; reflexivity }
+     { assume H; apply ⊥ₑ; refine Gt≠Eq H } }
   // case H
   { induction
-    { assume y _ H; apply ⊥ₑ; refine Lt≠Eq H; }
-    { assume y _ H; apply ⊥ₑ; refine Lt≠Eq H; }
-    { reflexivity; } }
+    { assume y h H; apply ⊥ₑ; refine Lt≠Eq H }
+    { assume y h H; apply ⊥ₑ; refine Lt≠Eq H }
+    { reflexivity } }
 end;
 
 // Compare with Gt or Lt
@@ -418,28 +418,28 @@ begin
   // case I
   { assume x xrec;
     induction
-     { assume y _; refine xrec y; }
-     { assume y _; simplify;
+     { assume y h; refine xrec y }
+     { assume y h; simplify;
        refine ind_Comp (λ c, compare_acc x Gt y = c ⇒ c = case_Comp c Lt Lt Gt) _ _ _ (compare_acc x Gt y) _
-         { assume H; apply ⊥ₑ; refine compare_acc_nEq x y Gt _ H; }
-         { refine Gt≠Eq; }
-         { reflexivity; }
-         { reflexivity; } }
-     { reflexivity; reflexivity; } }
+         { assume H; apply ⊥ₑ; refine compare_acc_nEq x y Gt _ H }
+         { refine Gt≠Eq }
+         { reflexivity }
+         { reflexivity } }
+     { reflexivity; reflexivity } }
   // case O
   { assume x xrec;
     induction
-     { assume y _; simplify;
+     { assume y h; simplify;
        refine ind_Comp (λ c, compare_acc x Lt y = c ⇒ c = case_Comp c Lt Lt Gt) _ _ _ (compare_acc x Lt y) _
-         { assume H; apply ⊥ₑ; refine compare_acc_nEq x y Lt _ H; }
-         { refine Lt≠Eq; }
-         { reflexivity; }
-         { reflexivity; } }
-     { reflexivity; }
-     { assume y _; refine xrec y;
-       reflexivity; } }
+         { assume H; apply ⊥ₑ; refine compare_acc_nEq x y Lt _ H }
+         { refine Lt≠Eq }
+         { reflexivity }
+         { reflexivity } }
+     { reflexivity }
+     { assume y h; refine xrec y;
+       reflexivity } }
   // case H
-  { induction { reflexivity; } { reflexivity; } { reflexivity; } }
+  { induction { reflexivity } { reflexivity } { reflexivity } }
 end;
 
 
@@ -450,49 +450,49 @@ begin
   // case I
   { assume x xrec;
     induction
-      { assume y _; refine xrec y; }
-      { assume y _; simplify;
+      { assume y h; refine xrec y }
+      { assume y h; simplify;
         refine ind_Comp (λ c, compare_acc x Gt y = c ⇒ c = case_Comp c Gt Lt Gt) _ _ _ (compare_acc x Gt y) _
-          { assume H; apply ⊥ₑ; refine compare_acc_nEq x y Gt _ H; }
-          { refine Gt≠Eq; }
-          { reflexivity; }
-          { reflexivity; } }
-      { reflexivity; reflexivity } ; }
+          { assume H; apply ⊥ₑ; refine compare_acc_nEq x y Gt _ H }
+          { refine Gt≠Eq }
+          { reflexivity }
+          { reflexivity } }
+      { reflexivity; reflexivity }  }
   // case O
   { assume x xrec;
     induction
-      { assume y _; simplify;
+      { assume y h; simplify;
         refine ind_Comp (λ c, compare_acc x Lt y = c ⇒ c = case_Comp c Gt Lt Gt) _ _ _ (compare_acc x Lt y) _
-          { assume H; apply ⊥ₑ; refine compare_acc_nEq x y Lt _ H; }
-          { refine Lt≠Eq; }
-          { reflexivity; }
-          { reflexivity; } }
-     { reflexivity; assume y _; refine xrec y; }
-     { reflexivity; } }
+          { assume H; apply ⊥ₑ; refine compare_acc_nEq x y Lt _ H }
+          { refine Lt≠Eq }
+          { reflexivity }
+          { reflexivity } }
+     { reflexivity; assume y h; refine xrec y }
+     { reflexivity } }
   // case H
-  { induction { reflexivity; } { reflexivity; } { reflexivity; } }
+  { induction { reflexivity } { reflexivity } { reflexivity } }
 end;
 
 // Compatibility of compare with the addition
 
 symbol compare_H_Lt y : π (compare_acc H Lt y = Lt) ≔
 begin
-  induction { reflexivity; } { reflexivity; } { reflexivity; }
+  induction { reflexivity } { reflexivity } { reflexivity }
 end;
 
 symbol compare_Gt_H x : π (compare_acc x Gt H = Gt) ≔
 begin
-  induction { reflexivity; } { reflexivity; } { reflexivity; }
+  induction { reflexivity } { reflexivity } { reflexivity }
 end;
 
 symbol compare_H_succ y c : π (compare_acc H c (succ y) = Lt) ≔
 begin
-  induction { reflexivity; } { reflexivity; } { reflexivity; }
+  induction { reflexivity } { reflexivity } { reflexivity }
 end;
 
 symbol compare_succ_H x c : π (compare_acc (succ x) c H = Gt) ≔
 begin
-  induction { reflexivity; } { reflexivity; } { reflexivity; }
+  induction { reflexivity } { reflexivity } { reflexivity }
 end;
 
 symbol compare_succ_Lt x y :
@@ -502,17 +502,17 @@ begin
   // case I
   { assume x xrec;
     induction
-     { assume y _; refine xrec y; }
-     { assume y _; refine xrec y; }
-     { reflexivity; } }
+     { assume y h; refine xrec y }
+     { assume y h; refine xrec y }
+     { reflexivity } }
   // case O
   { assume x xrec;
-    induction { reflexivity; } { reflexivity; } { reflexivity; } }
+    induction { reflexivity } { reflexivity } { reflexivity } }
   // case H
   { induction
-     { assume y _; refine compare_H_Lt y; }
-     { assume y _; refine compare_H_Lt y; }
-     { reflexivity; } }
+     { assume y h; refine compare_H_Lt y }
+     { assume y h; refine compare_H_Lt y }
+     { reflexivity } }
 end;
 
 symbol compare_Gt_succ x y :
@@ -530,20 +530,20 @@ begin
   // case I
   { assume x xrec;
     induction
-     { assume y _ c; refine xrec y c; }
-     { assume y _ c; simplify; refine compare_succ_Lt x y; }
-     { assume c; simplify; refine compare_succ_H x c; } }
+     { assume y h c; refine xrec y c }
+     { assume y h c; simplify; refine compare_succ_Lt x y }
+     { assume c; simplify; refine compare_succ_H x c } }
   // case O
   { assume x xrec;
     induction
-     { assume y _ c; simplify; refine compare_Gt_succ x y; }
-     { assume y _ c; reflexivity; }
-     { assume c; simplify; refine compare_Gt_H x; } }
+     { assume y h c; simplify; refine compare_Gt_succ x y }
+     { assume y h c; reflexivity }
+     { assume c; simplify; refine compare_Gt_H x } }
   // case H
   { induction
-     { assume y _ c; simplify; refine compare_H_succ y c; }
-     { assume y _ c; simplify; refine compare_H_Lt y; }
-     { reflexivity; } }
+     { assume y h c; simplify; refine compare_H_succ y c }
+     { assume y h c; simplify; refine compare_H_Lt y }
+     { reflexivity } }
 end;
 
 symbol compare_compat_add a x y :
@@ -551,11 +551,11 @@ symbol compare_compat_add a x y :
 begin
   refine ind_ℙeano (λ a, `∀ x, `∀ y, compare (add x a) (add y a) = compare x y) _ _
   // case H
-  { assume x y; refine compare_succ_succ x y Eq; }
+  { assume x y; refine compare_succ_succ x y Eq }
   // case succ
   { assume a arec x y;
     rewrite add_succ_right; rewrite add_succ_right; rewrite left arec x y;
-    simplify; rewrite compare_succ_succ; reflexivity; }
+    simplify; rewrite compare_succ_succ; reflexivity }
 end;
 
 // Multiplication
