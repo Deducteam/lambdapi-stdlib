@@ -571,13 +571,13 @@ end;
 symbol <_compat_≤ x y : π (0 < x ⇒ 0 ≤ y ⇒ 0 < x + y) ≔
 begin
   induction
-   { assume y f _; apply ⊥ₑ; refine f }
+   { assume y f h; apply ⊥ₑ; refine f }
    { assume x;
      induction
       { assume h1 h2; refine ⊤ᵢ }
-      { assume y h _; refine ⊤ᵢ }
+      { assume y h h'; refine ⊤ᵢ }
       { simplify; assume y h f; apply ⊥ₑ; refine f ⊤ᵢ } }
-  { assume x; assume y f _; apply ⊥ₑ; refine f }
+  { assume x; assume y f h; apply ⊥ₑ; refine f }
 end;
 
 // Reflexivity
