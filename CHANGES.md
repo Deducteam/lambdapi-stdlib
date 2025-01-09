@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   HOL: Set constructor ⤳ for quantifying over function types
   Impred: Set constructor o for quantifying over propositions
   Epsilon: Hilbert's ε operator
-- Set: add ι:Set
+- Set: add ι:Set and an axiom el:Π a,τ a saying that every set is non-empty 
 - Bool: declare istrue as injective
 
 ## 1.1.0 (2024-06-21)
