@@ -5,6 +5,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+- Z: rename - into — and ~ into -, change notation of + and ×, add missing notation for ≥
 - List: add iota and indexes
 - Bool: declare istrue as a coercion
 - Add files for higher-order logic:

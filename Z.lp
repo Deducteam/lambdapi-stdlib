@@ -55,14 +55,14 @@ end;
 
 // Unary opposite
 
-symbol ~ : ℤ → ℤ;
-notation ~ prefix 24;
+symbol - : ℤ → ℤ;
+notation - prefix 24;
 
-rule ~ Z0 ↪ Z0
-with ~ (Zpos $p) ↪ Zneg $p
-with ~ (Zneg $p) ↪ Zpos $p;
+rule - Z0 ↪ Z0
+with - (Zpos $p) ↪ Zneg $p
+with - (Zneg $p) ↪ Zpos $p;
 
-symbol ~_idem z : π (~ ~ z = z) ≔
+symbol -_idem z : π (- - z = z) ≔
 begin
   induction { reflexivity } { reflexivity } { reflexivity }
 end;
@@ -89,17 +89,17 @@ with pred_double (Zneg $p) ↪ Zneg (I $p);
 
 // Interaction of opp and doubling functions
 
-symbol double_opp z : π (double (~ z) = ~ double z) ≔
+symbol double_opp z : π (double (- z) = - double z) ≔
 begin
   induction { reflexivity } { reflexivity } { reflexivity }
 end;
 
-symbol succ_double_opp z : π (succ_double (~ z) = ~ pred_double z) ≔
+symbol succ_double_opp z : π (succ_double (- z) = - pred_double z) ≔
 begin
   induction { reflexivity } { reflexivity } { reflexivity }
 end;
 
-symbol pred_double_opp z : π (pred_double (~ z) = ~ succ_double z) ≔
+symbol pred_double_opp z : π (pred_double (- z) = - succ_double z) ≔
 begin
   induction { reflexivity } { reflexivity } { reflexivity }
 end;
@@ -126,7 +126,7 @@ begin
    { reflexivity }
 end;
 
-symbol sub_opp x y : π (~ sub x y = sub y x) ≔
+symbol sub_opp x y : π (- sub x y = sub y x) ≔
 begin
   induction
   // case I
@@ -148,7 +148,7 @@ end;
 // Addition of integers
 
 symbol + : ℤ → ℤ → ℤ;
-notation + infix left 20;
+notation + infix right 20;
 
 rule Z0      + $y      ↪ $y
 with $x      + Z0      ↪ $x
@@ -164,7 +164,7 @@ builtin "+1" ≔ +1;
 
 // Interaction of addition with opposite
 
-symbol distr_~_+ x y : π (~ (x + y) = ~ x + ~ y) ≔
+symbol distr_-_+ x y : π (- (x + y) = - x + - y) ≔
 begin
   induction
   // case Z0
@@ -237,10 +237,10 @@ end;
 
 // Negation
 
-symbol - x y ≔ x + ~ y;
-notation - infix left 20;
+symbol — x y ≔ x + - y;
+notation — infix left 20;
 
-symbol -_same z : π (z + ~ z = 0) ≔
+symbol —_same z : π (z + - z = 0) ≔
 begin
   induction
    { reflexivity }
@@ -297,10 +297,10 @@ begin
   assume a b c;
   rewrite left sub_opp (add b c) a;
   rewrite left sub_add_Zpos;
-  rewrite distr_~_+; rewrite sub_opp; reflexivity;
+  rewrite distr_-_+; rewrite sub_opp; reflexivity;
 end;
 
-symbol +_assoc x y z : π (x + y + z = x + (y + z)) ≔
+symbol +_assoc x y z : π ((x + y) + z = x + (y + z)) ≔
 begin
   induction
   { reflexivity }
@@ -310,19 +310,19 @@ begin
      { assume y;
        induction
          { reflexivity }
-         // case Zpos - Zpos - Zpos
+         // case Zpos — Zpos — Zpos
          { assume z; simplify; rewrite add_assoc; reflexivity }
-         // case Zpos - Zpos - Zneg
+         // case Zpos — Zpos — Zneg
          { assume z; simplify; rewrite +_com; rewrite sub_add_Zpos;
            rewrite add_com; reflexivity } }
 
      { assume y;
        induction
          { reflexivity }
-         // case Zpos - Zneg - Zpos
+         // case Zpos — Zneg — Zpos
          { assume z; simplify; rewrite sub_add_Zpos; rewrite +_com;
            rewrite sub_add_Zpos; rewrite add_com; reflexivity }
-         // case Zpos - Zneg - Zneg
+         // case Zpos — Zneg — Zneg
          { assume z; simplify; rewrite sub_add_Zneg; reflexivity } } }
 
   { assume x;
@@ -331,19 +331,19 @@ begin
       { assume y;
         induction
           { reflexivity }
-          // case Zneg - Zpos - Zpos
+          // case Zneg — Zpos — Zpos
           { assume z; simplify; rewrite sub_add_Zpos; reflexivity }
-          // case Zneg - Zpos - Zneg
+          // case Zneg — Zpos — Zneg
           { assume z; simplify; rewrite sub_add_Zneg; rewrite +_com;
             rewrite sub_add_Zneg; rewrite add_com; reflexivity } }
 
       { assume y;
         induction
           { reflexivity }
-          // case Zneg - Zneg - Zpos
+          // case Zneg — Zneg — Zpos
           { assume z; simplify; rewrite +_com; rewrite sub_add_Zneg;
             rewrite add_com; reflexivity }
-          // case Zneg - Zneg - Zneg
+          // case Zneg — Zneg — Zneg
           { assume z; simplify; rewrite add_assoc; reflexivity } } }
 end;
 
@@ -408,7 +408,7 @@ begin
      { assume y; simplify; rewrite compare_acc_com; reflexivity } }
 end;
 
-symbol ≐_opp x y : π (~ x ≐ ~ y = opp (x ≐ y)) ≔
+symbol ≐_opp x y : π (- x ≐ - y = opp (x ≐ y)) ≔
 begin
   induction
   // case Z0
@@ -429,16 +429,16 @@ end;
 
 // General results
 
-symbol simpl_right x a : π (x + a - a = x) ≔
+symbol simpl_right x a : π ((x + a) — a = x) ≔
 begin
   assume x a; simplify; rewrite +_assoc;
-  rewrite -_same; reflexivity;
+  rewrite —_same; reflexivity;
 end;
 
-symbol simpl_inv_right x a : π (x - a + a = x) ≔
+symbol simpl_inv_right x a : π ((x — a) + a = x) ≔
 begin
   assume x a; simplify; rewrite +_assoc;
-  rewrite .[~ a + a] +_com; rewrite -_same; reflexivity;
+  rewrite .[- a + a] +_com; rewrite —_same; reflexivity;
 end;
 
 // ≐ with 0
@@ -481,7 +481,7 @@ begin
   { induction { reflexivity } { reflexivity } { reflexivity } }
 end;
 
-symbol ≐_sub x y : π ((x ≐ y) = (x + ~ y ≐ 0)) ≔
+symbol ≐_sub x y : π ((x ≐ y) = (x + - y ≐ 0)) ≔
 begin
   induction
   // case Z0
@@ -506,9 +506,9 @@ symbol ≐_compat_add x y z : π ((x ≐ y) = (x + z ≐ y + z)) ≔
 begin
   assume x y z;
   rewrite ≐_sub; rewrite .[x in _ = x] ≐_sub;
-  simplify; rewrite distr_~_+; rewrite .[~ y + ~ z] +_com;
-  rewrite +_assoc; rewrite left +_assoc z (~ z) (~ y);
-  rewrite -_same z; reflexivity;
+  simplify; rewrite distr_-_+; rewrite .[- y + - z] +_com;
+  rewrite +_assoc; rewrite left +_assoc z (- z) (- y);
+  rewrite —_same z; reflexivity;
 end;
 
 // Directional comparison operators
@@ -520,7 +520,7 @@ symbol < x y ≔ istrue(isLt (x ≐ y));
 notation < infix 10;
 
 symbol ≥ x y ≔ ¬ (x < y);
-notation ≤ infix 10;
+notation ≥ infix 10;
 
 symbol > x y ≔ ¬ (x ≤ y);
 notation > infix 10;
@@ -541,9 +541,9 @@ begin
   assume x y a; simplify;
   assume H; refine fold_⇒ _; rewrite ≐_sub;
   simplify; refine fold_⇒ _; rewrite +_assoc;
-  rewrite .[y + a] +_com; rewrite distr_~_+;
-  rewrite left +_assoc a (~ a) (~ y); rewrite -_same;
-  rewrite left +_assoc x 0 (~ y); simplify; refine fold_⇒ _;
+  rewrite .[y + a] +_com; rewrite distr_-_+;
+  rewrite left +_assoc a (- a) (- y); rewrite —_same;
+  rewrite left +_assoc x 0 (- y); simplify; refine fold_⇒ _;
   rewrite left ≐_sub x y; refine H;
 end;
 
@@ -551,8 +551,8 @@ symbol <_compat_add x y a : π (x < y ⇒ x + a < y + a) ≔
 begin
   assume x y a; simplify; assume H; rewrite ≐_sub;
   simplify; rewrite +_assoc; rewrite .[y + a] +_com;
-  rewrite distr_~_+; rewrite left +_assoc a (~ a) (~ y);
-  rewrite -_same; rewrite left +_assoc;
+  rewrite distr_-_+; rewrite left +_assoc a (- a) (- y);
+  rewrite —_same; rewrite left +_assoc;
   simplify; rewrite left ≐_sub; refine H;
 end;
 
@@ -606,50 +606,50 @@ end;
 symbol ≤_trans x y z : π (x ≤ y ⇒ y ≤ z ⇒ x ≤ z) ≔
 begin
    assume x y z lxy lyz;
-   have H : π (0 ≤ (z + ~ y) + (y + ~ x))
-   { refine ≤_compat_≤ (z - y) (y - x) _ _
-      { rewrite left -_same y; refine ≤_compat_add y z (~ y) _; refine lyz }
-      { rewrite left -_same x; refine ≤_compat_add x y (~ x) _; refine lxy } } ;
+   have H : π (0 ≤ (z + - y) + (y + - x))
+   { refine ≤_compat_≤ (z — y) (y — x) _ _
+      { rewrite left —_same y; refine ≤_compat_add y z (- y) _; refine lyz }
+      { rewrite left —_same x; refine ≤_compat_add x y (- x) _; refine lxy } } ;
    generalize H; refine fold_⇒ _;
-   rewrite +_assoc; rewrite left +_assoc (~ y) y (~ x);
-   rewrite .[~ y + y] +_com; rewrite -_same;
-   refine (λ p : π ((0 ≤ (z + ~ x)) ⇒ (x ≤ z)), p) _;
+   rewrite +_assoc; rewrite left +_assoc (- y) y (- x);
+   rewrite .[- y + y] +_com; rewrite —_same;
+   refine (λ p : π ((0 ≤ (z + - x)) ⇒ (x ≤ z)), p) _;
    rewrite left .[in x ≤ z] simpl_inv_right z x;
-   refine ≤_compat_add 0 (z - x) x;
+   refine ≤_compat_add 0 (z — x) x;
 end;
 
 symbol <_trans_1 x y z : π (x < y ⇒ y ≤ z ⇒ x < z) ≔
 begin
   assume x y z lxy lyz;
-  have H : π (0 < (z + ~ y) + (y + ~ x))
-   { rewrite +_com; apply <_compat_≤ (y - x) (z - y)
-      { rewrite left -_same x; refine <_compat_add x y (~ x) _; refine lxy }
-      { rewrite left -_same y; refine ≤_compat_add y z (~ y) _; refine lyz } } ;
+  have H : π (0 < (z + - y) + (y + - x))
+   { rewrite +_com; apply <_compat_≤ (y — x) (z — y)
+      { rewrite left —_same x; refine <_compat_add x y (- x) _; refine lxy }
+      { rewrite left —_same y; refine ≤_compat_add y z (- y) _; refine lyz } } ;
   generalize H; refine fold_⇒ _;
-  rewrite +_assoc; rewrite left +_assoc (~ y) y (~ x);
-  rewrite .[~ y + y] +_com; rewrite -_same;
+  rewrite +_assoc; rewrite left +_assoc (- y) y (- x);
+  rewrite .[- y + y] +_com; rewrite —_same;
   rewrite left .[in x < z] simpl_inv_right z x;
-  refine <_compat_add 0 (z - x) x;
+  refine <_compat_add 0 (z — x) x;
 end;
 
 symbol <_trans_2 x y z : π (x ≤ y ⇒ y < z ⇒ x < z) ≔
 begin
   assume x y z lxy lyz;
-  have H : π (0 < (z + ~ y) + (y + ~ x))
-  { apply <_compat_≤ (z - y) (y - x)
-     { rewrite left -_same y; refine <_compat_add y z (~ y) _; refine lyz }
-     { rewrite left -_same x; refine ≤_compat_add x y (~ x) _; refine lxy } };
+  have H : π (0 < (z + - y) + (y + - x))
+  { apply <_compat_≤ (z — y) (y — x)
+     { rewrite left —_same y; refine <_compat_add y z (- y) _; refine lyz }
+     { rewrite left —_same x; refine ≤_compat_add x y (- x) _; refine lxy } };
   generalize H; refine fold_⇒ _;
-  rewrite +_assoc; rewrite left +_assoc (~ y) y (~ x);
-  rewrite .[~ y + y] +_com; rewrite -_same;
+  rewrite +_assoc; rewrite left +_assoc (- y) y (- x);
+  rewrite .[- y + y] +_com; rewrite —_same;
   rewrite left .[in x < z] simpl_inv_right z x;
-  refine <_compat_add 0 (z - x) x;
+  refine <_compat_add 0 (z — x) x;
 end;
 
 // Multiplication
 
 symbol × : ℤ → ℤ → ℤ;
-notation × infix left 22;
+notation × infix right 22;
 
 rule 0       × _       ↪ 0
 with _       × 0       ↪ 0
