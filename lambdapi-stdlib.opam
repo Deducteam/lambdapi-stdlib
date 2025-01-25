@@ -24,5 +24,5 @@ dev-repo: "git+https://github.com/Deducteam/lambdapi-stdlib.git"
 build: [ make ]
 install: [ make "install" ]
 depends: [
-  "lambdapi" {>= "2.3.0"}
+  "lambdapi" {>= "2.6.0"}
 ]
