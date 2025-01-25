@@ -94,17 +94,6 @@ inductive ℕ : TYPE ≔
 | _0 : ℕ
 | +1 : ℕ → ℕ; notation +1 postfix 100;
 
-symbol _1 ≔ _0 +1;
-symbol _2 ≔ _1 +1;
-symbol _3 ≔ _2 +1;
-symbol _4 ≔ _3 +1;
-symbol _5 ≔ _4 +1;
-symbol _6 ≔ _5 +1;
-symbol _7 ≔ _6 +1;
-symbol _8 ≔ _7 +1;
-symbol _9 ≔ _8 +1;
-symbol _10 ≔ _9 +1;
-
 // set code for ℕ
 
 constant symbol nat : Set;
@@ -1805,6 +1794,19 @@ begin
   { apply ⊤ᵢ; }
   { assume n h; rewrite factS n; apply leq_pmulr (n +1) (n !) (fact_gt0 n); }
 end;
+
+// shortcuts
+
+symbol _1 ≔ _0 +1;
+symbol _2 ≔ _1 +1;
+symbol _3 ≔ _2 +1;
+symbol _4 ≔ _3 +1;
+symbol _5 ≔ _4 +1;
+symbol _6 ≔ _5 +1;
+symbol _7 ≔ _6 +1;
+symbol _8 ≔ _7 +1;
+symbol _9 ≔ _8 +1;
+symbol _10 ≔ _9 +1;
 
 // enable printing of natural numbers in decimal notation
 
