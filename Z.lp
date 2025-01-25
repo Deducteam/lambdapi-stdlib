@@ -655,7 +655,7 @@ with Zneg $x * Zneg $y ↪ Zpos (mul $x $y);
 
 // TO BE CONTINUED (theorems about multiplication)
 
-// enable parsing of positive numbers in decimal notation
+// shortcuts
 
 symbol _1 ≔ Zpos _1;
 symbol _2 ≔ Zpos _2;
@@ -667,6 +667,16 @@ symbol _7 ≔ Zpos _7;
 symbol _8 ≔ Zpos _8;
 symbol _9 ≔ Zpos _9;
 symbol _10 ≔ Zpos _10;
+
+// enable printing of integers in decimal notation
+
+builtin "int_zero" ≔ Z0;
+builtin "int_positive" ≔ Zpos;
+builtin "int_negative" ≔ Zneg;
+
+compute _2 - _3;
+
+// enable parsing of integers in decimal notation
 
 builtin "0" ≔ Z0;
 builtin "1" ≔ _1;
@@ -682,5 +692,6 @@ builtin "10" ≔ _10;
 
 builtin "+" ≔ +;
 builtin "*" ≔ *;
+builtin "-" ≔ ~;
 
-type 42;
+type -42;

@@ -1806,6 +1806,13 @@ begin
   { assume n h; rewrite factS n; apply leq_pmulr (n +1) (n !) (fact_gt0 n); }
 end;
 
+// enable printing of natural numbers in decimal notation
+
+builtin "nat_zero" ≔ _0;
+builtin "nat_succ" ≔ +1;
+
+compute _2 + _2;
+
 // enable parsing of natural numbers in decimal notation
 
 builtin "0"  ≔ _0;
@@ -1824,10 +1831,3 @@ builtin "+" ≔ +;
 builtin "*" ≔ *;
 
 type 42;
-
-// enable printing of natural numbers in decimal notation
-
-builtin "nat_zero" ≔ _0;
-builtin "nat_succ" ≔ +1;
-
-compute 2 + 2;
