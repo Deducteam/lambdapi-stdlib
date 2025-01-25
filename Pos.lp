@@ -565,3 +565,24 @@ symbol mul : ℙ → ℙ → ℙ;
 rule mul (I $x) $y ↪ add $x (O (mul $x $y))
 with mul (O $x) $y ↪ O (mul $x $y)
 with mul H      $y ↪ $y;
+
+// shortcuts
+
+symbol _1 ≔ H;
+symbol _2 ≔ O H;
+symbol _3 ≔ I H;
+symbol _4 ≔ O (O H);
+symbol _5 ≔ I (O H);
+symbol _6 ≔ O (I H);
+symbol _7 ≔ I (I H);
+symbol _8 ≔ O (O (O H));
+symbol _9 ≔ I (O (O H));
+symbol _10 ≔ O (I (O H));
+
+// enable printing of natural numbers in decimal notation
+
+builtin "pos_one" ≔ H;
+builtin "pos_double" ≔ O;
+builtin "pos_succ_double" ≔ I;
+
+compute add _2 _2;

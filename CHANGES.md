@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+- Z: rename × into *
+- Z: add parsing from decimal notation
+- Nat, Pos, Z: add printing to decimal notation
+- Nat: rename 0 into _0, and -1 into ∸1
 - List: add iota and indexes
 - Bool: declare istrue as a coercion
 - Add files for higher-order logic:
