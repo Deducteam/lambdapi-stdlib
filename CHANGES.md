@@ -5,18 +5,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
-- Z: rename × into *
-- Z: add parsing from decimal notation
-- Nat, Pos, Z: add printing to decimal notation
-- Nat: rename 0 into _0, and -1 into ∸1
+### Added
+
+- HOL: Set constructor ⤳ for quantifying over function types
+- Impred: Set constructor o for quantifying over propositions
+- Epsilon: Hilbert's ε operator
 - List: add iota and indexes
-- Bool: declare istrue as a coercion
-- Add files for higher-order logic:
-  HOL: Set constructor ⤳ for quantifying over function types
-  Impred: Set constructor o for quantifying over propositions
-  Epsilon: Hilbert's ε operator
 - Set: add ι:Set
+- Pos, Z: add printing to decimal notation
+
+### Changed
+
+- Z: rename × into *, and ~ into —
+- Z: add parsing from decimal notation
+- Nat: rename 0 into _0, and -1 into ∸1
 - Bool: declare istrue as injective
+
+### Fixed
+
+- Z: missing notation for ≥
 
 ## 1.1.0 (2024-06-21)
 
