@@ -1,6 +1,6 @@
 on:
   pull_request:
-    types: [opened, synchronize, edited, reopened]
+    types: [opened, synchronize, reopened]
   push:
   workflow_dispatch:
 jobs:
@@ -8,8 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        lambdapi-version: [lambdapi,lambdapi.2.5.1,lambdapi.2.5.0,lambdapi.2.4.1,lambdapi.2.4.0,lambdapi.2.3.1,lambdapi.2.3.0]
-        # lambdapi.2.3.0 dependencies require ocaml < 5.0.0
+        lambdapi-version: [lambdapi] #,lambdapi.2.5.1,lambdapi.2.5.0,lambdapi.2.4.1,lambdapi.2.4.0,lambdapi.2.3.1]
     runs-on: ubuntu-latest
     steps:
       - name: Check out library
@@ -17,7 +16,8 @@ jobs:
       - name: Install ocaml and opam
         uses: ocaml/setup-ocaml@v3
         with:
-          ocaml-compiler: 4.14.1
+          ocaml-compiler: 5.2.1
+          # lambdapi.2.3.0 dependencies require ocaml < 5.0.0
       - name: Install required libraries
         run: sudo apt-get install -y libev-dev
       - name: Setup opam (when testing the development version of lambdapi)
