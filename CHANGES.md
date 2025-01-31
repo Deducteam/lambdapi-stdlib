@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Impred: Set constructor o for quantifying over propositions
 - Epsilon: Hilbert's ε operator
 - List: add iota and indexes
-- Set: add ι:Set
+- Set: add ι:Set and an axiom el:Π a,τ a saying that every set is non-empty 
 - Pos, Z: add printing to decimal notation
 
 ### Changed

@@ -10,6 +10,10 @@ injective symbol τ : Set → TYPE; // `t or \tau
 
 builtin "T" ≔ τ;
 
+// We assume that sets are non-empty
+
+symbol el a : τ a;
+
 // Cartesian product
 
 constant symbol × : Set → Set → Set; notation × infix right 10; // \times
