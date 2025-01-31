@@ -148,19 +148,19 @@ with eqn (_ +1) _0 ↪ false;
 opaque symbol eqn_correct x y : π(istrue(eqn x y)) → π(x = y) ≔
 begin
   induction
-  { induction { reflexivity; } { assume x h i; apply ⊥ₑ i; } }
+  { induction { reflexivity } { assume x h i; apply ⊥ₑ i } }
   { assume x h; induction
-    { assume i; apply ⊥ₑ i; }
-    { assume y i j; apply feq (+1); apply h _ j; }
+    { assume i; apply ⊥ₑ i }
+    { assume y i j; apply feq (+1); apply h _ j }
   }
 end;
 
 opaque symbol eqn_complete x y : π(x = y) → π(istrue(eqn x y)) ≔
 begin
   induction
-  { assume y i; rewrite left i; apply ⊤ᵢ; }
+  { assume y i; rewrite left i; apply ⊤ᵢ }
   { simplify; assume x h; induction
-    { assume i; apply s≠0 i; }
+    { assume i; apply s≠0 i }
     { assume y i j; simplify; refine h y _; apply +1_inj; refine j }
   }
 end;
@@ -279,7 +279,7 @@ opaque symbol addn_eq0 m n : π (m + n = _0 ⇔ m = _0 ∧ n = _0) ≔
 begin
   assume m n; apply ∧ᵢ {
     generalize m; induction
-    { assume m h; apply ∧ᵢ (eq_refl _0) h; }
+    { assume m h; apply ∧ᵢ (eq_refl _0) h }
     { assume m h n i; apply ⊥ₑ (s≠0 i) }
   } {
     generalize m; induction
@@ -366,16 +366,16 @@ end;
 opaque symbol subn1 n : π (n - (_0 +1) = n ∸1) ≔
 begin
   induction
-  { reflexivity; }
+  { reflexivity }
   { assume n h; reflexivity;  }
 end;
 
 opaque symbol subnS x y : π (x - (y +1) = (x - y) ∸1) ≔
 begin
   induction
-  { reflexivity; }
+  { reflexivity }
   { assume x h; induction
-    { reflexivity; }
+    { reflexivity }
     { assume y i; simplify; rewrite h; reflexivity }
   }
 end;
@@ -383,41 +383,41 @@ end;
 opaque symbol subSnn n : π (n +1 - n = (_0 +1)) ≔
 begin
   induction
-  { reflexivity; }
-  { assume n h; simplify; apply h; }
+  { reflexivity }
+  { assume n h; simplify; apply h }
 end;
 
 opaque symbol predn_sub x y : π ((x - y) ∸1 = x ∸1 - y) ≔
 begin
   induction
-  { reflexivity; }
+  { reflexivity }
   { assume x h; induction
-    { reflexivity; }
-    { assume y i; simplify; symmetry; rewrite subnS; reflexivity; }
+    { reflexivity }
+    { assume y i; simplify; symmetry; rewrite subnS; reflexivity }
   }
 end;
 
 opaque symbol subnAC z x y : π ((x - y) - z = (x - z) - y) ≔
 begin
   induction
-  { reflexivity; }
+  { reflexivity }
   { assume z h; induction
-    { reflexivity; }
+    { reflexivity }
     { assume x i; induction
-      { reflexivity; }
+      { reflexivity }
       { assume y j; simplify; rewrite i; rewrite subnS; symmetry;
         rewrite subnS; rewrite predn_sub; reflexivity}
     }
   }
 end;
 
-opaque symbol addnK x y : π (x + y - y = x) ≔
+opaque symbol addnK x y : π ((x + y) - y = x) ≔
 begin
   induction
-  { reflexivity; }
+  { assume x; simplify; rewrite subnn; reflexivity }
   { assume x h; induction
-    { reflexivity; }
-    { simplify; assume y i; rewrite i; reflexivity; }
+    { reflexivity }
+    { simplify; assume y i; rewrite i; reflexivity }
   }
 end;
 
@@ -430,7 +430,7 @@ begin
     { assume y i; induction
       { reflexivity }
       { assume z j; simplify; rewrite subnS; symmetry; rewrite subnS;
-        rewrite h; reflexivity; }
+        rewrite h; reflexivity }
     }
   }
 end;
@@ -438,11 +438,11 @@ end;
 opaque symbol subnDl z x y : π ((z + x) - (z + y) = x - y) ≔
 begin
   induction
-  { reflexivity }
+  { assume x y; simplify; reflexivity }
   { assume z h; induction
-    { assume y; simplify; rewrite subnDA; reflexivity; }
+    { assume y; simplify; rewrite subnDA; rewrite subnn; reflexivity }
     { assume x i; induction
-      { rewrite addnC; rewrite addn0; rewrite addnK; reflexivity; }
+      { rewrite addnC; rewrite addn0; rewrite addnK; reflexivity }
       { assume y j; rewrite addnC; rewrite subnDA; rewrite addnK; reflexivity }
     }
   }
@@ -488,8 +488,8 @@ end;
 opaque symbol muln1 n : π (n * (_0 +1) = n) ≔
 begin
   induction
-  { reflexivity; }
-  { assume n h; simplify; rewrite h; reflexivity; }
+  { reflexivity }
+  { assume n h; simplify; rewrite h; reflexivity }
 end;
 
 opaque symbol mulSn m n : π ((m +1) * n = n + m * n) ≔
@@ -548,15 +548,15 @@ end;
 opaque symbol mulnBr x y z : π (x * (y - z) = x * y - x * z) ≔
 begin
   induction
-  { reflexivity; }
+  { reflexivity }
   { assume x h; induction
-    { reflexivity; }
+    { reflexivity }
     { assume y i; induction
-      { reflexivity; }
+      { reflexivity }
       { assume z j; simplify; rewrite mulnS; rewrite mulnS;
         rewrite left addnAC; rewrite .[z + (x + _)] addnAC;
         rewrite subnDl; rewrite left mulSn; rewrite left mulSn;
-        rewrite left mulSn; rewrite left i; reflexivity; }
+        rewrite left mulSn; rewrite left i; reflexivity }
     }
   }
 end;
@@ -598,10 +598,10 @@ opaque symbol muln_eq0 m n : π (m * n = _0 ⇔ m = _0 ∨ n = _0) ≔
 begin
   assume m n; apply ∧ᵢ {
     generalize m; induction
-    { assume n h; apply ∨ᵢ₁ h; }
+    { assume n h; apply ∨ᵢ₁ h }
     { assume m h n i;
-      have t: π (n = _0 ∧ (m * n) = _0) { apply ∧ₑ₁ (addn_eq0 n (m * n)) i; };
-      have u: π (n = _0) { apply ∧ₑ₁ t; };
+      have t: π (n = _0 ∧ (m * n) = _0) { apply ∧ₑ₁ (addn_eq0 n (m * n)) i };
+      have u: π (n = _0) { apply ∧ₑ₁ t };
       apply ∨ᵢ₂ u;
     }
   } {
@@ -638,14 +638,14 @@ opaque symbol ≤0 x : π (istrue (x ≤ _0)) → π (x = _0) ≔
 begin
   induction
   { assume h; reflexivity;}
-  { assume x h i; apply ⊥ₑ; apply i; }
+  { assume x h i; apply ⊥ₑ; apply i }
 end;
 
 opaque symbol ≤_refl x : π (istrue (x ≤ x)) ≔
 begin
   induction
   { simplify; apply ⊤ᵢ;}
-  { assume x h; simplify; apply h; }
+  { assume x h; simplify; apply h }
 end;
 
 opaque symbol eq_leq x y : π (x = y) → π (istrue (x ≤ y)) ≔
@@ -657,12 +657,12 @@ opaque symbol leq_trans [x y z] :
   π (istrue (x ≤ y)) → π (istrue (y ≤ z)) → π (istrue (x ≤ z)) ≔
 begin
   induction
-  { assume y z h i; apply h; }
+  { assume y z h i; apply h }
   { assume x h; induction
-    { assume y i; apply ⊥ₑ i; }
+    { assume y i; apply ⊥ₑ i }
     { assume y i; induction
-      { assume j k; apply k; }
-      { assume z j k l; apply h y z k l; }
+      { assume j k; apply k }
+      { assume z j k l; apply h y z k l }
     }
   }
 end;
@@ -672,13 +672,13 @@ begin
   assume x y; apply ∧ᵢ {
     generalize x; induction
     { assume y g;
-      have i: π (istrue (y ≤ _0)) { apply ∧ₑ₂ g; };
+      have i: π (istrue (y ≤ _0)) { apply ∧ₑ₂ g };
       symmetry; apply ≤0 y i;
     }
     {
       assume x h; induction
       { assume g;
-        have i: π (istrue (x +1 ≤ _0)) { apply ∧ₑ₁ g; };
+        have i: π (istrue (x +1 ≤ _0)) { apply ∧ₑ₁ g };
         apply ≤0 (x +1) i;
       }
       { assume y i j; apply feq (+1); apply h y j;}
@@ -694,7 +694,7 @@ end;
 opaque symbol leqsnn n: π (istrue (n +1 ≤ n)) → π ⊥ ≔
 begin
   induction
-  { assume h; apply h; }
+  { assume h; apply h }
   { assume n h i; apply h; apply i;}
 end;
 
@@ -722,7 +722,7 @@ opaque symbol leq0n n : π (istrue (_0 ≤ n)) ≔
 begin
   induction
   { apply ≤_refl _0;}
-  { assume n h; simplify; apply h; }
+  { assume n h; simplify; apply h }
 end;
 
 opaque symbol ltn0Sn n : π (istrue (_0 < n +1)) ≔
@@ -733,8 +733,8 @@ end;
 opaque symbol leqnSn n : π (istrue (n ≤ n +1)) ≔
 begin
   induction
-  { apply leq0n (_0 +1); }
-  { assume n h; simplify; apply h; }
+  { apply leq0n (_0 +1) }
+  { assume n h; simplify; apply h }
 end;
 
 opaque symbol leq_pred n : π (istrue (n ∸1 ≤ n)) ≔
@@ -762,37 +762,37 @@ end;
 opaque symbol ltn_trans x y z : π (istrue (x < y)) → π (istrue (y < z)) → π (istrue (x < z)) ≔
 begin
   assume x y z h i;
-  have v:π (istrue (x +1 ≤ y +1)) { apply leqW (x +1) y h; };
+  have v:π (istrue (x +1 ≤ y +1)) { apply leqW (x +1) y h };
   apply @leq_trans (x +1) (y +1) z v i;
 end;
 
 opaque symbol <_asym x y : π (istrue (x < y)) → π (¬ (istrue (y < x))) ≔
 begin
   assume x y h i;
-  have t:π (istrue (y ≤ y +1)) { apply leqnSn y; };
-  have u:π (istrue (x +1 ≤ y +1)) { apply @leq_trans (x +1) y (y +1) h t; };
-  have v:π (istrue (x +1 ≤ x)) { apply @leq_trans (x +1) (y +1) x u i; };
+  have t:π (istrue (y ≤ y +1)) { apply leqnSn y };
+  have u:π (istrue (x +1 ≤ y +1)) { apply @leq_trans (x +1) y (y +1) h t };
+  have v:π (istrue (x +1 ≤ x)) { apply @leq_trans (x +1) (y +1) x u i };
   apply leqsnn x; apply v;
 end;
 
 opaque symbol anti_ltn x y : π(istrue (x < y)) → π(istrue (y < x)) → π(x = y) ≔
 begin
   assume x y h i;
-  have c:π (istrue (x ≤ x +1)) { apply leqnSn x; };
-  have d:π (istrue (y ≤ y +1)) { apply leqnSn y; };
-  have e:π (istrue (x ≤ y)) { apply @leq_trans x (x +1) y c h; };
-  have f:π (istrue (y ≤ x)) { apply @leq_trans y (y +1) x d i; };
-  have g:π (istrue (x ≤ y) ∧ istrue (y ≤ x)) { apply ∧ᵢ e f; };
+  have c:π (istrue (x ≤ x +1)) { apply leqnSn x };
+  have d:π (istrue (y ≤ y +1)) { apply leqnSn y };
+  have e:π (istrue (x ≤ y)) { apply @leq_trans x (x +1) y c h };
+  have f:π (istrue (y ≤ x)) { apply @leq_trans y (y +1) x d i };
+  have g:π (istrue (x ≤ y) ∧ istrue (y ≤ x)) { apply ∧ᵢ e f };
   apply ∧ₑ₁ (eqn_leq x y) g;
 end;
 
 opaque symbol leq_total x y : π (istrue (x ≤ y) ∨ istrue (y ≤ x)) ≔
 begin
   induction
-  { assume y; simplify; apply ∨ᵢ₁; apply ⊤ᵢ; }
+  { assume y; simplify; apply ∨ᵢ₁; apply ⊤ᵢ }
   { assume x h; induction
-    { simplify; apply ∨ᵢ₂; apply ⊤ᵢ; }
-    { assume y i; simplify; apply h y; }
+    { simplify; apply ∨ᵢ₂; apply ⊤ᵢ }
+    { assume y i; simplify; apply h y }
   }
 end;
 
@@ -800,12 +800,12 @@ opaque symbol lt0n n : π (istrue (n > _0) ⇔ (n ≠ _0)) ≔
 begin
   assume n; apply ∧ᵢ {
     generalize n; induction
-    { assume h i; apply h; }
+    { assume h i; apply h }
     { assume n h i j; apply s≠0 j;}
   } {
     generalize n; induction
-    { assume h; apply h (eq_refl _0); }
-    { assume n h i; apply ⊤ᵢ; }
+    { assume h; apply h (eq_refl _0) }
+    { assume n h i; apply ⊤ᵢ }
   };
 end;
 
@@ -847,12 +847,12 @@ opaque symbol leq_add2l p m n : π (istrue (p + m ≤ p + n) ⇔ istrue (m ≤ n
 begin
   assume p m n; apply ∧ᵢ {
     generalize p; induction
-    { assume m n h; apply h; }
-    { assume p h m n i; apply h m n i; }
+    { assume m n h; apply h }
+    { assume p h m n i; apply h m n i }
   } {
     generalize p; induction
-    { assume m n h; apply h; }
-    { assume p h m n i; apply h m n i; }
+    { assume m n h; apply h }
+    { assume p h m n i; apply h m n i }
   }; 
 end;
 
@@ -874,8 +874,8 @@ end;
 opaque symbol leq_addl m n : π (istrue (n ≤ m + n)) ≔
 begin
   assume m; induction
-  { apply ⊤ᵢ; }
-  { assume n h; apply h; }
+  { apply ⊤ᵢ }
+  { assume n h; apply h }
 end;
 
 opaque symbol leq_addr m n : π (istrue (n ≤ n + m)) ≔
@@ -886,9 +886,9 @@ end;
 opaque symbol leq_subr m n : π (istrue (n - m ≤ n)) ≔
 begin
   induction
-  { assume n; apply ≤_refl n; }
+  { assume n; apply ≤_refl n }
   { assume m h; induction
-    { apply ⊤ᵢ; }
+    { apply ⊤ᵢ }
     { assume n i; simplify;
       have t: π (istrue (n ≤ n +1)) { apply leqnSn n };
       apply @leq_trans (n - m) n (n +1) (h n) t;
@@ -900,17 +900,17 @@ opaque symbol subn_eq0 m n : π ((m - n = _0) ⇔ istrue (m ≤ n)) ≔
 begin
   assume m n; apply ∧ᵢ {
     generalize m; induction
-    { assume n h; apply ⊤ᵢ; }
+    { assume n h; apply ⊤ᵢ }
     { assume m h; induction
-      { assume i; apply s≠0 i; }
-      { assume n i j; apply h n j; }
+      { assume i; apply s≠0 i }
+      { assume n i j; apply h n j }
     }
   } {
     generalize m; induction
-    { assume n h; apply eq_refl _0; }
+    { assume n h; apply eq_refl _0 }
     { assume m h; induction
-      { assume i; apply ⊥ₑ i; }
-      { assume n i j; apply h n j; }
+      { assume i; apply ⊥ₑ i }
+      { assume n i j; apply h n j }
     }
   };
 end;
@@ -918,8 +918,8 @@ end;
 opaque symbol ltn_addl m n p : π (istrue (m < n)) → π (istrue (m < p + n)) ≔
 begin
   assume m n; induction
-  { assume h; apply h; }
-  { assume p h i; refine @leq_trans m (m +1) (p + n) (leqnSn m) (h i); }
+  { assume h; apply h }
+  { assume p h i; refine @leq_trans m (m +1) (p + n) (leqnSn m) (h i) }
 end;
 
 opaque symbol ltn_addr m n p : π (istrue (m < n)) → π (istrue (m < n + p)) ≔
@@ -932,8 +932,8 @@ opaque symbol addn_gt0 m n :
 begin
   assume m n; apply ∧ᵢ {
     generalize m; induction
-    { assume n i; apply ∨ᵢ₂ i; }
-    { assume m h n i; apply ∨ᵢ₁; apply ltn0Sn m; }
+    { assume n i; apply ∨ᵢ₂ i }
+    { assume m h n i; apply ∨ᵢ₁; apply ltn0Sn m }
   } {
     assume h; apply ∨ₑ h {
       assume i; apply ltn_addr _0 m n i;
@@ -947,21 +947,21 @@ opaque symbol subn_gt0 m n : π (istrue (_0 < n - m) ⇔ istrue (m < n)) ≔
 begin
   assume m n; apply ∧ᵢ {
     generalize m; induction
-    { assume n h; apply h; }
+    { assume n h; apply h }
     { assume m h; induction
-      { assume i; apply i; }
+      { assume i; apply i }
       { assume n i; rewrite subSS; assume j;
-        have t: π (istrue (m < n)) { apply h n j; };
+        have t: π (istrue (m < n)) { apply h n j };
         have u: π (istrue (m +1 < n +1))
-                  { refine ∧ₑ₂ (ltn_add2r (_0 +1) m n) t; };
+                  { refine ∧ₑ₂ (ltn_add2r (_0 +1) m n) t };
         rewrite left addn1 m; rewrite left addn1 n; apply u;
       }
     }
   } {
     generalize m; induction
-    { assume n h; apply h; }
+    { assume n h; apply h }
     { assume m h; induction
-      { assume i; apply i; }
+      { assume i; apply i }
       { assume n i j; rewrite subSS; apply h n;
         refine ∧ₑ₁ (ltn_add2r (_0 +1) m n) j;
       }
@@ -973,8 +973,8 @@ opaque symbol leq_add m1 m2 n1 n2 :
   π (istrue (m1 ≤ n1)) → π (istrue (m2 ≤ n2)) → π (istrue (m1 + m2 ≤ n1 + n2)) ≔
 begin
   assume m1 m2 n1 n2 h i;
-  have a: π (istrue (m1 + m2 ≤ m1 + n2)) { apply ∧ₑ₂ (leq_add2l m1 m2 n2) i; };
-  have b: π (istrue (m1 + n2 ≤ n1 + n2)) { refine ∧ₑ₂ (leq_add2r n2 m1 n1) h; };
+  have a: π (istrue (m1 + m2 ≤ m1 + n2)) { apply ∧ₑ₂ (leq_add2l m1 m2 n2) i };
+  have b: π (istrue (m1 + n2 ≤ n1 + n2)) { refine ∧ₑ₂ (leq_add2r n2 m1 n1) h };
   refine @leq_trans (m1 + m2) (m1 + n2) (n1 + n2) a b;
 end;
 
@@ -983,12 +983,12 @@ begin
   assume m n p; apply ∧ᵢ
   { assume h;
     have t: π (((m - (n + p)) = _0)) → π (istrue (m ≤ (n + p)))
-      { apply ∧ₑ₁ (subn_eq0 m (n + p)); };
+      { apply ∧ₑ₁ (subn_eq0 m (n + p)) };
     apply t; rewrite subnDA; apply ∧ₑ₂ (subn_eq0 (m - n) p) h;
   }
   { assume h;
     have t: π (((m - n) - p) = _0) → π (istrue ((m - n) ≤ p))
-      { apply ∧ₑ₁ (subn_eq0 (m - n) p); };
+      { apply ∧ₑ₁ (subn_eq0 (m - n) p) };
     apply t; rewrite left subnDA; apply ∧ₑ₂ (subn_eq0 m (n + p)) h;
   };
 end;
@@ -996,20 +996,20 @@ end;
 opaque symbol subnKC m n : π (istrue (m ≤ n)) → π (m + (n - m) = n) ≔
 begin
   induction
-  { assume n h; apply eq_refl n; }
+  { assume n h; apply eq_refl n }
   { assume m h; induction
-    { assume i; apply ⊥ₑ i; }
-    { assume n i j; apply feq (+1); apply h; apply j; }
+    { assume i; apply ⊥ₑ i }
+    { assume n i j; apply feq (+1); apply h; apply j }
   }
 end;
 
 opaque symbol addnBn m n : π (m + (n - m) = m - n + n) ≔
 begin
   induction
-  { assume n; apply eq_refl n; }
+  { assume n; apply eq_refl n }
   { assume m h; induction
-    { apply eq_refl (m +1); }
-    { assume n i; simplify; apply feq (+1); apply h n; }
+    { apply eq_refl (m +1) }
+    { assume n i; simplify; apply feq (+1); apply h n }
   }
 end;
 
@@ -1022,11 +1022,11 @@ opaque symbol subSn n p : π (istrue (p ≤ n)) → π (n +1 - p = (n - p) +1) �
 begin
   induction
   { assume p h; simplify;
-    have t: π (p = _0) { apply ≤0 p h; };
+    have t: π (p = _0) { apply ≤0 p h };
     rewrite t; reflexivity;
   } {
     assume n h; induction
-    { assume i; reflexivity; }
+    { assume i; reflexivity }
     { assume p i j; apply h p j }
   }
 end;
@@ -1034,7 +1034,7 @@ end;
 opaque symbol addnBA m n p : π (istrue (p ≤ n))  → π (m + (n - p) = m + n - p) ≔
 begin
   induction
-  { assume n p h; reflexivity; }
+  { assume n p h; reflexivity }
   { assume m h n p i; simplify; rewrite left addnS m (n - p);
     rewrite left addnS m n; rewrite left h (n +1) p (leqW p n i);
     rewrite subSn n p i; reflexivity;
@@ -1079,8 +1079,8 @@ opaque symbol leq_sub m1 m2 n1 n2 :
   π (istrue (m1 ≤ m2)) → π (istrue (n2 ≤ n1)) → π (istrue (m1 - n1 ≤ m2 - n2)) ≔
 begin
   assume m1 m2 n1 n2 h i;
-  have t:π (istrue (m1 - n1 ≤ m2 - n1)) { apply leq_sub2r m1 m2 n1 h; };
-  have u:π (istrue (m2 - n1 ≤ m2 - n2)) { apply leq_sub2l n2 n1 m2 i; };
+  have t:π (istrue (m1 - n1 ≤ m2 - n1)) { apply leq_sub2r m1 m2 n1 h };
+  have u:π (istrue (m2 - n1 ≤ m2 - n2)) { apply leq_sub2l n2 n1 m2 i };
   apply @leq_trans (m1 - n1) (m2 - n1) (m2 - n2) t u;
 end;
 
@@ -1137,7 +1137,7 @@ end;
 opaque symbol addn_maxl x y z: π ((max y z) + x = max (y + x) (z + x)) ≔
 begin
   induction
-  { reflexivity; }
+  { reflexivity }
   { assume x h y z; simplify; apply feq (+1); rewrite h; reflexivity;}
 end;
 
@@ -1151,12 +1151,12 @@ end;
 opaque symbol subn_maxl x y z: π ( (max x y) - z = max (x - z) (y - z) ) ≔
 begin
   induction
-  { assume y z; reflexivity; }
+  { assume y z; reflexivity }
   { assume x h; induction
-    { assume z; reflexivity; }
+    { assume z; reflexivity }
     { assume y i; induction
-      { reflexivity; }
-      { assume z j; simplify; apply h y z; }
+      { reflexivity }
+      { assume z j; simplify; apply h y z }
     }
   }
 end;
@@ -1164,18 +1164,18 @@ end;
 opaque symbol maxnE m n : π (max m n = m + (n - m)) ≔
 begin
   induction
-  { assume n; reflexivity; }
+  { assume n; reflexivity }
   { assume m h; induction
-    { simplify;  reflexivity; }
-    { assume n i; simplify; rewrite h; reflexivity; }
+    { simplify;  reflexivity }
+    { assume n i; simplify; rewrite h; reflexivity }
   }
 end;
 
 opaque symbol maxnn x : π (max x x = x) ≔
 begin
   induction
-  { reflexivity; }
-  { assume x h; simplify; rewrite h; reflexivity; }
+  { reflexivity }
+  { assume x h; simplify; rewrite h; reflexivity }
 end;
 
 rule max $x $x ↪ $x;
@@ -1183,10 +1183,10 @@ rule max $x $x ↪ $x;
 opaque symbol leq_maxl m n : π (istrue (m ≤ max m n)) ≔
 begin
   induction
-  { assume n; apply ⊤ᵢ; }
+  { assume n; apply ⊤ᵢ }
   { assume m h; induction
-    { simplify; apply ≤_refl m; }
-    { assume n i; simplify; apply h n; }
+    { simplify; apply ≤_refl m }
+    { assume n i; simplify; apply h n }
   }
 end;
 
@@ -1208,8 +1208,8 @@ abort;
 opaque symbol ltn_predK m n : π (istrue (m < n)) → π (n ∸1 +1 = n) ≔
 begin
   assume m; induction
-  { assume h; refine ⊥ₑ h; }
-  { assume n h i; reflexivity; }
+  { assume h; refine ⊥ₑ h }
+  { assume n h i; reflexivity }
 end;
 
 opaque symbol prednK n : π (istrue (_0 < n)) → π (n ∸1 +1 = n) ≔
@@ -1220,7 +1220,7 @@ end;
 opaque symbol leq_pmull m n : π (istrue (n > _0)) → π (istrue (m ≤ n * m)) ≔
 begin
   assume m n h;
-  have t: π (n ∸1 +1 = n) { apply prednK n h; };
+  have t: π (n ∸1 +1 = n) { apply prednK n h };
   rewrite left t; simplify; apply leq_addr ((n ∸1) * m) m;
 end;
 
@@ -1238,7 +1238,7 @@ begin
     have t:π (m * (n1 - n2) = _0) {
       rewrite mulnBr; apply ∧ₑ₂ (subn_eq0 (m * n1) (m * n2)) h;
     };
-    have u: π (m = _0 ∨ n1 - n2 = _0) { apply ∧ₑ₁ (muln_eq0 m (n1 - n2)) t; };
+    have u: π (m = _0 ∨ n1 - n2 = _0) { apply ∧ₑ₁ (muln_eq0 m (n1 - n2)) t };
     apply ∨ₑ u {
       assume i; refine ∨ᵢ₁ i;
     } {
@@ -1250,7 +1250,7 @@ begin
       assume i; rewrite i; reflexivity;
     } {
       assume i;
-      have t:π (n1 - n2 = _0) { apply ∧ₑ₂ (subn_eq0 n1 n2) i; };
+      have t:π (n1 - n2 = _0) { apply ∧ₑ₂ (subn_eq0 n1 n2) i };
       rewrite t; reflexivity;
     };
   }
@@ -1267,8 +1267,8 @@ opaque symbol leq_mul m1 m2 n1 n2 :
   π (istrue (m1 ≤ n1)) → π (istrue (m2 ≤ n2)) → π (istrue (m1 * m2 ≤ n1 * n2)) ≔
 begin
   assume m1 m2 n1 n2 h1 h2;
-  have t1:π ((m2 = _0) ∨ istrue (m1 ≤ n1)) { apply ∨ᵢ₂ h1; };
-  have t2:π ((n1 = _0) ∨ istrue (m2 ≤ n2)) { apply ∨ᵢ₂ h2; };
+  have t1:π ((m2 = _0) ∨ istrue (m1 ≤ n1)) { apply ∨ᵢ₂ h1 };
+  have t2:π ((n1 = _0) ∨ istrue (m2 ≤ n2)) { apply ∨ᵢ₂ h2 };
   have u1:π (istrue (m1 * m2 ≤ n1 * m2)) { apply ∧ₑ₂ (leq_mul2r m2 m1 n1) t1 };
   have u2:π (istrue (n1 * m2 ≤ n1 * n2)) { apply ∧ₑ₂ (leq_mul2l n1 m2 n2) t2 };
   apply @leq_trans (m1 * m2) (n1 * m2) (n1 * n2) u1 u2;
@@ -1280,9 +1280,9 @@ begin
   apply ∧ᵢ {
     assume h;
     have t:π (istrue (m * n1 ≤ m * n2) ∧ istrue (m * n2 ≤ m * n1))
-      { apply ∧ₑ₂ (eqn_leq (m * n1) (m * n2)) h; };
-    have t1:π (istrue (m * n1 ≤ m * n2)) { apply ∧ₑ₁ t; };
-    have t2:π (istrue (m * n2 ≤ m * n1)) { apply ∧ₑ₂  t; };
+      { apply ∧ₑ₂ (eqn_leq (m * n1) (m * n2)) h };
+    have t1:π (istrue (m * n1 ≤ m * n2)) { apply ∧ₑ₁ t };
+    have t2:π (istrue (m * n2 ≤ m * n1)) { apply ∧ₑ₂  t };
     have u1: π ((m = _0) ∨ istrue (n1 ≤ n2))
                { apply ∧ₑ₁(leq_mul2l m n1 n2) t1 };
     have u2: π ((m = _0) ∨ istrue (n2 ≤ n1))
@@ -1321,11 +1321,11 @@ begin
   apply ∧ᵢ {
     assume i;
     have t: π ((m = _0) ∨ istrue (n1 ≤ n2))
-              { apply ∧ₑ₁ (leq_mul2l m n1 n2) i; };
+              { apply ∧ₑ₁ (leq_mul2l m n1 n2) i };
     apply ∨ₑ t {
       assume j;
       have u: π (istrue (_0 < _0))
-                { rewrite left .[m in (istrue (_ < m))] j; apply h; };
+                { rewrite left .[m in (istrue (_ < m))] j; apply h };
       refine ⊥ₑ u;
     } {
       assume j; apply j;
@@ -1346,20 +1346,20 @@ opaque symbol ltn0_neq0 m : π (istrue (_0 < m) ⇔ m ≠ _0) ≔
 begin
   assume m; apply ∧ᵢ {
     generalize m; induction
-    { assume h i; apply h; }
+    { assume h i; apply h }
     { assume m h i j; apply s≠0 j;}
   } {
     generalize m; induction
-    { assume h; apply h (eq_refl _0); }
-    { assume m h i; apply ⊤ᵢ; }
+    { assume h; apply h (eq_refl _0) }
+    { assume m h i; apply ⊤ᵢ }
   };
 end;
 
 opaque symbol disj0 m : π (m = _0 ∨ m ≠ _0) ≔
 begin
   induction
-  { apply ∨ᵢ₁ (eq_refl _0); }
-  { assume m h; apply ∨ᵢ₂; assume i; apply s≠0 i; }
+  { apply ∨ᵢ₁ (eq_refl _0) }
+  { assume m h; apply ∨ᵢ₂; assume i; apply s≠0 i }
 end;
 
 opaque symbol eqn_pmul2l m n1 n2 :
@@ -1368,15 +1368,15 @@ begin
   assume m n1 n2 h;
   apply ∧ᵢ {
     assume i1;
-    have i2: π (m * n2 = m * n1) { symmetry; apply i1; };
-    have v1: π (istrue (m * n1 ≤ m * n2)) { apply eq_leq _ _ i1; };
-    have v2: π (istrue (m * n2 ≤ m * n1)) { apply eq_leq _ _ i2; };
+    have i2: π (m * n2 = m * n1) { symmetry; apply i1 };
+    have v1: π (istrue (m * n1 ≤ m * n2)) { apply eq_leq _ _ i1 };
+    have v2: π (istrue (m * n2 ≤ m * n1)) { apply eq_leq _ _ i2 };
     have w1: π (istrue (n1 ≤ n2)) { apply ∧ₑ₁ (leq_pmul2l m n1 n2 h) v1 };
     have w2: π (istrue (n2 ≤ n1)) { apply ∧ₑ₁ (leq_pmul2l m n2 n1 h) v2 };
     apply ∧ₑ₁ (eqn_leq n1 n2) (∧ᵢ w1 w2);
   } {
     assume i;
-    have t:π (m = _0 ∨ n1 = n2) { apply ∨ᵢ₂ i; };
+    have t:π (m = _0 ∨ n1 = n2) { apply ∨ᵢ₂ i };
     apply ∧ₑ₂ (eqn_mul2l m n1 n2) t;
   };
 end;
@@ -1402,7 +1402,7 @@ begin
   { reflexivity }
   { assume x h; induction
     { reflexivity }
-    { assume y i; simplify; rewrite h; reflexivity; }
+    { assume y i; simplify; rewrite h; reflexivity }
   }
 end;
 
@@ -1441,26 +1441,26 @@ end;
 opaque symbol addn_minl x y z: π ((min y z) + x = min (y + x) (z + x)) ≔
 begin
   induction
-  { reflexivity; }
+  { reflexivity }
   { assume x h y z; simplify; apply feq (+1); rewrite h; reflexivity;}
 end;
 
 opaque symbol addn_minr x y z: π (x + (min y z) = min (x + y) (x + z)) ≔
 begin
   induction
-  { reflexivity; }
+  { reflexivity }
   { assume x h y z; simplify; apply feq (+1); rewrite h; reflexivity;}
 end;
 
 opaque symbol subn_minl x y z: π ((min x y) - z = min (x - z) (y - z)) ≔
 begin
   induction
-  { assume y z; reflexivity; }
+  { assume y z; reflexivity }
   { assume x h; induction
-    { assume z; reflexivity; }
+    { assume z; reflexivity }
     { assume y i; induction
-      { reflexivity; }
-      { assume z j; simplify; apply h y z; }
+      { reflexivity }
+      { assume z j; simplify; apply h y z }
     }
   }
 end;
@@ -1473,7 +1473,7 @@ opaque symbol minnn x : π (min x x = x) ≔
 begin
   induction
   { reflexivity;}
-  { assume x h; simplify; rewrite h; reflexivity; }
+  { assume x h; simplify; rewrite h; reflexivity }
 end;
 
 rule min $x $x ↪ $x;
@@ -1481,10 +1481,10 @@ rule min $x $x ↪ $x;
 opaque symbol geq_minl m n : π (istrue (min m n ≤ m)) ≔
 begin
   induction
-  { assume n; apply ⊤ᵢ; }
+  { assume n; apply ⊤ᵢ }
   { assume m h; induction
-    { apply ⊤ᵢ; }
-    { assume n i; simplify; apply h n; }
+    { apply ⊤ᵢ }
+    { assume n i; simplify; apply h n }
   }
 end;
 
@@ -1498,62 +1498,62 @@ end;
 opaque symbol addn_min_max m n : π (min m n + max m n = m + n) ≔
 begin
   induction
-  { assume m; reflexivity; }
+  { assume m; reflexivity }
   { assume m h; induction
-    { reflexivity; }
-    { assume n i; simplify; rewrite h n; reflexivity; }
+    { reflexivity }
+    { assume n i; simplify; rewrite h n; reflexivity }
   }
 end;
 
 opaque symbol maxnK m n : π (min (max m n) m = m) ≔
 begin
   induction
-  { assume n; reflexivity; }
+  { assume n; reflexivity }
   { assume m h; induction
-    { reflexivity; }
-    { assume n i; simplify; rewrite h n; reflexivity; }
+    { reflexivity }
+    { assume n i; simplify; rewrite h n; reflexivity }
   }
 end;
 
 opaque symbol maxKn m n : π (min n (max m n) = n) ≔
 begin
   induction
-  { assume n; reflexivity; }
+  { assume n; reflexivity }
   { assume m h; induction
-    { reflexivity; }
-    { assume n i; simplify; rewrite h n; reflexivity; }
+    { reflexivity }
+    { assume n i; simplify; rewrite h n; reflexivity }
   }
 end;
 
 opaque symbol minnK m n : π (max (min m n) m = m) ≔
 begin
   induction
-  { assume n; reflexivity; }
+  { assume n; reflexivity }
   { assume m h; induction
-    { reflexivity; }
-    { assume n i; simplify; rewrite h n; reflexivity; }
+    { reflexivity }
+    { assume n i; simplify; rewrite h n; reflexivity }
   }
 end;
 
 opaque symbol minKn m n : π (max n (min m n) = n) ≔
 begin
   induction
-  { assume n; reflexivity; }
+  { assume n; reflexivity }
   { assume m h; induction
-    { reflexivity; }
-    { assume n i; simplify; rewrite h n; reflexivity; }
+    { reflexivity }
+    { assume n i; simplify; rewrite h n; reflexivity }
   }
 end;
 
 opaque symbol maxn_minl x y z : π (max x (min y z) = min (max x y) (max x z)) ≔
 begin
   induction
-  { assume y z; reflexivity; }
+  { assume y z; reflexivity }
   { assume x h; induction
-    { assume z; simplify; rewrite minnC; rewrite maxnK (x +1) z; reflexivity; }
+    { assume z; simplify; rewrite minnC; rewrite maxnK (x +1) z; reflexivity }
     { assume y i; induction
-      { simplify; rewrite maxnK x y; reflexivity; }
-      { assume z j; simplify; rewrite h; reflexivity; }
+      { simplify; rewrite maxnK x y; reflexivity }
+      { assume z j; simplify; rewrite h; reflexivity }
     }
   }
 end;
@@ -1561,12 +1561,12 @@ end;
 opaque symbol maxn_minr x y z : π (max (min y z) x = min (max y x) (max z x)) ≔
 begin
   induction
-  { assume y z; reflexivity; }
+  { assume y z; reflexivity }
   { assume x h; induction
-    { assume z; simplify; rewrite maxKn z (x +1); reflexivity; }
+    { assume z; simplify; rewrite maxKn z (x +1); reflexivity }
     { assume y i; induction
-      { simplify; rewrite maxnC; rewrite maxnK x y; reflexivity; }
-      { assume z j; simplify; rewrite h; reflexivity; }
+      { simplify; rewrite maxnC; rewrite maxnK x y; reflexivity }
+      { assume z j; simplify; rewrite h; reflexivity }
     }
   }
 end;
@@ -1574,12 +1574,12 @@ end;
 opaque symbol minn_maxl x y z : π (min x (max y z) = max (min x y) (min x z)) ≔
 begin
   induction
-  { assume y z; reflexivity; }
+  { assume y z; reflexivity }
   { assume x h; induction
-    { assume z; reflexivity; }
+    { assume z; reflexivity }
     { assume y i; induction
-      { reflexivity; }
-      { assume z j; simplify; rewrite h; reflexivity; }
+      { reflexivity }
+      { assume z j; simplify; rewrite h; reflexivity }
     }
   }
 end;
@@ -1587,12 +1587,12 @@ end;
 opaque symbol minn_maxr x y z : π (min (max y z) x = max (min y x) (min z x)) ≔
 begin
   induction
-  { assume y z; reflexivity; }
+  { assume y z; reflexivity }
   { assume x h; induction
-    { assume z; reflexivity; }
+    { assume z; reflexivity }
     { assume y i; induction
-      { reflexivity; }
-      { assume z j; simplify; rewrite h; reflexivity; }
+      { reflexivity }
+      { assume z j; simplify; rewrite h; reflexivity }
     }
   }
 end;
@@ -1600,11 +1600,11 @@ end;
 opaque symbol maxnMr x y z : π ((max y z) * x = max (y * x) (z * x)) ≔
 begin
   induction
-  { assume y z; reflexivity; }
+  { assume y z; reflexivity }
   { assume x h; induction
-    { assume z; reflexivity; }
+    { assume z; reflexivity }
     { assume y i; induction
-      { reflexivity; }
+      { reflexivity }
       { assume z j; rewrite left addn1 y; rewrite left addn1 z;
         rewrite left addn_maxl (_0 +1) y z; symmetry;
         rewrite mulnDl y (_0 +1) (x +1); rewrite mulnDl z (_0 +1) (x +1);
@@ -1619,11 +1619,11 @@ end;
 opaque symbol maxnMl x y z : π (x * (max y z) = max (x * y) (x * z)) ≔
 begin
   induction
-  { assume y z; reflexivity; }
+  { assume y z; reflexivity }
   { assume x h; induction
-    { assume z; reflexivity; }
+    { assume z; reflexivity }
     { assume y i; induction
-      { reflexivity; }
+      { reflexivity }
       { assume z j; rewrite left addn1 y; rewrite left addn1 z;
         rewrite left addn_maxl (_0 +1) y z; symmetry;
         rewrite mulnDr y (_0 +1) (x +1); rewrite mulnDr z (_0 +1) (x +1);
@@ -1638,11 +1638,11 @@ end;
 opaque symbol minnMr x y z : π ((min y z) * x = min (y * x) (z * x)) ≔
 begin
   induction
-  { assume y z; reflexivity; }
+  { assume y z; reflexivity }
   { assume x h; induction
-    { assume z; reflexivity; }
+    { assume z; reflexivity }
     { assume y i; induction
-      { reflexivity; }
+      { reflexivity }
       { assume z j; rewrite left addn1 y; rewrite left addn1 z;
         rewrite left addn_minl (_0 +1) y z; symmetry;
         rewrite mulnDl y (_0 +1) (x +1); rewrite mulnDl z (_0 +1) (x +1);
@@ -1657,11 +1657,11 @@ end;
 opaque symbol minnMl x y z : π (x * (min y z) = min (x * y) (x * z)) ≔
 begin
   induction
-  { assume y z; reflexivity; }
+  { assume y z; reflexivity }
   { assume x h; induction
-    { assume z; reflexivity; }
+    { assume z; reflexivity }
     { assume y i; induction
-      { reflexivity; }
+      { reflexivity }
       { assume z j; rewrite left addn1 y; rewrite left addn1 z;
         rewrite left addn_minl (_0 +1) y z; symmetry;
         rewrite mulnDr y (_0 +1) (x +1); rewrite mulnDr z (_0 +1) (x +1);
@@ -1693,7 +1693,7 @@ end;
 opaque symbol expnS a n : π (a ^ (n +1) = a * a ^ n ) ≔
 begin
   assume a; induction
-  { reflexivity; }
+  { reflexivity }
   { assume n h; reflexivity;}
 end;
 
@@ -1706,27 +1706,27 @@ opaque symbol exp0n n : π (istrue (_0 < n)) → π (_0 ^ n = _0) ≔
 begin
   induction
   { assume h; refine ⊥ₑ h;}
-  { assume n h i; reflexivity; }
+  { assume n h i; reflexivity }
 end;
 
 opaque symbol exp1n n : π ((_0 +1) ^ n = (_0 +1)) ≔
 begin
   induction
-  { reflexivity; }
-  { assume n h; simplify; rewrite h; reflexivity; }
+  { reflexivity }
+  { assume n h; simplify; rewrite h; reflexivity }
 end;
 
 opaque symbol expnD a m n: π (a ^ (m + n) = a ^ m * a ^ n) ≔
 begin
   assume a; induction
-  { reflexivity; }
-  { assume m h n; simplify; rewrite h n; rewrite mulnA; reflexivity; }
+  { reflexivity }
+  { assume m h n; simplify; rewrite h n; rewrite mulnA; reflexivity }
 end;
 
 opaque symbol expnMn m1 m2 n : π ((m1 * m2) ^ n = m1 ^ n * m2 ^ n) ≔
 begin
   assume m1 m2; induction
-  { reflexivity; }
+  { reflexivity }
   { assume n h;  simplify; rewrite h; rewrite mulnA; rewrite mulnA;
     rewrite left mulnA (m1 ^ n) m2; rewrite mulnC (m1 ^ n) m2;
     rewrite mulnA m2 (m1 ^ n); reflexivity;
@@ -1736,9 +1736,9 @@ end;
 opaque symbol expnM m n1 n2 : π (m ^ (n1 * n2) = (m ^ n1) ^ n2) ≔
 begin
   assume m; induction
-  { assume n2; simplify; rewrite exp1n; reflexivity; }
+  { assume n2; simplify; rewrite exp1n; reflexivity }
   { assume n1 h n2; simplify; rewrite expnD; rewrite h n2;
-    rewrite left expnMn; reflexivity; }
+    rewrite left expnMn; reflexivity }
 end;
 
 opaque symbol expnAC m n1 n2 : π ((m ^ n1) ^ n2 = (m ^ n2) ^ n1) ≔
@@ -1776,9 +1776,9 @@ end;
 opaque symbol fact_gt0 n : π (istrue (n ! > _0)) ≔
 begin
   induction
-  { apply ⊤ᵢ; }
+  { apply ⊤ᵢ }
   { assume n h; rewrite factS n; rewrite mulSnr n (n !);
-    apply ltn_addl _0 (n !) (n * n !); apply h; }
+    apply ltn_addl _0 (n !) (n * n !); apply h }
 end;
 
 opaque symbol fact_gt1 n : π (istrue (n ! ≥ _0 +1)) ≔
@@ -1789,8 +1789,8 @@ end;
 opaque symbol fact_geq n : π (istrue (n ≤ n !)) ≔
 begin
   induction
-  { apply ⊤ᵢ; }
-  { assume n h; rewrite factS n; apply leq_pmulr (n +1) (n !) (fact_gt0 n); }
+  { apply ⊤ᵢ }
+  { assume n h; rewrite factS n; apply leq_pmulr (n +1) (n !) (fact_gt0 n) }
 end;
 
 // shortcuts
