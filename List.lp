@@ -488,7 +488,7 @@ end;
 
 symbol Arr : ℕ → Set → Set → TYPE;
 
-rule Arr 0 $a $b ↪ τ $b
+rule Arr 0 _ $b ↪ τ $b
 with Arr ($n +1) $a $b ↪ τ $a → Arr $n $a $b;
 
 // seqn
@@ -505,7 +505,7 @@ assert a (x y : τ a) ⊢ seqn 2 x y ≡ x ⸬ y ⸬ □;
 // iota
 
 symbol iota : ℕ → ℕ → 𝕃 nat;
-rule iota $n 0 ↪ □
+rule iota _ 0 ↪ □
 with iota $n ($k +1) ↪ $n ⸬ iota ($n +1) $k;
 
 assert ⊢ iota 1 2 ≡ 1 ⸬ 2 ⸬ □;

@@ -208,7 +208,6 @@ with add_carry $x      H      ↪ add $x (O H)
 with add_carry H      $y      ↪ add (O H) $y;
 // for efficiency reasons last cases should not be 'succ (succ $x)'
 
-
 // Check that 7 + 5 = 12
 assert ⊢ add (I (I H)) (I (O H)) ≡ O (O (I H));
 // Check that 110101010 + 101101100 ≡ 1100010110 in base 2 (426 + 364 ≡ 790)
@@ -299,7 +298,6 @@ rule pos_pred_double (I $x) ↪ I (O $x)
 with pos_pred_double (O $x) ↪ I (pos_pred_double $x)
 with pos_pred_double H      ↪ H;
 
-
 symbol pos_pred_double_succ x : π (pos_pred_double (succ x) = I x) ≔
 begin
   induction
@@ -329,7 +327,6 @@ with compare_acc (O _)  _  H      ↪ Gt
 with compare_acc H      _  (I _)  ↪ Lt
 with compare_acc H      _  (O _)  ↪ Lt
 with compare_acc H      $c H      ↪ $c;
-
 
 symbol compare x y ≔ compare_acc x Eq y;
 
@@ -441,7 +438,6 @@ begin
   // case H
   { induction { reflexivity } { reflexivity } { reflexivity } }
 end;
-
 
 symbol compare_Gt x y :
   π (compare_acc x Gt y = case_Comp (compare x y) Gt Lt Gt) ≔

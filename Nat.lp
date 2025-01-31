@@ -358,8 +358,6 @@ begin
   { assume x h; simplify; apply h;}
 end;
 
-rule $x - $x ↪ _0;
-
 opaque symbol subSS m n : π (m +1 - (n +1) = m - n) ≔
 begin
   reflexivity;
