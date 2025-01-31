@@ -2,8 +2,7 @@
 
 by Quentin Garchery (May 2021). */
 
-require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq
-  Stdlib.Pos Stdlib.Bool;
+require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq Stdlib.Pos Stdlib.Bool;
 
 inductive ℤ : TYPE ≔ // \BbbZ
 | Z0 : ℤ

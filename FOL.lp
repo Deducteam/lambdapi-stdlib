@@ -6,6 +6,8 @@ require open Stdlib.Set Stdlib.Prop;
 
 constant symbol ∀ [a] : (τ a → Prop) → Prop; // !! or \forall
 
+builtin "all" ≔ ∀;
+
 notation ∀ quantifier;
 
 rule π (∀ $f) ↪ Π x, π ($f x);
@@ -13,6 +15,8 @@ rule π (∀ $f) ↪ Π x, π ($f x);
 // Existential quantification
 
 constant symbol ∃ [a] : (τ a → Prop) → Prop; // ?? or \exists
+
+builtin "ex" ≔ ∃;
 
 notation ∃ quantifier;
 
