@@ -195,7 +195,7 @@ protected with nosimpl.
 */
 
 require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq
-  Stdlib.Nat Stdlib.Bool;
+  Stdlib.Nat Stdlib.Bool Stdlib.Prod;
 
 (a:Set) inductive 𝕃:TYPE ≔
 | □ : 𝕃 a // \Box
@@ -583,20 +583,20 @@ symbol zip [a b] : 𝕃 a → 𝕃 b → 𝕃 (a × b);
 rule zip □ □ ↪ □
 with zip □ _ ↪ □
 with zip _ □ ↪ □
-with zip ($x ⸬ $l) ($y ⸬ $m) ↪ $x & $y ⸬ zip $l $m;
+with zip ($x ⸬ $l) ($y ⸬ $m) ↪ ($x ‚ $y) ⸬ zip $l $m;
 
 symbol unzip1 [a b] : 𝕃 (a × b) → 𝕃 a;
 
 rule unzip1 □  ↪ □
-with unzip1 ($x & _ ⸬ $l) ↪ $x ⸬ unzip1 $l;
+with unzip1 (($x ‚ _ ) ⸬ $l) ↪ $x ⸬ unzip1 $l;
 
 symbol unzip2 [a b] : 𝕃 (a × b) → 𝕃 b;
 
 rule unzip2 □ ↪ □
-with unzip2 (_ & $y ⸬ $l) ↪ $y ⸬ unzip2 $l;
+with unzip2 ((_ ‚ $y) ⸬ $l) ↪ $y ⸬ unzip2 $l;
 
-assert ⊢ unzip1 ((3 & 5) ⸬ (6 & 4) ⸬ (7 & 2) ⸬ (8 & 1) ⸬ □) ≡ 3 ⸬ 6 ⸬ 7 ⸬ 8 ⸬ □;
-assert ⊢ unzip2 ((3 & 5) ⸬ (6 & 4) ⸬ (7 & 2) ⸬ (8 & 1) ⸬ □) ≡ 5 ⸬ 4 ⸬ 2 ⸬ 1 ⸬ □;
+assert ⊢ unzip1 ((3 ‚ 5) ⸬ (6 ‚ 4) ⸬ (7 ‚ 2) ⸬ (8 ‚ 1) ⸬ □) ≡ 3 ⸬ 6 ⸬ 7 ⸬ 8 ⸬ □;
+assert ⊢ unzip2 ((3 ‚ 5) ⸬ (6 ‚ 4) ⸬ (7 ‚ 2) ⸬ (8 ‚ 1) ⸬ □) ≡ 5 ⸬ 4 ⸬ 2 ⸬ 1 ⸬ □;
 
 symbol all2 [a b] : (τ a → τ b → 𝔹) → 𝕃 a → 𝕃 b → 𝔹;
 
@@ -687,12 +687,12 @@ begin
   apply @seq_ind2 a b (λ l1 l2, (zip (l1 ++ sa) (l2 ++ sb) = zip l1 l2 ++ zip sa sb)) _ _ la lb h {
     reflexivity;
   } {
-    assume l1 l2 e1 e2 h1 h2; simplify; apply feq (λ l, e1 & e2 ⸬ l) h2; 
+    assume l1 l2 e1 e2 h1 h2; simplify; apply feq (λ l, (e1 ‚ e2) ⸬ l) h2; 
   };
 end;
 
 opaque symbol nth_zip [a b] (x:τ a) (y:τ b) la lb i: π(size la = size lb) →
-  π(nth (x & y) (zip la lb) i = nth x la i & nth y lb i) ≔
+  π(nth (x ‚ y) (zip la lb) i = nth x la i ‚ nth y lb i) ≔
 begin
   assume a b x y; induction
   { assume lb i h;
