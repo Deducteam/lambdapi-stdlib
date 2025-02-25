@@ -1,7 +1,7 @@
 // define a type representing Lambdapi tactics
 
-require open tests.OK.Set tests.OK.Prop tests.OK.String tests.OK.Option
-             tests.OK.List;
+require open Stdlib.Set Stdlib.Prop Stdlib.String Stdlib.Option
+             Stdlib.List;
 
 constant symbol Tactic : TYPE;
 
@@ -70,7 +70,7 @@ builtin "why3" ≔ #why3;
 
 symbol nothing ≔ #repeat #fail;
 
-require open tests.OK.Nat;
+require open Stdlib.Nat;
 
 symbol * : ℕ → Tactic → Tactic;
 notation * infix 20;
@@ -78,7 +78,7 @@ notation * infix 20;
 rule 0 * _ ↪ nothing
 with $n +1 * $t ↪ $t & ($n * $t);
 
-require open tests.OK.Eq;
+require open Stdlib.Eq;
 
 symbol lemma x y z t : π (((x + y) + z) + t = x + (y + (z + t))) ≔
 begin
