@@ -362,7 +362,7 @@ end;
 
 // Equalities on the LHS
 
-opaque symbol negEqB_posProp x :
+opaque symbol negEqT_posProp x :
   π (¬(¬ x = ⊤) = x) ≔
 begin
   assume x;
