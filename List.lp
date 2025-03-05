@@ -38,6 +38,9 @@ seqn n x_0 ... x_n-1 == the sequence of the x_i; can be partially applied.
  ** Random access:
         nth x0 s i == the item i of s (numbered from 0), or x0 if s does
                       not have at least i+1 items (i.e., size x <= i)
+      nths x0 s ks == the sequence that is formed when taking for each 
+                      index i in n the i-th item of ks (numbered from 0), 
+                      or x0 if s has fewer than i+1 items (i.e., size s <= i). 
               s`_i == standard notation for nth x0 s i for a default x0,
                       e.g., 0 for rings.
   set_nth x0 s i y == s where item i has been changed to y; if s does not
@@ -1083,6 +1086,21 @@ begin
   assume a beq x l hrefl; simplify; rewrite hrefl; apply ⊤ᵢ;
 end;
 
+opaque symbol mem_tail [a] (beq: τ a → τ a → 𝔹) (n m: τ a) (l: 𝕃 a) : 
+  π (∈ beq n l) → π (∈ beq n (m ⸬ l)) ≔
+begin
+  assume a beq n m; induction
+    {assume h1; refine ⊥ₑ h1}
+    {assume n0 l h1 h2;
+    have H0: π (beq n n0) →  π (beq n m or (beq n n0 or ∈ beq n l))
+      {assume h3;
+      refine orᵢ₂ (beq n m) [beq n n0 or ∈ beq n l] (orᵢ₁ [beq n n0] (∈ beq n l) h3)};
+    have H1: π (∈ beq n l) →  π (beq n m or (beq n n0 or ∈ beq n l))
+      {assume h3;
+      refine orᵢ₂ (beq n m) [beq n n0 or ∈ beq n l] (orᵢ₂ (beq n n0) [∈ beq n l] h3)};
+    refine orₑ [beq n n0] [∈ beq n l] (beq n m or (beq n n0 or ∈ beq n l)) h2 H0 H1}
+end;
+
 opaque symbol mem_take [a] beq n l (x:τ a) :
   π (∈ beq x (take n l)) → π (∈ beq x l) ≔
 begin
@@ -1589,6 +1607,64 @@ begin
       { apply i; apply ∧ₑ₂ (⸬_inj k) }
     }
   }
+end;
+
+// nths
+
+symbol nths [a : Set] : τ a → 𝕃 a → 𝕃 nat → 𝕃 a;
+
+rule nths $b $l $n ↪ map (nth $b $l) $n;
+
+opaque symbol mapS_iota (m n : τ nat) : 
+  π (map (+1) (iota n m) = iota (n +1) m)≔
+begin
+  induction
+    { induction
+      { refine eq_refl □ }
+      { assume n h; refine h } }
+    { induction
+      { assume h n; refine eq_refl (n +1 ⸬ □) }
+      { simplify; assume n0 h0 h1 m; rewrite h1 (m +1);
+      refine eq_refl (m +1 ⸬ m +1 +1 ⸬ iota (m +1 +1 +1) n0) } }
+end;
+
+opaque symbol indexes_cons [a : Set] (x : τ a) (l : 𝕃 a) : 
+  π (indexes (x ⸬ l) = 0 ⸬ (map (+1) (indexes l)))≔
+    begin
+      assume a x;
+      induction
+        { refine eq_refl (0 ⸬ □) }
+        { simplify;
+        assume y l h;
+        rewrite mapS_iota;
+        refine eq_refl (0 ⸬ 1 ⸬ iota 2 (size l)) }
+end;
+
+opaque symbol nths_shift_cons [a : Set] (x b : τ a) (l : 𝕃 a) (n : 𝕃 nat) : 
+  π ((nths b (x ⸬ l) (map (+1) n)) = (nths b l n))≔
+begin
+  assume a x b l; induction
+    { refine eq_refl □ }
+    { assume n ll h1;
+    have H1: π (nths b (x ⸬ l) (map (+1) (n ⸬ ll)) =
+      nth b (x ⸬ l) (n +1) ⸬ nths b (x ⸬ l) (map (+1) ll))
+      { refine eq_refl (nth b l n ⸬ map (nth b (x ⸬ l)) (map (+1) ll)) };
+    rewrite H1; rewrite h1;
+    refine eq_refl (nths b l (n ⸬ ll)) }
+end;
+
+opaque symbol nths_indexes_id [a : Set] (b : τ a) (l : 𝕃 a) : 
+  π (nths b l (indexes l) = l)≔
+begin
+  assume a b; induction
+  { refine eq_refl □ }
+  { assume x l h1;
+    rewrite indexes_cons x l;
+    have H1: π (nths b (x ⸬ l) (0 ⸬ map (+1) (indexes l)) =
+      x ⸬ nths b (x ⸬ l) (map (+1) (indexes l)))
+    { refine eq_refl (x ⸬ map (nth b (x ⸬ l)) (map (+1) (indexes l))) };
+    rewrite H1; rewrite nths_shift_cons x b l (indexes l); rewrite h1;
+    refine eq_refl (x ⸬ l) }
 end;
 
 // sumn

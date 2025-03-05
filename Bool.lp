@@ -34,6 +34,16 @@ with istrue false ↪ ⊥;
 
 coerce_rule coerce 𝔹 Prop $x ↪ istrue $x;
 
+symbol istrue=true [x] : π (istrue x) → π (x = true)≔
+begin
+  assume x h;
+  refine ∨ₑ (case_𝔹 x) _ _
+      { assume h1; refine h1 }
+      { assume h1;
+      have H1: π (istrue false) { rewrite eq_sym h1; refine h };
+      refine ⊥ₑ H1 };
+end;
+
 // non confusion of constructors
 
 opaque symbol false≠true : π (false ≠ true) ≔
