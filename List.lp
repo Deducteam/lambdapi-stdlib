@@ -1369,14 +1369,9 @@ assert ⊢ perm_eq eqn (59 ⸬ 58 ⸬ 4 ⸬ 2 ⸬ □) (58 ⸬ 4 ⸬ 2 ⸬ 69 �
 symbol filter [a] : (τ a → 𝔹) → 𝕃 a → 𝕃 a;
 
 rule filter _ □ ↪ □
-with filter $p ($x ⸬ $l) ↪ if ($p $x) ($x ⸬ (filter $p $l)) (filter $p $l);
+with filter $p ($x ⸬ $l) ↪ if ($p $x) ($x ⸬ filter $p $l) (filter $p $l);
 
 assert ⊢ filter (λ x, eqn (x + 1) 3) (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ 2 ⸬ 68 ⸬ □) ≡ 2 ⸬ 2 ⸬ □;
-
-symbol rmfilter [a] : (τ a → 𝔹) → 𝕃 a → 𝕃 a;
-
-rule rmfilter _ □ ↪ □
-with rmfilter $p ($x ⸬ $l) ↪ if ($p $x) (filter $p $l) ($x ⸬ (filter $p $l));
 
 opaque symbol size_filter [a] (p:τ a → 𝔹) l :
   π (size (filter p l) = count p l) ≔
