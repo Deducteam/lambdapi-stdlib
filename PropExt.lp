@@ -510,7 +510,7 @@ end;
 
 // Simplifications on Quantifiers
 
-symbol ∀_const (t : Set) (p : τ o) : π ((`∀ (x : τ t), p) = p)≔
+opaque symbol ∀_const (t : Set) (p : τ o) : π ((`∀ (_ : τ t), p) = p)≔
 begin
     assume t p;
     refine propExt (`∀ x, p) p _ _
@@ -518,7 +518,7 @@ begin
         {assume h a; refine h}
 end;
 
-symbol ∃_const (t : Set) (p : τ o) : π ((`∃ (x : τ t), p) = p)≔
+opaque symbol ∃_const (t : Set) (p : τ o) : π ((`∃ (_ : τ t), p) = p)≔
 begin
     assume t p;
     refine propExt (`∃ x, p) p _ _
