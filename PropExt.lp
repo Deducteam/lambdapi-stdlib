@@ -17,70 +17,70 @@ symbol propExt x y : (π x → π y) → (π y → π x) → π (x = y);
  opaque symbol ∨_com x y:
  π ((x ∨ y) = (y ∨ x)) ≔
 begin
- assume x y;
- refine propExt (x ∨ y) (y ∨ x) _ _
-   {assume h;
-   refine ∨ₑ h _ _
-     {assume h1; refine ∨ᵢ₂ h1}
-     {assume h2; refine ∨ᵢ₁ h2}}
-   {assume h;
-   refine ∨ₑ h _ _
-     {assume h1; refine ∨ᵢ₂ h1}
-     {assume h2; refine ∨ᵢ₁ h2}}
+  assume x y;
+  refine propExt (x ∨ y) (y ∨ x) _ _
+    {assume h;
+    refine ∨ₑ h _ _
+      {assume h1; refine ∨ᵢ₂ h1}
+      {assume h2; refine ∨ᵢ₁ h2}}
+    {assume h;
+    refine ∨ₑ h _ _
+      {assume h1; refine ∨ᵢ₂ h1}
+      {assume h2; refine ∨ᵢ₁ h2}}
 end;
 
 opaque symbol ∧_com x y:
  π ((x ∧ y) = (y ∧ x)) ≔
 begin
- assume x y;
- refine propExt (x ∧ y) (y ∧ x) _ _
-   {assume h; refine ∧ᵢ (∧ₑ₂ h) (∧ₑ₁ h)}
-   {assume h; refine ∧ᵢ (∧ₑ₂ h) (∧ₑ₁ h)}
+  assume x y;
+  refine propExt (x ∧ y) (y ∧ x) _ _
+    {assume h; refine ∧ᵢ (∧ₑ₂ h) (∧ₑ₁ h)}
+    {assume h; refine ∧ᵢ (∧ₑ₂ h) (∧ₑ₁ h)}
 end;
 
 opaque symbol ⇔_com x y:
  π ((x ⇔ y) = (y ⇔ x)) ≔
 begin
- assume x y;
- refine propExt (x ⇔ y) (y ⇔ x) _ _
-   {assume h; refine ∧ᵢ (∧ₑ₂ h) (∧ₑ₁ h)}
-   {assume h; refine ∧ᵢ (∧ₑ₂ h) (∧ₑ₁ h)}
+  assume x y;
+  refine propExt (x ⇔ y) (y ⇔ x) _ _
+    {assume h; refine ∧ᵢ (∧ₑ₂ h) (∧ₑ₁ h)}
+    {assume h; refine ∧ᵢ (∧ₑ₂ h) (∧ₑ₁ h)}
 end;
 
 opaque symbol =_sym [T] (x y : τ T) : 
  π((x = y) = (y = x))≔
 begin
- assume T x y;
- have H1: π(x = y) → π(y = x)
-   {assume h; symmetry; refine h};
- have H2: π(y = x) → π(x = y)
-   {assume h; symmetry;refine h};
- refine propExt (x = y) (y = x) H1 H2
+  assume T x y;
+  have H1: π(x = y) → π(y = x)
+    {assume h; symmetry; refine h};
+  have H2: π(y = x) → π(x = y)
+    {assume h; symmetry;refine h};
+  refine propExt (x = y) (y = x) H1 H2
 end;
 
-symbol polarity_switch a b :
- π ((a = b) = (¬ a = ¬ b)) ≔
+opaque symbol polarity_switch x y :
+π ((¬ x = ¬ y) = (x = y)) ≔
 begin
- assume a b;
- refine propExt (a = b) (¬ a = ¬ b) _ _
-   {assume h1;
-    have H1: π(b = a)
+  assume x y;
+  refine propExt (¬ x = ¬ y) (x = y) _ _
+    {assume h1;
+    have H1: π(¬ y = ¬ x)
       {symmetry; refine h1};
-    refine propExt (¬ a) (¬ b) _ _
+    refine propExt x y _ _
+      {assume h2;
+        have H2: π(¬ ¬ x)
+          {assume h3; refine h3 h2};
+        refine (¬¬ₑ y) (ind_eq H1 (λ x, ¬ x) H2)}
+      {assume h2;
+        have H2: π(¬ (¬ y))
+          {assume h3; refine h3 h2};
+        refine (¬¬ₑ x) (ind_eq h1 (λ x, ¬ x) H2)}}
+    {assume h1;
+    have H1: π(y = x)
+      {symmetry; refine h1};
+    refine propExt (¬ x) (¬ y) _ _
       {assume h2; refine ind_eq H1 (λ x, ¬ x) h2}
       {assume h2; refine ind_eq h1 (λ x, ¬ x) h2}}
-   {assume h1;
-    have H1: π(¬ b = ¬ a)
-      {symmetry; refine h1};
-    refine propExt a b _ _
-      {assume h2;
-       have H2: π(¬ ¬ a)
-         {assume h3; refine h3 h2};
-       refine (¬¬ₑ b) (ind_eq H1 (λ x, ¬ x) H2)}
-      {assume h2;
-       have H2: π(¬ (¬ b))
-         {assume h3; refine h3 h2};
-       refine (¬¬ₑ a) (ind_eq h1 (λ x, ¬ x) H2)}}
 end;
 
 
@@ -397,7 +397,7 @@ opaque symbol ¬neg=⊥ x :
   π (¬(¬ x = ⊥) = ¬ x) ≔
 begin
   assume x;
-  refine ind_eq (eq_sym (polarity_switch (¬ x = ⊥) x)) (λ z, z) (neg=⊥ x);
+  refine ind_eq (polarity_switch (¬ x = ⊥) x) (λ z, z) (neg=⊥ x);
 end;
 
 opaque symbol ¬⊥=neg x :
