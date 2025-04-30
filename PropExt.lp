@@ -9,12 +9,18 @@ require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq Stdlib.Impred Stdlib.Cl
 
 symbol propExt x y : (π x → π y) → (π y → π x) → π (x = y);
 
+opaque symbol =⇒ [a b] : π (a = b) → π a → π b ≔
+begin
+  assume a b h0 h1;
+  refine ind_eq (eq_sym h0) (λ x, x) h1
+end;
+
 
 /******************************************************************************
- *  Commutativity, symmetry and polarity                                                     
+ *  Commutativity, associativity and distributivity                                                     
  ******************************************************************************/
 
- opaque symbol ∨_com x y:
+opaque symbol ∨_com x y:
  π ((x ∨ y) = (y ∨ x)) ≔
 begin
   assume x y;
@@ -46,6 +52,79 @@ begin
     {assume h; refine ∧ᵢ (∧ₑ₂ h) (∧ₑ₁ h)}
     {assume h; refine ∧ᵢ (∧ₑ₂ h) (∧ₑ₁ h)}
 end;
+
+opaque symbol ∨_assoc x y z : 
+ π (((x ∨ y) ∨ z) = (x ∨ (y ∨ z)))≔
+begin
+ assume x y z;
+ refine propExt ((x ∨ y) ∨ z) (x ∨ (y ∨ z)) _ _
+ {assume h0;
+ refine ∨ₑ h0 _ _
+    {assume h1; refine ∨ₑ h1 _ _
+        {assume h2; refine ∨ᵢ₁ h2}
+        {assume h2; refine ∨ᵢ₂ (∨ᵢ₁ h2)}}
+    {assume h1; refine ∨ᵢ₂ (∨ᵢ₂ h1)}}
+ {assume h0; refine ∨ₑ h0 _ _
+    {assume h1; refine ∨ᵢ₁ (∨ᵢ₁ h1)}
+    {assume h1; refine ∨ₑ h1 _ _
+        {assume h2; refine ∨ᵢ₁ (∨ᵢ₂ h2)}
+        {assume h2; refine ∨ᵢ₂ h2}}}
+end;
+
+opaque symbol ∧_assoc x y z :  
+ π (((x ∧ y) ∧ z) = (x ∧ (y ∧ z)))≔
+begin
+ assume x y z;
+ refine propExt ((x ∧ y) ∧ z) (x ∧ (y ∧ z)) _ _
+ {assume h;
+ refine ∧ᵢ (∧ₑ₁ (∧ₑ₁ h)) (∧ᵢ (∧ₑ₂ (∧ₑ₁ h)) (∧ₑ₂ h))}
+ {assume h;
+ refine ∧ᵢ (∧ᵢ (∧ₑ₁ h) (∧ₑ₁ (∧ₑ₂ h))) (∧ₑ₂ (∧ₑ₂ h))}
+end;
+
+opaque symbol ∧∨_dist_l x y z : 
+ π (((x ∧ y) ∨ z) = ((x ∨ z) ∧ (y ∨ z)))≔
+begin
+ assume x y z;
+ refine propExt ((x ∧ y) ∨ z) ((x ∨ z) ∧ (y ∨ z)) _ _
+ {assume h;
+     refine ∧ᵢ _ _
+     {refine ∨ₑ h _ _
+         {assume hxy; refine ∨ᵢ₁ (∧ₑ₁ hxy)}
+         {assume hz; refine ∨ᵢ₂ hz}}
+     {refine ∨ₑ h _ _
+         {assume hxy; refine ∨ᵢ₁ (∧ₑ₂ hxy)}
+         {assume hz; refine ∨ᵢ₂ hz}}}
+ {assume h;
+     refine ∨ₑ (em z) _ _
+     {assume hz; refine ∨ᵢ₂ hz}
+     {assume hnz;
+         have hx : π x 
+             {refine ∨ₑ (∧ₑ₁ h) _ _
+                 {assume hx; refine hx}
+                 {assume hz; refine ⊥ₑ (hnz hz)}};
+         have hy : π y 
+             {refine ∨ₑ (∧ₑ₂ h) _ _
+                 {assume hy; refine hy}
+                 {assume hz; refine ⊥ₑ (hnz hz)}};
+         refine ∨ᵢ₁ (∧ᵢ hx hy)}}
+end;
+
+opaque symbol ∧∨_dist_r x y z : 
+ π ((z ∨ (x ∧ y)) = ((z ∨ x) ∧ (z ∨ y)))≔
+ begin
+    assume x y z;
+    rewrite ∨_com;
+    rewrite ∧∨_dist_l;
+    rewrite ∨_com z x;
+    rewrite ∨_com z y;
+    reflexivity
+ end;
+
+
+/******************************************************************************
+ *  Symmetry and polarity                                                     
+ ******************************************************************************/
 
 opaque symbol =_sym [T] (x y : τ T) : 
  π((x = y) = (y = x))≔
@@ -562,4 +641,68 @@ begin
   refine propExt (¬ ¬ x) x _ _
     {assume h1; refine ¬¬ₑ x h1}
     {assume h1 h2; refine h2 h1}
+end;
+
+
+/******************************************************************************
+ *  Clausification Rules  
+ ******************************************************************************/
+
+opaque symbol deMorgan_∧ x y : 
+ π (¬(x ∧ y) = (¬ x ∨ ¬ y))≔
+begin
+ assume x y;
+ refine propExt (¬(x ∧ y)) (¬ x ∨ ¬ y) _ _
+ {assume h;
+     refine ∨ₑ (em x) _ _
+     {assume hx; refine ∨ᵢ₂ (λ hy, h (∧ᵢ hx hy))}
+     {assume hx; refine ∨ᵢ₁ hx}}
+ {assume h hxy; 
+     refine ∨ₑ h _ _
+     {assume hnx; refine hnx (∧ₑ₁ hxy)}
+     {assume hny; refine hny (∧ₑ₂ hxy)}}
+end;
+
+opaque symbol deMorgan_∨ x y :
+ π (¬(x ∨ y) = (¬ x ∧ ¬ y))≔
+begin
+ assume x y;
+ refine propExt (¬(x ∨ y)) (¬ x ∧ ¬ y) _ _
+ {assume h; refine ∧ᵢ _ _ 
+     {assume hx; refine h (∨ᵢ₁ hx)} 
+     {assume hy; refine h (∨ᵢ₂ hy)}}
+ {assume h hxy;
+     refine ∨ₑ hxy _ _
+     {assume hx; refine (∧ₑ₁ h) hx}
+     {assume hy; refine (∧ₑ₂ h) hy}}
+end;
+
+opaque symbol ⇒=∨ x y : 
+ π ((x ⇒ y) = (¬ x ∨ y))≔
+begin
+ assume x y;
+ refine propExt (x ⇒ y) (¬ x ∨ y) _ _
+ {assume h;
+     refine ∨ₑ (em x) _ _
+     {assume hx; refine ∨ᵢ₂ (h hx)}
+     {assume hnx; refine ∨ᵢ₁ hnx}}
+ {assume h hx;
+     refine ∨ₑ h _ _
+     {assume hnx; refine ⊥ₑ (hnx hx)}
+     {assume hy; refine hy}}
+end;
+
+opaque symbol ¬⇒=∧¬ x y : 
+ π (¬(x ⇒ y) = (x ∧ ¬ y))≔
+begin
+ assume x y;
+ refine propExt (¬(x ⇒ y)) (x ∧ ¬ y) _ _
+ {assume h;
+     refine ∧ᵢ _ _
+     {refine ∨ₑ (em x) _ _
+         {assume hx; refine hx}
+         {assume hnx; refine ⊥ₑ (h (λ z, ⊥ₑ (hnx z)))}}
+     {assume hy; refine h (λ _, hy)}}
+ {assume h himp;
+     refine (∧ₑ₂ h) (himp (∧ₑ₁ h))}
 end;
