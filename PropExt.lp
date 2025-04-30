@@ -9,22 +9,18 @@ require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq Stdlib.Impred Stdlib.Cl
 
 symbol propExt x y : (π x → π y) → (π y → π x) → π (x = y);
 
-/******************************************************************************
- *  Lemmas
- ******************************************************************************/
-
- opaque symbol =⇒ [a b] : π (a = b) → π a → π b ≔
- begin
-   assume a b h0 h1;
-   refine ind_eq (eq_sym h0) (λ x, x) h1
- end;
+opaque symbol =⇒ [a b] : π (a = b) → π a → π b ≔
+begin
+  assume a b h0 h1;
+  refine ind_eq (eq_sym h0) (λ x, x) h1
+end;
 
 
 /******************************************************************************
  *  Commutativity, associativity and distributivity                                                     
  ******************************************************************************/
 
- opaque symbol ∨_com x y:
+opaque symbol ∨_com x y:
  π ((x ∨ y) = (y ∨ x)) ≔
 begin
   assume x y;
