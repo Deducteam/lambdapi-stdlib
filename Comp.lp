@@ -36,6 +36,18 @@ rule isGt Eq ↪ false
 with isGt Lt ↪ false
 with isGt Gt ↪ true;
 
+symbol isLe : Comp → 𝔹;
+
+rule isLt Eq ↪ true
+with isLt Lt ↪ true
+with isLt Gt ↪ false;
+
+symbol isGe : Comp → 𝔹;
+
+rule isLt Eq ↪ true
+with isLt Lt ↪ false
+with isLt Gt ↪ true;
+
 // Discriminate constructors
 
 symbol Lt≠Eq : π (Lt ≠ Eq) ≔
