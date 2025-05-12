@@ -80,17 +80,3 @@ notation times infix 20;
 
 rule 0 times _ ↪ nothing
 with $n +1 times $t ↪ $t & ($n times $t);
-
-require open tests.OK.Eq;
-
-symbol lemma x y z t : π (((x + y) + z) + t = x + (y + (z + t))) ≔
-begin
-  assume x;
-  eval #generalize x;
-  //assume x y z t;
-  //compute #assume "x" & #assume "y" & #assume "z" & #assume "t";
-  eval #assume "x" & #assume "y" & #assume "z" & #assume "t";
-  //rewrite addnA; rewrite addnA; reflexivity
-  //compute 2 times #rewrite addnA;
-  eval 2 times #rewrite addnA & #reflexivity
-end;
