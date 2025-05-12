@@ -1,7 +1,7 @@
 // define a type representing Lambdapi tactics
 
-require open Stdlib.Set Stdlib.Prop Stdlib.String Stdlib.Option
-             Stdlib.List;
+require open tests.OK.Set tests.OK.Prop tests.OK.String tests.OK.Option
+             tests.OK.List;
 
 constant symbol Tactic : TYPE;
 
@@ -15,14 +15,14 @@ notation & infix right 10;
 constant symbol #apply [p] : π p → Tactic;
 builtin "apply" ≔ #apply;
 
-constant symbol #assume : τ (list string) → Tactic;
+constant symbol #assume : String → Tactic;
 builtin "assume" ≔ #assume;
 
 constant symbol #fail : Tactic;
 builtin "fail" ≔ #fail;
 
-//constant symbol #generalize : Π [a], τ a → Tactic;
-//builtin "generalize" ≔ #generalize;
+constant symbol #generalize : Π [a], τ a → Tactic;
+builtin "generalize" ≔ #generalize;
 
 constant symbol #have : String → Π p, π p → Tactic;
 builtin "have" ≔ #have;
@@ -39,8 +39,8 @@ builtin "refine" ≔ #refine;
 constant symbol #reflexivity : Tactic;
 builtin "reflexivity" ≔ #reflexivity;
 
-//constant symbol #remove : Π [a], π a → Tactic;
-//builtin "remove" ≔ #remove;
+constant symbol #remove : Π [a], π a → Tactic;
+builtin "remove" ≔ #remove;
 
 constant symbol #repeat : Tactic → Tactic;
 builtin "repeat" ≔ #repeat;
@@ -53,6 +53,9 @@ builtin "set" ≔ #set;
 
 constant symbol #simplify : /* Π [a], τ a → */ Tactic;
 builtin "simplify" ≔ #simplify;
+
+constant symbol #simplify_beta : Tactic;
+builtin "simplify rule off" ≔ #simplify_beta;
 
 constant symbol #solve : Tactic;
 builtin "solve" ≔ #solve;
@@ -68,22 +71,26 @@ builtin "why3" ≔ #why3;
 
 /*****************************************************************************/
 
-symbol nothing ≔ #repeat #fail;
+symbol nothing ≔ #try #fail;
 
-require open Stdlib.Nat;
+require open tests.OK.Nat;
 
-symbol * : ℕ → Tactic → Tactic;
-notation * infix 20;
+symbol times : ℕ → Tactic → Tactic;
+notation times infix 20;
 
-rule 0 * _ ↪ nothing
-with $n +1 * $t ↪ $t & ($n * $t);
+rule 0 times _ ↪ nothing
+with $n +1 times $t ↪ $t & ($n times $t);
 
-require open Stdlib.Eq;
+require open tests.OK.Eq;
 
 symbol lemma x y z t : π (((x + y) + z) + t = x + (y + (z + t))) ≔
 begin
-  assume x y z t;
+  assume x;
+  eval #generalize x;
+  //assume x y z t;
+  //compute #assume "x" & #assume "y" & #assume "z" & #assume "t";
+  eval #assume "x" & #assume "y" & #assume "z" & #assume "t";
   //rewrite addnA; rewrite addnA; reflexivity
-  compute 2 * #rewrite addnA;
-  eval 2 * #rewrite addnA & #reflexivity
+  //compute 2 times #rewrite addnA;
+  eval 2 times #rewrite addnA & #reflexivity
 end;

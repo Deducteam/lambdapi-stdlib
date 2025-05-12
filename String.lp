@@ -7,6 +7,3 @@ builtin "String" ≔ String;
 
 constant symbol string : Set;
 rule τ string ↪ String;
-
-constant symbol gen_id : String → String;
-builtin "gen_id" ≔ gen_id;
