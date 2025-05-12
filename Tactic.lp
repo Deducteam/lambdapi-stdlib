@@ -1,9 +1,11 @@
 // define a type representing Lambdapi tactics
 
-require open tests.OK.Set tests.OK.Prop tests.OK.String tests.OK.Option
-             tests.OK.List;
+require open Stdlib.Set Stdlib.Prop Stdlib.String Stdlib.Option
+             Stdlib.List;
 
 constant symbol Tactic : TYPE;
+
+// mandatory builtins
 
 constant symbol #admit : Tactic;
 builtin "admit" ≔ #admit;
@@ -69,14 +71,14 @@ builtin "try" ≔ #try;
 constant symbol #why3 : /*τ (option string) →*/ Tactic;
 builtin "why3" ≔ #why3;
 
-/*****************************************************************************/
+// defined tactics
 
 symbol nothing ≔ #try #fail;
 
-require open tests.OK.Nat;
+require open Stdlib.Nat;
 
 symbol times : ℕ → Tactic → Tactic;
 notation times infix 20;
 
 rule 0 times _ ↪ nothing
-with $n +1 times $t ↪ $t & ($n times $t);
+with $n +1 times $t ↪ $t & $n times $t;
