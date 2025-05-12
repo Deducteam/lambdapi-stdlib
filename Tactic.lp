@@ -53,7 +53,7 @@ builtin "rewrite" ≔ #rewrite;
 constant symbol #set : String → Π [a], τ a → Tactic;
 builtin "set" ≔ #set;
 
-constant symbol #simplify : /* Π [a], τ a → */ Tactic;
+constant symbol #simplify : Tactic;
 builtin "simplify" ≔ #simplify;
 
 constant symbol #simplify_beta : Tactic;
@@ -68,7 +68,7 @@ builtin "symmetry" ≔ #symmetry;
 constant symbol #try : Tactic → Tactic;
 builtin "try" ≔ #try;
 
-constant symbol #why3 : /*τ (option string) →*/ Tactic;
+constant symbol #why3 : Tactic;
 builtin "why3" ≔ #why3;
 
 // defined tactics
