@@ -321,7 +321,7 @@ end;
 
 // concatenation
 
-symbol ++ [a] : 𝕃 a → 𝕃 a → 𝕃 a; notation ++ infix right 30; // \cdot
+symbol ++ [a] : 𝕃 a → 𝕃 a → 𝕃 a; notation ++ infix right 30;
 
 assert x y z ⊢ x ++ y ++ z ≡ x ++ (y ++ z);
 assert x l m ⊢ x ⸬ l ++ m ≡ x ⸬ (l ++ m);
