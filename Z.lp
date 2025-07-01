@@ -232,6 +232,7 @@ end;
 // Negation
 
 symbol - x y ≔ x + — y;
+
 notation - infix left 20;
 
 symbol -_same z : π (z + — z = Z0) ≔
@@ -507,10 +508,10 @@ end;
 
 // Directional comparison operators
 
-symbol ≤ x y ≔ ¬ (istrue(isGt (x ≐ y)));
+symbol ≤ x y ≔ ¬ (istrue(isGt(x ≐ y)));
 notation ≤ infix 10;
 
-symbol < x y ≔ istrue(isLt (x ≐ y));
+symbol < x y ≔ istrue(isLt(x ≐ y));
 notation < infix 10;
 
 symbol ≥ x y ≔ ¬ (x < y);
