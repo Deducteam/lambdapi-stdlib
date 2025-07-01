@@ -34,7 +34,7 @@ with istrue false ↪ ⊥;
 
 coerce_rule coerce 𝔹 Prop $x ↪ istrue $x;
 
-symbol istrue=true [x] : π (istrue x) → π (x = true)≔
+symbol istrue=true [x] : π (istrue x) → π (x = true) ≔
 begin
   assume x h;
   refine ∨ₑ (case_𝔹 x) _ _
