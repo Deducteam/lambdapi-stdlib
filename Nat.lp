@@ -614,7 +614,7 @@ begin
   };
 end;
 
-// order on ℕ
+// Boolean ordering functions
 
 symbol ≤ : ℕ → ℕ → 𝔹; notation ≤ infix left 10;
 
