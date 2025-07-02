@@ -559,7 +559,7 @@ begin
      induction
       { assume h1 h2; refine λ x, x;   }
       { assume y h h'; refine λ x, x }
-      { simplify; assume y h f; apply ⊥ₑ; refine f ⊤ᵢ } }
+      { simplify; assume y h f; refine ⊥ₑ _; refine f ⊤ᵢ } }
   { assume x y f h; apply ⊥ₑ; refine f ⊤ᵢ }
 end;
 

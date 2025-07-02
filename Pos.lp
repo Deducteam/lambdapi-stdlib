@@ -71,7 +71,7 @@ with projO H ↪ H;
 
 opaque symbol O_inj p q : π(O p = O q) → π(p = q) ≔
 begin
-  assume p q h; apply feq projO h
+  assume p q h; refine feq projO h
 end;
 
 symbol projI : ℙ → ℙ;
@@ -82,7 +82,7 @@ with projI H ↪ H;
 
 opaque symbol I_inj p q : π(I p = I q) → π(p = q) ≔
 begin
-  assume p q h; apply feq projI h
+  assume p q h; refine feq projI h
 end;
 
 // Successor function
