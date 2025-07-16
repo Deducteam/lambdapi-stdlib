@@ -5,7 +5,7 @@ The theorems are grouped into sections by theme:
 - Various Simplifications                              
 ****************************************************************************/
 
-require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq Stdlib.Impred Stdlib.Classic;
+require open Stdlib.Eq Stdlib.Impred Stdlib.Classic;
 
 symbol propExt x y : (π x → π y) → (π y → π x) → π (x = y);
 

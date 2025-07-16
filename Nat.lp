@@ -88,7 +88,7 @@ expnMn : (m1 * m2) ^ n = ... The operands of other operators are selected
 using the l/r suffixes.
 */
 
-require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq Stdlib.Bool;
+require open Stdlib.Bool;
 
 inductive ℕ : TYPE ≔
 | _0 : ℕ

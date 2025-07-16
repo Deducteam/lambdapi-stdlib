@@ -1,4 +1,3 @@
-require open Stdlib.Set Stdlib.Prop Stdlib.Eq Stdlib.FOL Stdlib.HOL;
+require open Stdlib.Eq Stdlib.HOL;
 
-symbol funExt [a b] (f g : τ (a ⤳ b)) : π(`∀ x, f x = g x) → π(f = g);
-
+symbol funExt [a b] (f g : τ (a ⤳ b)) : (Π x, π(f x = g x)) → π(f = g);
