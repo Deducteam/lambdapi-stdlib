@@ -833,10 +833,6 @@ begin
   }
 end;
 
-opaque symbol ltn_neqAle m n : π (istrue (m < n) ⇔ istrue (m ≤ n) ∧ (m ≠ n)) ≔
-begin
-abort;
-
 opaque symbol leq_add0 m n :
   π (istrue (_0 ≤ m)) → π (istrue (_0 ≤ n)) → π (istrue (_0 ≤ m + n)) ≔
 begin
@@ -1195,16 +1191,6 @@ begin
   assume m n; rewrite maxnC m n; apply leq_maxl n m;
 end;
 
-opaque symbol gtn_max m n1 n2 :
-  π (istrue (m > max n1 n2) ⇔ istrue (m > n1) ∧ istrue (m > n2)) ≔
-begin
-abort;
-
-opaque symbol geq_max m n1 n2 :
-  π (istrue (m ≥ max n1 n2) ⇔ istrue (m ≥ n1) ∧ istrue (m ≥ n2)) ≔
-begin
-abort;
-
 opaque symbol ltn_predK m n : π (istrue (m < n)) → π (n ∸1 +1 = n) ≔
 begin
   assume m; induction
@@ -1464,10 +1450,6 @@ begin
     }
   }
 end;
-
-opaque symbol minnE m n : π (min m n = m - (m - n)) ≔
-begin
-abort;
 
 opaque symbol minnn x : π (min x x = x) ≔
 begin
@@ -1747,15 +1729,6 @@ begin
   reflexivity;
 end;
 
-opaque symbol expn_gt0 m n :
-  π ((istrue (_0 < m ^ n)) ⇔ istrue (_0 < m) ∨ (n = _0)) ≔
-begin
-abort;
-
-opaque symbol ltn_expl m n : π (istrue ((_0 +1) < m)) → π (istrue (n < m ^ n)) ≔
-begin
-abort;
-
 // factorial
 
 symbol ! : ℕ → ℕ; notation ! postfix 40;
@@ -1811,8 +1784,6 @@ symbol _10 ≔ _9 +1;
 builtin "nat_zero" ≔ _0;
 builtin "nat_succ" ≔ +1;
 
-compute _2 + _2;
-
 // enable parsing of natural numbers in decimal notation
 
 builtin "0"  ≔ _0;
@@ -1829,5 +1800,3 @@ builtin "10" ≔ _10;
 
 builtin "+" ≔ +;
 builtin "*" ≔ *;
-
-type 42;

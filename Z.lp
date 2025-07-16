@@ -653,8 +653,6 @@ with Zpos $x * Zneg $y ↪ Zneg (mul $x $y)
 with Zneg $x * Zpos $y ↪ Zneg (mul $x $y)
 with Zneg $x * Zneg $y ↪ Zpos (mul $x $y);
 
-// TO BE CONTINUED (theorems about multiplication)
-
 // shortcuts
 
 symbol _1 ≔ Zpos _1;
@@ -674,8 +672,6 @@ builtin "int_zero" ≔ Z0;
 builtin "int_positive" ≔ Zpos;
 builtin "int_negative" ≔ Zneg;
 
-compute _2 - _3;
-
 // enable parsing of integers in decimal notation
 
 builtin "0" ≔ Z0;
@@ -693,5 +689,3 @@ builtin "10" ≔ _10;
 builtin "+" ≔ +;
 builtin "*" ≔ *;
 builtin "-" ≔ —;
-
-type -42;

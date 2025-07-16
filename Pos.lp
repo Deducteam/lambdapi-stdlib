@@ -580,5 +580,3 @@ symbol _10 ≔ O (I (O H));
 builtin "pos_one" ≔ H;
 builtin "pos_double" ≔ O;
 builtin "pos_succ_double" ≔ I;
-
-compute add _2 _2;
