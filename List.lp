@@ -873,11 +873,6 @@ begin
   }
 end;
 
-opaque symbol size_take [a] n (l:𝕃 a) :
-  π (size (take n l) = if (n < size l) n (size l)) ≔
-begin
-abort;
-
 opaque symbol size_take_min [a] n (l:𝕃 a) :
   π (size (take n l) = min n (size l)) ≔
 begin
@@ -1036,15 +1031,6 @@ opaque symbol rotr0 [a] (l:𝕃 a) : π (rotr 0 l = l) ≔
 begin
   assume a l; simplify; rewrite take_size l; rewrite @drop_size a; reflexivity;
 end;
-
-opaque symbol rotK [a] n (l:𝕃 a) : π (rot n (rotr n l) = l) ≔
-begin
-abort;
-
-opaque symbol rot_inj [a] n (l1 l2:𝕃 a) :
-  π (rot n l1 = rot n l2) → π (l1 = l2) ≔
-begin
-abort;
 
 // membership
 
@@ -1424,11 +1410,6 @@ begin
   rewrite left size_cat (filter p l1) (filter p l2); reflexivity;
 end;
 
-opaque symbol eq_find [a] beq p (l1 l2:𝕃 a) :
-  π (eql beq l1 l2) → π (eqn (find p l1) (find p l2)) ≔
-begin
-abort;
-
 // undup
 
 symbol undup [a] : (τ a → τ a → 𝔹) → 𝕃 a → 𝕃 a;
@@ -1465,16 +1446,6 @@ begin
     }; 
   }
 end;
-
-opaque symbol filter_undup [a] beq p (l:𝕃 a) :
-  π (filter p (undup beq l) = undup beq (filter p l)) ≔
-begin
-abort;
-
-opaque symbol count_undup [a] beq p (l:𝕃 a) :
-  π (count p (undup beq l) ≤ count p l) ≔
-begin
-abort;
 
 // map
 

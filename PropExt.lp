@@ -15,13 +15,11 @@ begin
   refine ind_eq (eq_sym h0) (λ x, x) h1
 end;
 
-
 /******************************************************************************
  *  Commutativity, associativity and distributivity                                                     
  ******************************************************************************/
 
-opaque symbol ∨_com x y:
- π ((x ∨ y) = (y ∨ x)) ≔
+opaque symbol ∨_com x y: π ((x ∨ y) = (y ∨ x)) ≔
 begin
   assume x y;
   refine propExt (x ∨ y) (y ∨ x) _ _
@@ -35,8 +33,7 @@ begin
       {assume h2; refine ∨ᵢ₁ h2}}
 end;
 
-opaque symbol ∧_com x y:
- π ((x ∧ y) = (y ∧ x)) ≔
+opaque symbol ∧_com x y: π ((x ∧ y) = (y ∧ x)) ≔
 begin
   assume x y;
   refine propExt (x ∧ y) (y ∧ x) _ _
@@ -44,8 +41,7 @@ begin
     {assume h; refine ∧ᵢ (∧ₑ₂ h) (∧ₑ₁ h)}
 end;
 
-opaque symbol ⇔_com x y:
- π ((x ⇔ y) = (y ⇔ x)) ≔
+opaque symbol ⇔_com x y: π ((x ⇔ y) = (y ⇔ x)) ≔
 begin
   assume x y;
   refine propExt (x ⇔ y) (y ⇔ x) _ _
@@ -53,8 +49,7 @@ begin
     {assume h; refine ∧ᵢ (∧ₑ₂ h) (∧ₑ₁ h)}
 end;
 
-opaque symbol ∨_assoc x y z : 
- π (((x ∨ y) ∨ z) = (x ∨ (y ∨ z)))≔
+opaque symbol ∨_assoc x y z : π (((x ∨ y) ∨ z) = (x ∨ (y ∨ z))) ≔
 begin
  assume x y z;
  refine propExt ((x ∨ y) ∨ z) (x ∨ (y ∨ z)) _ _
@@ -71,8 +66,7 @@ begin
         {assume h2; refine ∨ᵢ₂ h2}}}
 end;
 
-opaque symbol ∧_assoc x y z :  
- π (((x ∧ y) ∧ z) = (x ∧ (y ∧ z)))≔
+opaque symbol ∧_assoc x y z : π (((x ∧ y) ∧ z) = (x ∧ (y ∧ z))) ≔
 begin
  assume x y z;
  refine propExt ((x ∧ y) ∧ z) (x ∧ (y ∧ z)) _ _
@@ -82,8 +76,7 @@ begin
  refine ∧ᵢ (∧ᵢ (∧ₑ₁ h) (∧ₑ₁ (∧ₑ₂ h))) (∧ₑ₂ (∧ₑ₂ h))}
 end;
 
-opaque symbol ∧∨_dist_l x y z : 
- π (((x ∧ y) ∨ z) = ((x ∨ z) ∧ (y ∨ z)))≔
+opaque symbol ∧∨_dist_l x y z : π (((x ∧ y) ∨ z) = ((x ∨ z) ∧ (y ∨ z))) ≔
 begin
  assume x y z;
  refine propExt ((x ∧ y) ∨ z) ((x ∨ z) ∧ (y ∨ z)) _ _
@@ -110,24 +103,17 @@ begin
          refine ∨ᵢ₁ (∧ᵢ hx hy)}}
 end;
 
-opaque symbol ∧∨_dist_r x y z : 
- π ((z ∨ (x ∧ y)) = ((z ∨ x) ∧ (z ∨ y)))≔
- begin
-    assume x y z;
-    rewrite ∨_com;
-    rewrite ∧∨_dist_l;
-    rewrite ∨_com z x;
-    rewrite ∨_com z y;
-    reflexivity
- end;
-
+opaque symbol ∧∨_dist_r x y z : π ((z ∨ (x ∧ y)) = ((z ∨ x) ∧ (z ∨ y))) ≔
+begin
+  assume x y z; rewrite ∨_com; rewrite ∧∨_dist_l; rewrite ∨_com z x;
+  rewrite ∨_com z y; reflexivity
+end;
 
 /******************************************************************************
  *  Symmetry and polarity                                                     
  ******************************************************************************/
 
-opaque symbol =_sym [T] (x y : τ T) : 
- π((x = y) = (y = x))≔
+opaque symbol =_sym [T] (x y : τ T) : π((x = y) = (y = x)) ≔
 begin
   assume T x y;
   have H1: π(x = y) → π(y = x)
@@ -137,8 +123,7 @@ begin
   refine propExt (x = y) (y = x) H1 H2
 end;
 
-opaque symbol polarity_switch x y :
-π ((¬ x = ¬ y) = (x = y)) ≔
+opaque symbol polarity_switch x y : π ((¬ x = ¬ y) = (x = y)) ≔
 begin
   assume x y;
   refine propExt (¬ x = ¬ y) (x = y) _ _
@@ -162,15 +147,13 @@ begin
       {assume h2; refine ind_eq h1 (λ x, ¬ x) h2}}
 end;
 
-
 /******************************************************************************
  *  Simplifications          
  ******************************************************************************/
 
 // Idempotence and Contradiction for ∧ and ∨
 
-opaque symbol ∨_idem x :
-  π ((x ∨ x) = x) ≔
+opaque symbol ∨_idem x : π ((x ∨ x) = x) ≔
 begin
   assume x;
   refine propExt (x ∨ x) x _ _
@@ -181,8 +164,7 @@ begin
     {assume h2; refine ∨ᵢ₁ h2}
 end;
 
-opaque symbol ∧_idem x :
-  π ((x ∧ x) = x) ≔
+opaque symbol ∧_idem x : π ((x ∧ x) = x) ≔
 begin
   assume x;
   refine propExt (x ∧ x) x _ _
@@ -190,8 +172,7 @@ begin
     {assume h1; refine ∧ᵢ h1 h1}
 end;
 
-opaque symbol ∧_contra_l x :
-  π ((¬ x ∧ x) = ⊥) ≔
+opaque symbol ∧_contra_l x : π ((¬ x ∧ x) = ⊥) ≔
 begin
   assume x;
   refine propExt (¬ x ∧ x) ⊥ _ _
@@ -200,8 +181,7 @@ begin
      {assume h1; refine ⊥ₑ h1}
 end;
 
-opaque symbol ∧_contra_r x :
-  π ((x ∧ ¬ x ) = ⊥) ≔
+opaque symbol ∧_contra_r x : π ((x ∧ ¬ x ) = ⊥) ≔
 begin
   assume x; rewrite ∧_com; refine ∧_contra_l x;
 end;
@@ -209,8 +189,7 @@ end;
 
 // Disjunction/Conjunction with ⊤ / ⊥      
 
-opaque symbol ∨⊤ x :
-  π ((x ∨ ⊤) = ⊤) ≔
+opaque symbol ∨⊤ x : π ((x ∨ ⊤) = ⊤) ≔
 begin
   assume x;
   refine propExt (x ∨ ⊤) ⊤ _ _
@@ -218,14 +197,12 @@ begin
     {assume h2; refine ∨ᵢ₂ h2}
 end;
 
-opaque symbol ⊤∨ x :
-  π ((⊤ ∨ x) = ⊤) ≔
+opaque symbol ⊤∨ x : π ((⊤ ∨ x) = ⊤) ≔
 begin
   assume x; rewrite ∨_com; refine ∨⊤ x
 end;
 
-opaque symbol ∧⊤ x :
-  π ((x ∧ ⊤) = x) ≔
+opaque symbol ∧⊤ x : π ((x ∧ ⊤) = x) ≔
 begin
   assume x;
   refine propExt (x ∧ ⊤) x _ _
@@ -233,14 +210,12 @@ begin
     {assume h1; refine ∧ᵢ h1 ⊤ᵢ}
 end;
 
-opaque symbol ⊤∧ x :
-  π ((⊤ ∧ x) = x) ≔
+opaque symbol ⊤∧ x : π ((⊤ ∧ x) = x) ≔
 begin
   assume x; rewrite ∧_com; refine ∧⊤ x
 end;
 
-opaque symbol ∨⊥ x :
-  π ((x ∨ ⊥) = x) ≔
+opaque symbol ∨⊥ x : π ((x ∨ ⊥) = x) ≔
 begin
   assume x;
   refine propExt (x ∨ ⊥) x _ _
@@ -251,53 +226,43 @@ begin
     {assume h1; refine ∨ᵢ₁ h1}
 end;
 
-opaque symbol ⊥∨ x :
-  π ((⊥ ∨ x) = x) ≔
+opaque symbol ⊥∨ x : π ((⊥ ∨ x) = x) ≔
 begin
   assume x; rewrite ∨_com; refine ∨⊥ x
 end;
 
-opaque symbol ∧⊥ x :
-  π ((x ∧ ⊥) = ⊥) ≔
+opaque symbol ∧⊥ x : π ((x ∧ ⊥) = ⊥) ≔
 begin
   assume x;
   refine propExt (x ∧ ⊥) ⊥ _ _
     {assume h1; refine ∧ₑ₂ h1}
-    {assume h1;
-     type ⊥ₑ h1;
-     refine ∧ᵢ (⊥ₑ h1) h1}
+    {assume h1; refine ∧ᵢ (⊥ₑ h1) h1}
 end;
 
-opaque symbol ⊥∧ x :
-  π ((⊥ ∧ x) = ⊥) ≔
+opaque symbol ⊥∧ x : π ((⊥ ∧ x) = ⊥) ≔
 begin
   assume x; rewrite ∧_com; refine ∧⊥ x
 end;
 
-
 // Negation of ⊤ and ⊥  
 
-opaque symbol ¬⊥ :
-  π (¬ ⊥ = ⊤) ≔
+opaque symbol ¬⊥ : π (¬ ⊥ = ⊤) ≔
 begin
   refine propExt (¬ ⊥) ⊤ _ _
     {assume h1; refine ⊤ᵢ}
     {assume h1 h2; refine h2}
 end;
 
-opaque symbol ¬⊤ :
-  π (¬ ⊤ = ⊥) ≔
+opaque symbol ¬⊤ : π (¬ ⊤ = ⊥) ≔
 begin
   refine propExt (¬ ⊤) ⊥ _ _
     {assume h1; refine h1 ⊤ᵢ}
     {assume h1; refine ⊥ₑ h1}
 end;
 
-
 // Simplifications on Equalities 
 
-opaque symbol =_idem (t : Set) (x : τ t) : 
-  π ((x = x) = ⊤) ≔
+opaque symbol =_idem t (x : τ t) : π ((x = x) = ⊤) ≔
 begin
   assume t x;
   refine propExt (x = x) ⊤ _ _
@@ -305,8 +270,7 @@ begin
     {assume h1; refine eq_refl x}
 end;
 
-opaque symbol ¬=_idem (t : Set) (x : τ t) :
-  π (¬ (x = x) = ⊥) ≔
+opaque symbol ¬=_idem t (x : τ t) : π (¬ (x = x) = ⊥) ≔
 begin
   assume t x;
   refine propExt (¬ (x = x)) ⊥ _ _
@@ -317,8 +281,7 @@ begin
     {assume h1; refine ⊥ₑ h1}
 end;
 
-opaque symbol =⊤ x :
-  π ((x = ⊤) = x) ≔
+opaque symbol =⊤ x : π ((x = ⊤) = x) ≔
 begin
   assume x;
   refine propExt (x = ⊤) x _ _
@@ -330,14 +293,12 @@ begin
         {assume h2; refine h1}}
 end;
 
-opaque symbol ⊤= x :
-  π ((⊤ = x) = x) ≔
+opaque symbol ⊤= x : π ((⊤ = x) = x) ≔
 begin
   assume x; rewrite .[x in x = _] (=_sym [o]); refine =⊤ x
 end;
 
-opaque symbol ¬=⊤ x :
-  π (¬(x = ⊤) = ¬ x) ≔
+opaque symbol ¬=⊤ x : π (¬(x = ⊤) = ¬ x) ≔
 begin
   assume x;
   refine propExt (¬(x = ⊤)) (¬ x) _ _
@@ -351,14 +312,12 @@ begin
      refine h1 x_true}
 end;
 
-opaque symbol ¬⊤= x :
-  π (¬(⊤ = x) = ¬ x) ≔
+opaque symbol ¬⊤= x : π (¬(⊤ = x) = ¬ x) ≔
 begin
   assume x; rewrite .[x in (¬ x) = _] (=_sym [o]); refine ¬=⊤ x
 end;
 
-opaque symbol =⊥ x :
-  π ((x = ⊥) = ¬ x) ≔
+opaque symbol =⊥ x : π ((x = ⊥) = ¬ x) ≔
 begin
   assume x;
   refine propExt (x = ⊥) (¬ x) _ _
@@ -370,14 +329,12 @@ begin
    {assume h3; refine ⊥ₑ h3}}
 end;
 
-opaque symbol ⊥= x :
-  π ((⊥ = x) = ¬ x) ≔
+opaque symbol ⊥= x : π ((⊥ = x) = ¬ x) ≔
 begin
   assume x; rewrite .[x in x = _] (=_sym [o]); refine  =⊥ x
 end;
 
-opaque symbol  ¬=⊥ x :
-  π (¬ (x = ⊥) = x) ≔
+opaque symbol  ¬=⊥ x : π (¬ (x = ⊥) = x) ≔
 begin
   assume x;
   refine propExt (¬(x = ⊥)) x _ _
@@ -396,8 +353,7 @@ begin
    refine (ind_eq (eq_sym eq_x_⊥) (λ z, z)) h2}
 end;
 
-opaque symbol ¬⊥= x :
-  π (¬ (⊥ = x) = x) ≔
+opaque symbol ¬⊥= x : π (¬ (⊥ = x) = x) ≔
 begin
   assume x; rewrite .[x in (¬ x) = _] (=_sym [o]); refine ¬=⊥ x;
 end;
@@ -405,8 +361,7 @@ end;
 
 // Simplifications on Equalities with negations
 
-opaque symbol neg=⊤ x :
-  π ((¬ x = ⊤) = ¬ x) ≔
+opaque symbol neg=⊤ x : π ((¬ x = ⊤) = ¬ x) ≔
 begin
   assume x;
   symmetry;
@@ -422,14 +377,12 @@ begin
      refine H1 h1}
 end;
 
-opaque symbol ⊤=neg x :
-π ((⊤ = ¬ x) = ¬ x) ≔
+opaque symbol ⊤=neg x : π ((⊤ = ¬ x) = ¬ x) ≔
 begin
   assume x; rewrite .[x in x = _] (=_sym [o]); refine neg=⊤ x
 end;
 
-opaque symbol ¬neg=⊤ x :
-  π (¬(¬ x = ⊤) = x) ≔
+opaque symbol ¬neg=⊤ x : π (¬(¬ x = ⊤) = x) ≔
 begin
   assume x;
   symmetry;
@@ -447,14 +400,12 @@ begin
          refine ⊥ₑ (h1 H1)}}
 end;
 
-opaque symbol ¬⊤neg= x :
-  π (¬(⊤ = ¬ x) = x) ≔
+opaque symbol ¬⊤neg= x : π (¬(⊤ = ¬ x) = x) ≔
 begin
   assume x; rewrite .[x in ¬ x = _] (=_sym [o]); refine ¬neg=⊤ x
 end;
 
-opaque symbol neg=⊥ x :
-  π ((¬ x = ⊥) = x) ≔
+opaque symbol neg=⊥ x : π ((¬ x = ⊥) = x) ≔
 begin
   assume x;
   refine propExt (¬ x = ⊥) x _ _
@@ -466,21 +417,18 @@ begin
        {assume h2; refine ⊥ₑ h2}}
 end;
 
-opaque symbol ⊥=neg x :
-  π ((⊥ = ¬ x ) = x) ≔
+opaque symbol ⊥=neg x : π ((⊥ = ¬ x ) = x) ≔
 begin
   assume x; rewrite .[x in x = _] (=_sym [o]); refine neg=⊥ x
 end;
 
-opaque symbol ¬neg=⊥ x :
-  π (¬(¬ x = ⊥) = ¬ x) ≔
+opaque symbol ¬neg=⊥ x : π (¬(¬ x = ⊥) = ¬ x) ≔
 begin
   assume x;
   refine ind_eq (polarity_switch (¬ x = ⊥) x) (λ z, z) (neg=⊥ x);
 end;
 
-opaque symbol ¬⊥=neg x :
-  π (¬(⊥ = ¬ x) = ¬ x) ≔
+opaque symbol ¬⊥=neg x : π (¬(⊥ = ¬ x) = ¬ x) ≔
 begin
   assume x; rewrite .[x in ¬ x = _] (=_sym [o]); refine ¬neg=⊥ x
 end;
@@ -488,8 +436,7 @@ end;
 
 // Simplifications on Implication
 
-opaque symbol ⇒_idem x :
-  π ((x ⇒ x) = ⊤) ≔
+opaque symbol ⇒_idem x : π ((x ⇒ x) = ⊤) ≔
 begin
   assume x;
   refine propExt (x ⇒ x) ⊤ _ _
@@ -497,8 +444,7 @@ begin
   {assume h2 y; refine y}
 end;
 
-opaque symbol ⊤⇒ x :
-  π ((⊤ ⇒ x) = x) ≔
+opaque symbol ⊤⇒ x : π ((⊤ ⇒ x) = x) ≔
 begin
   assume x;
   refine propExt (⊤ ⇒ x) x _ _
@@ -506,8 +452,7 @@ begin
   {assume h2 y; refine h2}
 end;
 
-opaque symbol ⇒⊤ x :
-  π ((x ⇒ ⊤) = ⊤) ≔
+opaque symbol ⇒⊤ x : π ((x ⇒ ⊤) = ⊤) ≔
 begin
   assume x;
   refine propExt (x ⇒ ⊤) ⊤ _ _
@@ -515,8 +460,7 @@ begin
   {assume h2 y; refine ⊤ᵢ}
 end;
 
-opaque symbol ⊥⇒ x :
-  π ((⊥ ⇒ x) = ⊤) ≔
+opaque symbol ⊥⇒ x : π ((⊥ ⇒ x) = ⊤) ≔
 begin
   assume x;
   refine propExt (⊥ ⇒ x) ⊤ _ _
@@ -524,8 +468,7 @@ begin
   {assume h2 h3; refine ⊥ₑ h3}
 end;
 
-opaque symbol ⇒⊥ x :
-  π ((x ⇒ ⊥) = ¬ x) ≔
+opaque symbol ⇒⊥ x : π ((x ⇒ ⊥) = ¬ x) ≔
 begin
   assume x;
   refine propExt (x ⇒ ⊥) (¬ x) _ _
@@ -533,11 +476,9 @@ begin
   {assume h2 y; refine h2 y}
 end;
 
-
 // Simplifications on Bi-Implication
 
-opaque symbol ⇔_idem x :
-  π ((x ⇔ x) = ⊤) ≔
+opaque symbol ⇔_idem x : π ((x ⇔ x) = ⊤) ≔
 begin
   assume x;
   refine propExt (x ⇔ x) ⊤ _ _
@@ -548,8 +489,7 @@ begin
    {assume h3; refine h3}}
 end;
 
-opaque symbol ⇔⊤ x :
-  π ((x ⇔ ⊤) = x) ≔
+opaque symbol ⇔⊤ x : π ((x ⇔ ⊤) = x) ≔
 begin
   assume x;
   refine propExt (x ⇔ ⊤) x _ _
@@ -561,14 +501,12 @@ begin
    {assume h3; refine h2}}
 end;
 
-opaque symbol ⊤⇔ x :
-  π ((⊤ ⇔ x) = x) ≔
+opaque symbol ⊤⇔ x : π ((⊤ ⇔ x) = x) ≔
 begin
   assume x; rewrite ⇔_com; refine ⇔⊤ x;
 end;
 
-opaque symbol ⇔⊥ x :
-  π ((x ⇔ ⊥) = ¬ x) ≔
+opaque symbol ⇔⊥ x : π ((x ⇔ ⊥) = ¬ x) ≔
 begin
   assume x;
   refine propExt (x ⇔ ⊥) (¬ x) _ _
@@ -580,8 +518,7 @@ begin
    {assume h3; refine ⊥ₑ h3}}
 end;
 
-opaque symbol ⊥⇔ x :
-  π ((⊥ ⇔ x) = ¬ x) ≔
+opaque symbol ⊥⇔ x : π ((⊥ ⇔ x) = ¬ x) ≔
 begin
   assume x; rewrite ⇔_com; refine ⇔⊥ x;
 end;
@@ -589,7 +526,7 @@ end;
 
 // Simplifications on Quantifiers
 
-opaque symbol ∀_const (t : Set) (p : τ o) : π ((`∀ (_ : τ t), p) = p)≔
+opaque symbol ∀_const (t : Set) (p : τ o) : π ((`∀ (_ : τ t), p) = p) ≔
 begin
     assume t p;
     refine propExt (`∀ x, p) p _ _
@@ -597,7 +534,7 @@ begin
         {assume h a; refine h}
 end;
 
-opaque symbol ∃_const (t : Set) (p : τ o) : π ((`∃ (_ : τ t), p) = p)≔
+opaque symbol ∃_const (t : Set) (p : τ o) : π ((`∃ (_ : τ t), p) = p) ≔
 begin
     assume t p;
     refine propExt (`∃ x, p) p _ _
@@ -611,11 +548,9 @@ begin
          refine ∃ᵢ [t] [λ y, p] (el t) p_holds}
 end;
 
-
 // Simplifications reflecting Classical Principles
 
-opaque symbol em_eq_l x :
-  π ((¬ x ∨ x) = ⊤) ≔
+opaque symbol em_eq_l x : π ((¬ x ∨ x) = ⊤) ≔
 begin
   assume x;
   refine propExt (¬ x ∨ x) ⊤ _ _
@@ -628,14 +563,12 @@ begin
      refine em_sym}
 end;
 
-opaque symbol em_eq_r x :
-  π ((x ∨ ¬ x) = ⊤) ≔
+opaque symbol em_eq_r x : π ((x ∨ ¬ x) = ⊤) ≔
 begin
   assume x; rewrite ∨_com; refine em_eq_l x;
 end;
 
-opaque symbol ¬¬ₑ_eq x :
-  π (¬ ¬ x = x) ≔
+opaque symbol ¬¬ₑ_eq x : π (¬ ¬ x = x) ≔
 begin
   assume x;
   refine propExt (¬ ¬ x) x _ _
@@ -643,13 +576,11 @@ begin
     {assume h1 h2; refine h2 h1}
 end;
 
-
 /******************************************************************************
  *  Clausification Rules  
  ******************************************************************************/
 
-opaque symbol deMorgan_∧ x y : 
- π (¬(x ∧ y) = (¬ x ∨ ¬ y))≔
+opaque symbol deMorgan_∧ x y : π (¬(x ∧ y) = (¬ x ∨ ¬ y)) ≔
 begin
  assume x y;
  refine propExt (¬(x ∧ y)) (¬ x ∨ ¬ y) _ _
@@ -663,8 +594,7 @@ begin
      {assume hny; refine hny (∧ₑ₂ hxy)}}
 end;
 
-opaque symbol deMorgan_∨ x y :
- π (¬(x ∨ y) = (¬ x ∧ ¬ y))≔
+opaque symbol deMorgan_∨ x y : π (¬(x ∨ y) = (¬ x ∧ ¬ y)) ≔
 begin
  assume x y;
  refine propExt (¬(x ∨ y)) (¬ x ∧ ¬ y) _ _
@@ -677,8 +607,7 @@ begin
      {assume hy; refine (∧ₑ₂ h) hy}}
 end;
 
-opaque symbol ⇒=∨ x y : 
- π ((x ⇒ y) = (¬ x ∨ y))≔
+opaque symbol ⇒=∨ x y : π ((x ⇒ y) = (¬ x ∨ y)) ≔
 begin
  assume x y;
  refine propExt (x ⇒ y) (¬ x ∨ y) _ _
@@ -692,8 +621,7 @@ begin
      {assume hy; refine hy}}
 end;
 
-opaque symbol ¬⇒=∧¬ x y : 
- π (¬(x ⇒ y) = (x ∧ ¬ y))≔
+opaque symbol ¬⇒=∧¬ x y : π (¬(x ⇒ y) = (x ∧ ¬ y)) ≔
 begin
  assume x y;
  refine propExt (¬(x ⇒ y)) (x ∧ ¬ y) _ _
