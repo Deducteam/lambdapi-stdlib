@@ -197,8 +197,7 @@ protected with nosimpl.
  An example of use can be found in fingraph theorem orbitPcycle.
 */
 
-require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq
-  Stdlib.Nat Stdlib.Bool Stdlib.Prod;
+require open Stdlib.Nat Stdlib.Prod;
 
 (a:Set) inductive 𝕃:TYPE ≔
 | □ : 𝕃 a // \Box

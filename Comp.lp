@@ -2,8 +2,7 @@
 
 By Quentin Garchery (May 2021). */
 
-require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq
-  Stdlib.Bool;
+require open Stdlib.Bool;
 
 inductive Comp : TYPE ≔
 | Eq : Comp

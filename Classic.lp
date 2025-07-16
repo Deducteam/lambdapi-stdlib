@@ -1,6 +1,6 @@
 // classical logic
 
-require open Stdlib.Set Stdlib.Prop Stdlib.FOL;
+require open Stdlib.FOL;
 
 symbol em p : π (p ∨ ¬ p); // excluded middle
 
