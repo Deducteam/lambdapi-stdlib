@@ -214,11 +214,24 @@ opaque symbol skolem1_preserves_provability i f:
   π(valid i f) → π f → π(skolem1 i f) ≔
 begin
 refine ind_valid (λ i f, f ⇒ skolem1 i f) _ _ _ _ _ _ _
-{ assume a f h; simplify; apply εᵢ _ h }
-{ assume i a f v IH h x; apply IH x (h x) }
-{ assume i a f v IH h; simplify; apply ∃ₑ h; assume x hx; apply ∃ᵢ x; apply IH x; apply hx }
-{ assume i f g v IH h; simplify; apply ∧ᵢ { apply IH (∧ₑ₁ h) } { apply ∧ₑ₂ h } }
-{ assume i f g v IH h; simplify; apply ∧ᵢ { apply ∧ₑ₁ h } { apply IH (∧ₑ₂ h) } }
-{ assume i f g v IH h; simplify; apply ∨ₑ h { assume hf; apply ∨ᵢ₁ (IH hf) } { assume hg; apply ∨ᵢ₂ hg } }
-{ assume i f g v IH h; simplify; apply ∨ₑ h { assume hf; apply ∨ᵢ₁ hf } { assume hg; apply ∨ᵢ₂ (IH hg) } }
+{ simplify; assume a f h; apply εᵢ _ h }
+{ simplify; assume i a f v IH h x; apply IH x (h x) }
+{ simplify; assume i a f v IH h; apply ∃ₑ h; assume x hx; apply ∃ᵢ x; apply IH x; apply hx }
+{ simplify; assume i f g v IH h; apply ∧ᵢ { apply IH (∧ₑ₁ h) } { apply ∧ₑ₂ h } }
+{ simplify; assume i f g v IH h; apply ∧ᵢ { apply ∧ₑ₁ h } { apply IH (∧ₑ₂ h) } }
+{ simplify; assume i f g v IH h; apply ∨ₑ h { assume hf; apply ∨ᵢ₁ (IH hf) } { assume hg; apply ∨ᵢ₂ hg } }
+{ simplify; assume i f g v IH h; apply ∨ₑ h { assume hf; apply ∨ᵢ₁ hf } { assume hg; apply ∨ᵢ₂ (IH hg) } }
+end;
+
+opaque symbol skolem1_reflects_provability i f:
+  π(valid i f) → π(skolem1 i f) → π f ≔
+begin
+refine ind_valid (λ i f, skolem1 i f ⇒ f) _ _ _ _ _ _ _
+{ simplify; assume a f h; apply ∃ᵢ _ h }
+{ simplify; assume i a f v IH h x; apply IH x (h x) }
+{ simplify; assume i a f v IH h; apply ∃ₑ h; assume x hx; apply ∃ᵢ x; apply IH x; apply hx }
+{ simplify; assume i f g v IH h; apply ∧ᵢ { apply IH (∧ₑ₁ h) } { apply ∧ₑ₂ h } }
+{ simplify; assume i f g v IH h; apply ∧ᵢ { apply ∧ₑ₁ h } { apply IH (∧ₑ₂ h) } }
+{ simplify; assume i f g v IH h; apply ∨ₑ h { assume hf; apply ∨ᵢ₁ (IH hf) } { assume hg; apply ∨ᵢ₂ hg } }
+{ simplify; assume i f g v IH h; apply ∨ₑ h { assume hf; apply ∨ᵢ₁ hf } { assume hg; apply ∨ᵢ₂ (IH hg) } }
 end;
