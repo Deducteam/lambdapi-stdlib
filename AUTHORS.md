@@ -1,3 +1,4 @@
-- Quentin Garchery
-- Quentin Buzet
-- Frédéric Blanqui
+- Frédéric Blanqui (2019-)
+- Melanie Taprogge (2025)
+- Quentin Garchery (2022)
+- Quentin Buzet (2022)

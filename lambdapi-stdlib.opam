@@ -6,7 +6,7 @@ classical logic, functions and properties on basic inductive types like
 natural numbers (in base 1 and 2), integers and polymorphic lists.
 """
 maintainer: ["frederic.blanqui@inria.fr"]
-authors: ["Frédéric Blanqui" "Quentin Buzet" "Quentin Garchery"]
+authors: ["https://github.com/Deducteam/lambdapi-stdlib/blob/master/AUTHORS.md"]
 license: "CECILL-2.1"
 homepage: "https://github.com/Deducteam/lambdapi-stdlib"
 bug-reports: "https://github.com/Deducteam/lambdapi-stdlib/issues"
