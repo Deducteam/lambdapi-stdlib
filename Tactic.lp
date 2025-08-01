@@ -1,7 +1,6 @@
 // define a type representing Lambdapi tactics
 
-require open Stdlib.Set Stdlib.Prop Stdlib.String Stdlib.Option
-             Stdlib.List;
+require open Stdlib.String Stdlib.Option Stdlib.List;
 
 constant symbol Tactic : TYPE;
 
