@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out library
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install ocaml and opam
         uses: ocaml/setup-ocaml@v3
         with:
