@@ -10,7 +10,7 @@ builtin "all" ≔ ∀;
 
 notation ∀ quantifier;
 
-rule π (∀ $f) ↪ Π x, π ($f x);
+rule π (`∀ x, $f.[x]) ↪ Π x, π $f.[x];
 
 // Existential quantification
 
