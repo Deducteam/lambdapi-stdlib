@@ -21,7 +21,7 @@ Installation with Opam
 ----------------------
 
 ```
-opam repository -a add lambdapi https://github.com/deducteam/opam-lambdapi-repos
+opam repository add -a --set-default lambdapi https://github.com/deducteam/opam-lambdapi-repos
 itory.git # once
 opam install lambdapi-stdlib
 ```
