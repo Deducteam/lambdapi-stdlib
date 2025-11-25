@@ -37,22 +37,22 @@ with isH H     ↪ true;
 
 // Discriminate constructors
 
-symbol I≠H [x] : π (I x ≠ H) ≔
+opaque symbol I≠H [x] : π (I x ≠ H) ≔
 begin
   assume x h; refine ind_eq h (λ x, istrue(isH x)) ⊤ᵢ;
 end;
 
-symbol O≠H [x] : π (O x ≠ H) ≔
+opaque symbol O≠H [x] : π (O x ≠ H) ≔
 begin
   assume x h; refine ind_eq h (λ x, istrue(isH x)) ⊤ᵢ;
 end;
 
-symbol I≠O [x y] : π (I x ≠ O y) ≔
+opaque symbol I≠O [x y] : π (I x ≠ O y) ≔
 begin
   assume x y h; refine ind_eq h (λ x, istrue(isO x)) ⊤ᵢ;
 end;
 
-opaque symbol caseH x : π(x = H ∨ x ≠ H) ≔
+opaque opaque symbol caseH x : π(x = H ∨ x ≠ H) ≔
 begin
   induction
   { assume x h; apply ∨ᵢ₂; refine I≠H }
@@ -68,7 +68,7 @@ rule projO (O $x) ↪ $x
 with projO (I $x) ↪ I $x
 with projO H ↪ H;
 
-opaque symbol O_inj p q : π(O p = O q) → π(p = q) ≔
+opaque opaque symbol O_inj p q : π(O p = O q) → π(p = q) ≔
 begin
   assume p q h; apply feq projO h
 end;
@@ -79,7 +79,7 @@ rule projI (I $x) ↪ $x
 with projI (O $x) ↪ O $x
 with projI H ↪ H;
 
-opaque symbol I_inj p q : π(I p = I q) → π(p = q) ≔
+opaque opaque symbol I_inj p q : π(I p = I q) → π(p = q) ≔
 begin
   assume p q h; apply feq projI h
 end;
@@ -102,7 +102,7 @@ with val (I $x) ↪ val (O $x) +1;
 
 assert ⊢ val (O (I H)) ≡ 6;
 
-opaque symbol valS x : π(val (succ x) = val x +1) ≔
+opaque opaque symbol valS x : π(val (succ x) = val x +1) ≔
 begin
   induction
   { assume x h; simplify; rewrite h; reflexivity }
@@ -110,7 +110,7 @@ begin
   { reflexivity }
 end;
 
-opaque symbol val_surj [n] : π(n ≠ 0 ⇒ `∃ x, val x = n) ≔
+opaque opaque symbol val_surj [n] : π(n ≠ 0 ⇒ `∃ x, val x = n) ≔
 begin
   induction
   { assume h; apply ⊥ₑ; apply h; reflexivity }
@@ -121,7 +121,7 @@ begin
   }
 end;
 
-opaque symbol val≠0 x : π(val x ≠ 0) ≔
+opaque opaque symbol val≠0 x : π(val x ≠ 0) ≔
 begin
   induction
   { assume x h; refine s≠0 }
@@ -131,12 +131,12 @@ begin
   { refine s≠0 }
 end;
 
-opaque symbol 2*val≠0 x : π(val x + val x ≠ 0) ≔
+opaque opaque symbol 2*val≠0 x : π(val x + val x ≠ 0) ≔
 begin
   assume x h; apply ⊥ₑ; apply val≠0 x; apply 2*=0; apply h
 end;
 
-opaque symbol val_inj [x y] : π(val x = val y) → π(x = y) ≔
+opaque opaque symbol val_inj [x y] : π(val x = val y) → π(x = y) ≔
 begin
   induction
   { assume x h; induction
@@ -163,7 +163,7 @@ end;
 
 // ℕ-like Induction Principle
 
-symbol ind_ℙeano p : π (p H) → (Π x, π (p x) → π (p (succ x))) → Π x, π (p x) ≔
+opaque symbol ind_ℙeano p : π (p H) → (Π x, π (p x) → π (p (succ x))) → Π x, π (p x) ≔
 begin
   assume p pH psucc;
   have i: π(`∀ n, `∀ x, val x = n ⇒ p x) {
@@ -216,7 +216,7 @@ assert ⊢ add (O (I (O (I (O (I (O (I H))))))))
 
 // Interaction of succ and add
 
-symbol succ_add x y : π (succ (add x y) = add_carry x y) ≔
+opaque symbol succ_add x y : π (succ (add x y) = add_carry x y) ≔
 begin
   induction
   // case I
@@ -235,7 +235,7 @@ begin
   { induction { reflexivity } { reflexivity } { reflexivity }  }
 end;
 
-symbol add_succ x y : π (add (succ x) y = succ (add x y)) ≔
+opaque symbol add_succ x y : π (add (succ x) y = succ (add x y)) ≔
 begin
   induction
   // case I
@@ -254,7 +254,7 @@ begin
   { induction { reflexivity } { reflexivity } { reflexivity } }
 end;
 
-symbol add_succ_right x y : π (add x (succ y) = succ (add x y)) ≔
+opaque symbol add_succ_right x y : π (add x (succ y) = succ (add x y)) ≔
 begin
   refine ind_ℙeano (λ x, `∀ y, add x (succ y) = succ (add x y)) _ _
   // case H
@@ -266,7 +266,7 @@ end;
 
 // Associativity of the addition
 
-symbol add_assoc x y z : π (add (add x y) z = add x (add y z)) ≔
+opaque symbol add_assoc x y z : π (add (add x y) z = add x (add y z)) ≔
 begin
   refine ind_ℙeano (λ x, `∀ y, `∀ z, add (add x y) z = add x (add y z)) _ _
   // case H
@@ -279,7 +279,7 @@ end;
 
 // Commutativity of the addition
 
-symbol add_com x y : π (add x y = add y x) ≔
+opaque symbol add_com x y : π (add x y = add y x) ≔
 begin
   refine ind_ℙeano (λ x, `∀ y, add x y = add y x) _ _
   // case H
@@ -297,7 +297,7 @@ rule pos_pred_double (I $x) ↪ I (O $x)
 with pos_pred_double (O $x) ↪ I (pos_pred_double $x)
 with pos_pred_double H      ↪ H;
 
-symbol pos_pred_double_succ x : π (pos_pred_double (succ x) = I x) ≔
+opaque symbol pos_pred_double_succ x : π (pos_pred_double (succ x) = I x) ≔
 begin
   induction
   { assume x xrec; simplify; rewrite xrec; reflexivity }
@@ -305,7 +305,7 @@ begin
   { reflexivity }
 end;
 
-symbol succ_pos_pred_double x : π (succ (pos_pred_double x) = O x) ≔
+opaque symbol succ_pos_pred_double x : π (succ (pos_pred_double x) = O x) ≔
 begin
   induction
    { reflexivity }
@@ -331,7 +331,7 @@ symbol compare x y ≔ compare_acc x Eq y;
 
 // Commutative property of compare
 
-symbol compare_acc_com x y c :
+opaque symbol compare_acc_com x y c :
   π (compare_acc y c x = opp (compare_acc x (opp c) y)) ≔
 begin
   induction
@@ -354,14 +354,14 @@ begin
      { assume c; simplify; rewrite opp_idem; reflexivity } }
 end;
 
-symbol compare_com x y : π (compare y x = opp (compare x y)) ≔
+opaque symbol compare_com x y : π (compare y x = opp (compare x y)) ≔
 begin
   assume x y; refine compare_acc_com x y Eq;
 end;
 
 // Compare decides the equality
 
-symbol compare_acc_nEq x y c : π (c ≠ Eq ⇒ compare_acc x c y ≠ Eq) ≔
+opaque symbol compare_acc_nEq x y c : π (c ≠ Eq ⇒ compare_acc x c y ≠ Eq) ≔
 begin
   induction
   // case I
@@ -383,7 +383,7 @@ begin
      { assume c Hc; refine Hc } }
 end;
 
-symbol compare_decides x y : π (compare x y = Eq ⇒ x = y) ≔
+opaque symbol compare_decides x y : π (compare x y = Eq ⇒ x = y) ≔
 begin
   induction
   // case I
@@ -407,7 +407,7 @@ end;
 
 // Compare with Gt or Lt
 
-symbol compare_Lt x y :
+opaque symbol compare_Lt x y :
   π (compare_acc x Lt y = case_Comp (compare x y) Lt Lt Gt) ≔
 begin
   induction
@@ -438,7 +438,7 @@ begin
   { induction { reflexivity } { reflexivity } { reflexivity } }
 end;
 
-symbol compare_Gt x y :
+opaque symbol compare_Gt x y :
   π (compare_acc x Gt y = case_Comp (compare x y) Gt Lt Gt) ≔
 begin
   induction
@@ -470,27 +470,27 @@ end;
 
 // Compatibility of compare with the addition
 
-symbol compare_H_Lt y : π (compare_acc H Lt y = Lt) ≔
+opaque symbol compare_H_Lt y : π (compare_acc H Lt y = Lt) ≔
 begin
   induction { reflexivity } { reflexivity } { reflexivity }
 end;
 
-symbol compare_Gt_H x : π (compare_acc x Gt H = Gt) ≔
+opaque symbol compare_Gt_H x : π (compare_acc x Gt H = Gt) ≔
 begin
   induction { reflexivity } { reflexivity } { reflexivity }
 end;
 
-symbol compare_H_succ y c : π (compare_acc H c (succ y) = Lt) ≔
+opaque symbol compare_H_succ y c : π (compare_acc H c (succ y) = Lt) ≔
 begin
   induction { reflexivity } { reflexivity } { reflexivity }
 end;
 
-symbol compare_succ_H x c : π (compare_acc (succ x) c H = Gt) ≔
+opaque symbol compare_succ_H x c : π (compare_acc (succ x) c H = Gt) ≔
 begin
   induction { reflexivity } { reflexivity } { reflexivity }
 end;
 
-symbol compare_succ_Lt x y :
+opaque symbol compare_succ_Lt x y :
   π (compare_acc (succ x) Lt y = compare_acc x Gt y) ≔
 begin
   induction
@@ -510,7 +510,7 @@ begin
      { reflexivity } }
 end;
 
-symbol compare_Gt_succ x y :
+opaque symbol compare_Gt_succ x y :
   π (compare_acc x Gt (succ y) = compare_acc x Lt y) ≔
 begin
   assume x y;
@@ -518,7 +518,7 @@ begin
   simplify; rewrite compare_succ_Lt; reflexivity;
 end;
 
-symbol compare_succ_succ x y c :
+opaque symbol compare_succ_succ x y c :
   π (compare_acc (succ x) c (succ y) = compare_acc x c y) ≔
 begin
   induction
@@ -541,7 +541,7 @@ begin
      { reflexivity } }
 end;
 
-symbol compare_compat_add a x y :
+opaque symbol compare_compat_add a x y :
   π (compare (add x a) (add y a) = compare x y) ≔
 begin
   refine ind_ℙeano (λ a, `∀ x, `∀ y, compare (add x a) (add y a) = compare x y) _ _
