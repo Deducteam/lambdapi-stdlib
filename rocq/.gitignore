@@ -1,0 +1,8 @@
+.*.aux
+*.v
+!mappings.v
+*.vo*
+*.glob
+rocq.mk
+rocq.mk.conf
+.rocq.mk.d
