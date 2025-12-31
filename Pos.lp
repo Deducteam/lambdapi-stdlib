@@ -557,25 +557,25 @@ end;
 
 symbol mul : ℙ → ℙ → ℙ;
 
-rule mul (I $x) $y ↪ add $x (O (mul $x $y))
+rule mul (I $x) $y ↪ add $y (O (mul $x $y))
 with mul (O $x) $y ↪ O (mul $x $y)
 with mul H      $y ↪ $y;
 
-// shortcuts
-
-symbol _1 ≔ H;
-symbol _2 ≔ O H;
-symbol _3 ≔ I H;
-symbol _4 ≔ O (O H);
-symbol _5 ≔ I (O H);
-symbol _6 ≔ O (I H);
-symbol _7 ≔ I (I H);
-symbol _8 ≔ O (O (O H));
-symbol _9 ≔ I (O (O H));
-symbol _10 ≔ O (I (O H));
-
-// enable printing of natural numbers in decimal notation
+// enable printing of positive numbers in decimal notation
 
 builtin "pos_one" ≔ H;
 builtin "pos_double" ≔ O;
 builtin "pos_succ_double" ≔ I;
+
+// shortcuts
+
+symbol _1 ≔ H; assert ⊢ val _1 ≡ 1;
+symbol _2 ≔ O H; assert ⊢ val _2 ≡ 2;
+symbol _3 ≔ I H; assert ⊢ val _3 ≡ 3;
+symbol _4 ≔ O (O H); assert ⊢ val _4 ≡ 4;
+symbol _5 ≔ I (O H); assert ⊢ val _5 ≡ 5;
+symbol _6 ≔ O (I H); assert ⊢ val _6 ≡ 6;
+symbol _7 ≔ I (I H); assert ⊢ val _7 ≡ 7;
+symbol _8 ≔ O (O (O H)); assert ⊢ val _8 ≡ 8;
+symbol _9 ≔ I (O (O H)); assert ⊢ val _9 ≡ 9;
+symbol _10 ≔ O (I (O H)); assert ⊢ val _10 ≡ 10;
