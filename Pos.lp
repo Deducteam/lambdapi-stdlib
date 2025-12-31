@@ -561,6 +561,12 @@ rule mul (I $x) $y ↪ add $y (O (mul $x $y))
 with mul (O $x) $y ↪ O (mul $x $y)
 with mul H      $y ↪ $y;
 
+// enable printing of positive numbers in decimal notation
+
+builtin "pos_one" ≔ H;
+builtin "pos_double" ≔ O;
+builtin "pos_succ_double" ≔ I;
+
 // shortcuts
 
 symbol _1 ≔ H; assert ⊢ val _1 ≡ 1;
@@ -573,9 +579,3 @@ symbol _7 ≔ I (I H); assert ⊢ val _7 ≡ 7;
 symbol _8 ≔ O (O (O H)); assert ⊢ val _8 ≡ 8;
 symbol _9 ≔ I (O (O H)); assert ⊢ val _9 ≡ 9;
 symbol _10 ≔ O (I (O H)); assert ⊢ val _10 ≡ 10;
-
-// enable printing of positive numbers in decimal notation
-
-builtin "pos_one" ≔ H;
-builtin "pos_double" ≔ O;
-builtin "pos_succ_double" ≔ I;

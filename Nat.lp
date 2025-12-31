@@ -1766,6 +1766,11 @@ begin
   { assume n h; rewrite factS n; apply leq_pmulr (n +1) (n !) (fact_gt0 n) }
 end;
 
+// enable printing of natural numbers in decimal notation
+
+builtin "nat_zero" ≔ _0;
+builtin "nat_succ" ≔ +1;
+
 // shortcuts
 
 symbol _1 ≔ _0 +1;
@@ -1778,11 +1783,6 @@ symbol _7 ≔ _6 +1;
 symbol _8 ≔ _7 +1;
 symbol _9 ≔ _8 +1;
 symbol _10 ≔ _9 +1;
-
-// enable printing of natural numbers in decimal notation
-
-builtin "nat_zero" ≔ _0;
-builtin "nat_succ" ≔ +1;
 
 // enable parsing of natural numbers in decimal notation
 
