@@ -1422,7 +1422,7 @@ assert ⊢ undup eqn (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ 2 ⸬ 3 ⸬ □) ≡ 42 ⸬ 51 �
 opaque symbol size_undup [a] beq (l:𝕃 a) : π (size (undup beq l) ≤ size l) ≔
 begin
   assume a beq; induction
-  { apply ⊤ᵢ; }
+  { apply ⊤ᵢ }
   { assume e l; simplify; set l' ≔ undup beq l; assume h;
     refine ind_𝔹 (λ x, istrue (size (if x l' (e ⸬ l')) ≤ size l +1)) _ _ (∈ beq e l') {
       simplify;
@@ -1436,13 +1436,13 @@ end;
 opaque symbol undup_uniq [a] beq (l:𝕃 a) : π (uniq beq (undup beq l)) ≔
 begin
   assume a beq; induction
-  { apply ⊤ᵢ; }
-  { assume e l h; simplify;
-    refine ind_𝔹_eq (λ b, (istrue(uniq beq (if b (undup beq l) (e ⸬ (undup beq l)))))) (∈ beq e (undup beq l)) _ _ {
-      assume i; rewrite i; simplify; apply h;
+  { apply ⊤ᵢ }
+  { assume e l; set l' ≔ undup beq l; assume h; simplify;
+    refine ind_𝔹_eq (λ b, (istrue(uniq beq (if b l' (e ⸬ l'))))) (∈ beq e (undup beq l)) _ _ {
+      assume i; rewrite i; simplify; apply h
     } {
-      assume i; rewrite i; simplify; rewrite i; simplify; apply h; 
-    }; 
+      assume i; rewrite i; simplify; rewrite i; simplify; apply h
+    }
   }
 end;
 
