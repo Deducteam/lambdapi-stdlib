@@ -69,6 +69,8 @@ seqn n x_0 ... x_n-1 == the sequence of the x_i; can be partially applied.
          uniq s <=> all the items in s are pairwise different.
    subseq s1 s2 <=> s1 is a subsequence of s2, i.e., s1 = mask m s2 for
                    some m : bitseq (see below).
+    ⊆ beq s1 s2 <=> s1 is contained in s2, i.e., every element in s1 is 
+                    also in s2
     infix s1 s2 <=> s1 is a contiguous subsequence of s2, i.e.,
                       s ++ s1 ++ s' = s2 for some sequences s, s'.
    prefix s1 s2 <=> s1 is a subchain of s2 appearing at the beginning
@@ -85,6 +87,8 @@ infix_index s1 s2 <=> the first index at which s1 appears in s2,
              rem x s == the subsequence of s, where the first occurrence
                         of x has been removed (compare filter (predC1 x) s
                         where ALL occurrences of x are removed).
+         rem_idx i s == the sequence s where the element at index i has been
+                        removed.
              undup s == the subsequence of s containing only the last
                         occurrence of each item in s, i.e., s with all
                         duplicates removed.
@@ -1299,6 +1303,35 @@ with subseq $beq ($x ⸬ $l1) ($y ⸬ $l2)
 assert ⊢ subseq eqn (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ false;
 assert ⊢ subseq eqn (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) ≡ true;
 
+// ⊆
+
+symbol ⊆  [a] : (τ a → τ a → 𝔹) → 𝕃 a → 𝕃 a → 𝔹;
+rule ⊆ $beq ($k0 ⸬ $k) $l ↪ (∈ $beq $k0 $l) and (⊆ $beq $k $l)
+with ⊆ _ □ _ ↪ true;
+
+opaque symbol subset_cons_r [a] (beq : τ a → τ a → 𝔹) (x : τ a) (l m : 𝕃 a) :
+  π (istrue (⊆ beq l m)) → π (istrue (⊆ beq l (x ⸬ m))) ≔
+begin
+    assume a beq x;
+    induction
+        {assume m h;
+        simplify;
+        refine ⊤ᵢ}
+        {assume y ys IH m h;
+        apply andᵢ [(beq y x or ∈ beq y m)] [⊆ beq ys (x ⸬ m)]
+                {refine orᵢ₂ (beq y x) [∈ beq y m] (andₑ₁ [∈ beq y m] [⊆ beq ys m] h)}
+                {refine IH m (andₑ₂ [∈ beq y m] [⊆ beq ys m] h)}}
+end;
+
+opaque symbol subset_cons_l [a] (beq: τ a → τ a → 𝔹) (x1 : τ a) (l0 l1 : 𝕃 a) : π (⊆ beq (x1 ⸬ l0) l1) → π (⊆ beq l0 l1) ≔
+begin
+    assume a beq x1;
+    induction 
+        {assume l0 h0; refine ⊤ᵢ}
+        {assume x2 l0 h0 l1 h1; 
+        refine andₑ₂ [∈ beq x1 l1] [(∈ beq x2 l1 and ⊆ beq l0 l1)] h1}
+end;
+
 // is_prefix
 
 symbol is_prefix [a] : (τ a → τ a → 𝔹) → 𝕃 a → 𝕃 a → 𝔹;
@@ -1408,6 +1441,11 @@ begin
   rewrite filter_cat p l1 l2;
   rewrite left size_cat (filter p l1) (filter p l2); reflexivity;
 end;
+
+// rem_idx
+
+symbol rem_idx [a : Set]: 𝕃 a → ℕ → 𝕃 a;
+rule rem_idx $l $n ↪ (take $n $l) ++ (drop ($n +1) $l);
 
 // undup
 
