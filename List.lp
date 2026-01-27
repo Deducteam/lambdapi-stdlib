@@ -87,7 +87,7 @@ infix_index s1 s2 <=> the first index at which s1 appears in s2,
              rem x s == the subsequence of s, where the first occurrence
                         of x has been removed (compare filter (predC1 x) s
                         where ALL occurrences of x are removed).
-         rem_idx i s == the sequence s where the element at index i has been
+         rem_nth i s == the sequence s where the element at index i has been
                         removed.
              undup s == the subsequence of s containing only the last
                         occurrence of each item in s, i.e., s with all
@@ -1303,14 +1303,14 @@ with subseq $beq ($x ⸬ $l1) ($y ⸬ $l2)
 assert ⊢ subseq eqn (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ 4 ⸬ □) ≡ false;
 assert ⊢ subseq eqn (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) (42 ⸬ 4 ⸬ 51 ⸬ 3 ⸬ □) ≡ true;
 
-// ⊆
+// ⊆ (list inclusion)
 
 symbol ⊆  [a] : (τ a → τ a → 𝔹) → 𝕃 a → 𝕃 a → 𝔹;
 rule ⊆ $beq ($k0 ⸬ $k) $l ↪ (∈ $beq $k0 $l) and (⊆ $beq $k $l)
 with ⊆ _ □ _ ↪ true;
 
 opaque symbol subset_cons_r [a] (beq : τ a → τ a → 𝔹) (x : τ a) (l m : 𝕃 a) :
-  π (istrue (⊆ beq l m)) → π (istrue (⊆ beq l (x ⸬ m))) ≔
+  π (⊆ beq l m) → π (⊆ beq l (x ⸬ m)) ≔
 begin
     assume a beq x;
     induction
@@ -1442,10 +1442,12 @@ begin
   rewrite left size_cat (filter p l1) (filter p l2); reflexivity;
 end;
 
-// rem_idx
+// rem_nth
 
-symbol rem_idx [a : Set]: 𝕃 a → ℕ → 𝕃 a;
-rule rem_idx $l $n ↪ (take $n $l) ++ (drop ($n +1) $l);
+symbol rem_nth [a : Set]: 𝕃 a → ℕ → 𝕃 a;
+rule rem_nth  □ _ ↪ □
+with rem_nth (_ ⸬ $l) 0 ↪ $l
+with rem_nth ($l0 ⸬ $l) ($n +1) ↪ $l0 ⸬ (rem_nth $l $n);
 
 // undup
 

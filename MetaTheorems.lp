@@ -20,10 +20,10 @@ The library aims to prove the following meta-theorems for conjunctions and disju
 
 ** Delete:
    The theorem is instantiated with three lists:
-   1. A list of natural numbers representing the indices of literals in the original list. 
+   1. A list of natural numbers representing the indices of literals in the original clause. 
      For literals occurring multiple times, the index of the first occurrence is used for all of the
      subsequent occurrences. For example, for `π (l0 ∨ l1 ∨ l2 ∨ l1)`, this list would be `(0, 1, 2, 1)`.
-   2. A second list of natural numbers indicating the desired positions of the literals in the clause.
+   2. A second list of natural numbers indicating the desired positions of the literals in the resulting clause.
      If for instance the second occurrence of `l1` in `π (l0 ∨ l1 ∨ l2 ∨ l1)` should be deleted, the 
      derived clause would be `π (l0 ∨ l1 ∨ l2)`, and the list that must be provided would be (0, 1, 2).
      To delete the first occurrence of `l1`, and derive the clause `π (l0 ∨ l2 ∨ l1)`, the list would 
@@ -48,7 +48,7 @@ The library aims to prove the following meta-theorems for conjunctions and disju
 
 ** General Concept:
    The general idea behind the permutation and double literal deletion theorems is to evaluate a list of natural 
-   numbers representing the positions of literals after respective operations with respect to the list of literals. 
+   numbers representing the positions of literals after respective operations with respect to the original clause. 
    A computation ensures the operation is admissible:
    - In the case of permutations, all literals must still be present in the permuted clause.
    - In the case of double literal deletion, each literal must still be present at least once.
@@ -127,7 +127,7 @@ begin
 end;
 
 
-// disj
+// n-ary disj
 
 symbol disj : 𝕃 o → τ o;
 rule disj ($l1 ⸬ ($c ⸬ $l)) ↪ ($l1 ∨ disj ($c ⸬ $l))
@@ -168,6 +168,18 @@ begin
         reflexivity}
         {simplify;
         assume x l h0; 
+        reflexivity}
+end;
+
+opaque symbol disj_++_correct (l l' : 𝕃 o) : 
+    π ((disj (l ++ l')) = (disj l ∨ disj l')) ≔
+begin
+    induction
+        {simplify; assume x; 
+        rewrite ⊥∨; reflexivity}
+        {simplify; assume l0 l h0 l'; 
+        rewrite disj_correct; rewrite disj_correct;
+        rewrite h0 l'; rewrite ∨_assoc;
         reflexivity}
 end;
 
@@ -241,7 +253,7 @@ begin
 end;   
 
 
-// conj
+// n-ary conjunction
 
 symbol conj : 𝕃 o → τ o;
 rule conj ($l1 ⸬ ($c ⸬ $l)) ↪ ($l1 ∧ conj ($c ⸬ $l))
@@ -324,7 +336,7 @@ end;
 // preserves_contents
 
 symbol preserves_contents: 𝕃 nat → 𝕃 o → 𝔹;
-rule preserves_contents  $f $l ↪ (indexes $l) ⊆ₙ $f;
+rule preserves_contents  $f $l ↪ indexes $l ⊆ₙ $f;
 
 assert l0 l1 l2 ⊢ 
     preserves_contents (1 ⸬ 2 ⸬ 0 ⸬ 3 ⸬ □) (l0 ⸬ l1 ⸬ l2 ⸬ l1 ⸬ □) ≡ true;
@@ -345,21 +357,18 @@ end;
 
 // ∨ᵢₙ
 opaque symbol ∨ᵢₙ (c0 : 𝕃 o) (c1 : 𝕃 o) (c2 : 𝕃 o) : 
-    π (disj c0) → π (disj (c0 ++ c1 ++ c2))≔
+    π (disj c1) → π (disj (c0 ++ c1 ++ c2))≔
 begin
     induction
-        {assume x y h; refine ⊥ₑ h}
-        {assume x0 l h0 x1; 
-        rewrite disj_correct; assume l1 h1; simplify; 
-        rewrite disj_correct;
-        refine ∨ₑ h1 _ _
-            {assume h2; refine ∨ᵢ₁ h2}
-            {assume h2; refine ∨ᵢ₂ (h0 x1 l1 h2)}}
+        {assume x c2 h0; simplify;
+        rewrite disj_++_correct; refine ∨ᵢ₁ h0}
+        {assume x0 l h0 x1 x2 h1; simplify;  
+        rewrite disj_correct; refine ∨ᵢ₂ (h0 x1 x2 h1)}
 end;
 
 // ∨ₑₙ 
 opaque symbol ∨ₑₙ (n : ℕ) (c : 𝕃 o) [r : Prop] : 
-    π (disj c) → π (literal c n ⇒ r) → π (disj (rem_idx c n) ⇒ r) → π r ≔
+    π (disj c) → π (literal c n ⇒ r) → π (disj (rem_nth c n) ⇒ r) → π r ≔
 begin
     induction
         {induction
@@ -371,11 +380,11 @@ begin
         {assume n h0; induction
             {assume r h1 h2 h3; refine ⊥ₑ h1}
             {assume l0 l h1 r h2 h3 h4;
-            have H1 : π ((l0  ∨ (disj (rem_idx l n))) ⇒ r)
+            have H1 : π ((l0  ∨ (disj (rem_nth l n))) ⇒ r)
                     {rewrite left disj_correct; refine h4};
             refine ∨ₑ (em l0) _ _
                 {assume h5;
-                refine H1 ((∨ᵢ₁ [l0] [disj (rem_idx l n)]) h5)}
+                refine H1 ((∨ᵢ₁ [l0] [disj (rem_nth l n)]) h5)}
                 {assume h5;
                 have l0is⊥ : π (⊥ = l0)
                     {refine propExt ⊥ l0 _ _
@@ -384,7 +393,7 @@ begin
                 refine h0 l r _ h3 _
                     {rewrite left ⊥∨; rewrite l0is⊥;
                     rewrite left disj_correct l0 l; refine h2}
-                    {rewrite left ⊥∨ (disj (rem_idx l n)); 
+                    {rewrite left ⊥∨ (disj (rem_nth l n)); 
                     rewrite l0is⊥; refine H1}}}}        
 end;
 

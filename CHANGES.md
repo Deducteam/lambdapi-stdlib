@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 - MetaTheorems: theorems for structural operations on the level of clauses and literals
-- List: ⊆, em_idx, and related theorems
+- List: ⊆, rem_nth, and related theorems
 
 ### Fixed
 
