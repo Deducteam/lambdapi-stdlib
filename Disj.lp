@@ -1,14 +1,12 @@
-/* Library on Meta-Theorems for Disjunctions and conjunctions
+/* Library on Meta-Theorems for Disjunctions
 
 -------------------
 
-The library aims to prove the following meta-theorems for conjunctions and disjunctions:
+The library proves the following meta-theorems:
 
-** Natural Deduction rules over lists:
+** n-ary Natural Deduction rules:
    - ∨ᵢₙ is the n-ary versions of the introduction rule for ∨.
    - ∨ₑₙ is the n-ary version of the elimination rule for ∨.
-   - ∧ᵢₙ is the n-ary version of the introduction rule for ∧.
-   - ∧ₑₙ is the n-ary version of the elimination rule for ∧.
 
 ** Permute:
    The theorem is instantiated with:
@@ -58,12 +56,12 @@ The library aims to prove the following meta-theorems for conjunctions and disju
 ---
 
 ** Defined Operations:
+                        `x ∈ₙ l`: Special case of ∈ for natural numbers and equality relation `eqn`
                    `literal n l`: Returns the element of the list `l` of terms of type `o` at index `n`.
                  `literals ln l`: Takes as arguments a list `ln` of natural numbers and a list `l` of terms of 
                                   type `o` and returns a list of  the elements of `l` ordered according to the 
                                   indices in `ln`.
                         `disj l`: Returns the disjunction of all literals in the list `l`.
-                        `conj l`: Returns the conjunction of all terms of type `o` in the list `l`.
                       `l1 ⊆ₙ l2`: Special case of ⊆ for natural numbers and equality relation `eqn`
       `preserves_contents ln lo`: Takes a list of natural numbers (`ln`) and a list of terms of type `o` (`lo`) 
                                   as arguments. Returns `true` if every index of `lo` is included in `ln`.
@@ -84,47 +82,8 @@ notation ∈ₙ infix right 40;
 symbol literal ≔ nth ⊥;
 assert l0 l1 l2 ⊢ literal (l0 ⸬ l1 ⸬ l2 ⸬ l1 ⸬ □) 1 ≡ l1;
 
-opaque symbol literal_ext (l: 𝕃 o) (l0 : τ o) (n: τ nat) : 
-    π (literal l n) → π (literal (l0 ⸬ l) (n +1)) ≔
-begin
-    assume l l0 n h1;
-    refine h1
-end;
-
 symbol literals ≔ nths ⊥;
 assert l0 l1 l2 ⊢ literals (l0 ⸬ l1 ⸬ l2  ⸬ l1 ⸬ □) (1 ⸬ 2 ⸬ 0 ⸬ 3 ⸬ □) ≡ l1 ⸬ (l2  ⸬ (l0 ⸬ (l1 ⸬ □)));
-
-
-// lemmas on ∈ₙ
-
-opaque symbol indexes_shift (l: 𝕃 nat) (n : τ nat):
-    π (istrue ((n +1) ∈ₙ (map (+1) l)) ⇒ istrue (n ∈ₙ l))≔
-begin
-    induction
-        {assume n x; refine x}
-        {assume n0;
-        induction
-            {assume h0 n h1; refine h1}
-            {assume n1 l h0 h1 n2 h2;
-            refine orₑ [eqn n2 n0] [eqn n2 n1 or ∈ eqn (n2 +1) (map (+1) l)] (eqn n2 n0 or (eqn n2 n1 or ∈ eqn n2 l)) h2 _ _
-                {assume h3;
-                refine orᵢ₁ (eqn n2 n1 or ∈ eqn n2 l) h3}
-                {assume h3;
-                refine orᵢ₂ (eqn n2 n0) (h1 n2 h3)}}}
-end;
-
-opaque symbol indexes_decrement (id : τ nat) (l0: τ o) (l: 𝕃 o): 
-     π ((id +1) ∈ₙ (indexes (l0 ⸬ l))) → π (id ∈ₙ (indexes l))≔
-begin
-    assume id l0 l;
-    assume h0; 
-    have H1 : π ((istrue (∈ eqn (id +1) (iota 1 (size l)))) ⇒ (istrue (∈ eqn id (iota 0 (size l)))))
-        {have H2: π (iota 1 (size l) = map (+1) (iota 0 (size l)))
-            {refine (eq_sym (mapS_iota (size l) 0))};
-        rewrite H2;
-        refine indexes_shift (iota 0 (size l)) id};
-    refine H1 h0
-end;
 
 
 // n-ary disj
@@ -137,7 +96,7 @@ with disj □ ↪ ⊥;
 assert l0 l1 l2 ⊢ π (disj (l0 ⸬ l1 ⸬ l2  ⸬ l1 ⸬ □)) ≡ π (l0 ∨ (l1 ∨ (l2  ∨ l1)));
 
 opaque symbol disj_head (l0 : τ o) (l : 𝕃 o) : 
-    π (l0) → π (disj (l0 ⸬ l)) ≔
+    π l0 → π (disj (l0 ⸬ l)) ≔
 begin
     assume l0;
     induction
@@ -159,7 +118,7 @@ begin
 end;
 
 opaque symbol disj_correct (l0 : τ o) (l : 𝕃 o) : 
-    π ((disj (l0 ⸬ l)) = (l0 ∨ disj l)) ≔
+    π (disj (l0 ⸬ l) = (l0 ∨ disj l)) ≔
 begin
     assume l0;
     induction
@@ -172,7 +131,7 @@ begin
 end;
 
 opaque symbol disj_++_correct (l l' : 𝕃 o) : 
-    π ((disj (l ++ l')) = (disj l ∨ disj l')) ≔
+    π (disj (l ++ l') = (disj l ∨ disj l')) ≔
 begin
     induction
         {simplify; assume x; 
@@ -253,58 +212,6 @@ begin
 end;   
 
 
-// n-ary conjunction
-
-symbol conj : 𝕃 o → τ o;
-rule conj ($l1 ⸬ ($c ⸬ $l)) ↪ ($l1 ∧ conj ($c ⸬ $l))
-with conj ($l1 ⸬ □) ↪ $l1 
-with conj □ ↪ ⊤;
-
-assert l0 l1 l2 ⊢ π (conj (l0 ⸬ l1 ⸬ l2  ⸬ l1 ⸬ □)) ≡ π (l0 ∧ (l1 ∧ (l2  ∧ l1)));
-
-opaque symbol conj_head (c0 : τ o) (c : 𝕃 o) : 
-     π (conj (c0 ⸬ c)) → π (c0) ≔
-begin
-    assume c0;
-    induction
-        {assume h1;
-        refine h1}   
-        {assume x0 c1 h1 h2;
-        refine ∧ₑ₁ h2}
-end; 
-
-opaque symbol conj_tail (c0 : τ o) (c : 𝕃 o) : 
-     π (conj (c0 ⸬ c)) → π (conj c) ≔
-begin
-    assume c0;
-    induction
-        {assume h1;
-        refine ⊤ᵢ}   
-        {assume x0 c1 h1 h2; 
-        refine ∧ₑ₂ h2}
-end; 
-
-opaque symbol conj_correct (c0 : τ o) (c : 𝕃 o) : 
-    π (conj (c0 ⸬ c)) → π (c0 ∧ conj c) ≔
-begin
-    assume c0;
-    induction
-        {assume h1;
-        refine ∧ᵢ h1 ⊤ᵢ}
-        {assume x1 c1 h1 h2;
-        refine h2}
-end;
-
-opaque symbol conj_sound (c0 : τ o) (c : 𝕃 o) : 
-    π (c0 ∧ conj c) →  π (conj (c0 ⸬ c)) ≔
-begin
-    assume c0;
-    induction
-        {assume h1; refine ∧ₑ₁ h1}
-        {assume x1 c1 h1 h2; refine h2}
-end;
-
-
 // ⊆
 
 symbol ⊆ₙ ≔ ⊆ eqn;
@@ -342,7 +249,7 @@ assert l0 l1 l2 ⊢
     preserves_contents (1 ⸬ 2 ⸬ 0 ⸬ 3 ⸬ □) (l0 ⸬ l1 ⸬ l2 ⸬ l1 ⸬ □) ≡ true;
 
 opaque symbol preserves_contents_correct (n: τ nat) (σ : 𝕃 nat) (l: 𝕃 o) : 
-    π (preserves_contents σ l) →  π (n ∈ₙ (indexes l)) → π (n ∈ₙ σ) ≔
+    π (preserves_contents σ l) →  π (n ∈ₙ indexes l) → π (n ∈ₙ σ) ≔
 begin
     assume n σ l h1 h2;
     refine ⊆ₙ_el n σ (indexes l) h1 h2;   
@@ -397,38 +304,6 @@ begin
                     rewrite l0is⊥; refine H1}}}}        
 end;
 
-// ∧ᵢₙ 
-opaque symbol ∧ᵢₙ (c0 : 𝕃 o) (c1 : 𝕃 o) : 
-    π (conj c0) → π (conj c1) → π (conj (c0 ++ c1))≔
-begin
-    induction
-        {assume x h0 h1;
-        refine h1}
-        {assume x0 l0 h0 l1 h1 h2;
-        refine conj_sound x0 (l0 ++ l1) _;
-        refine ∧ᵢ _ _
-            {refine conj_head x0 l0 h1}
-            {refine h0 l1 (conj_tail x0 l0 h1) h2}}
-end;
-
-// ∧ₑₙ 
-opaque symbol ∧ₑₙ (id : τ nat) (cnf: 𝕃 o) : 
-    π (id ∈ₙ (indexes cnf)) → π (conj cnf) → π (literal cnf id) ≔
-begin
-    induction 
-        {induction
-            {assume h0 h1; refine h0}
-            {assume x cnf h0 h1 h2; 
-            refine conj_head x cnf h2}}
-        {assume id h0;
-        induction
-            {assume b; refine ⊥ₑ b}
-            {assume x cnf h1 h2 h3;
-            have ConjImpCl : π (conj cnf ⇒ literal cnf id)
-                {refine h0 cnf (indexes_decrement id x cnf h2)};
-            refine literal_ext cnf x id (ConjImpCl (conj_tail x cnf h3))}}
-end;
-
 
 // permutation theorem /////////////////////////////////////////////////////////
 opaque symbol permute (σ : 𝕃 nat) (c: 𝕃 o) : 
@@ -467,7 +342,7 @@ end;
 
 // transformation theorem //////////////////////////////////////////////////////
 opaque symbol transform [l : τ o] (c: 𝕃 o) (n : τ nat) : 
-π ((literal c n) ⇒ l) → π (disj c) → π (disj (set_nth ⊥ c n l)) ≔
+π (literal c n ⇒ l) → π (disj c) → π (disj (set_nth ⊥ c n l)) ≔
 begin
     assume l;
     induction

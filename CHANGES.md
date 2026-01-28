@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- MetaTheorems: theorems for structural operations on the level of clauses and literals
+- Conj: theorems for structural operations on the level of nary conjunctions 
+- Disj: theorems for structural operations on the level of nary disjunctions
 - List: ⊆, rem_nth, and related theorems
 
 ### Fixed

@@ -1323,7 +1323,8 @@ begin
                 {refine IH m (andₑ₂ [∈ beq y m] [⊆ beq ys m] h)}}
 end;
 
-opaque symbol subset_cons_l [a] (beq: τ a → τ a → 𝔹) (x1 : τ a) (l0 l1 : 𝕃 a) : π (⊆ beq (x1 ⸬ l0) l1) → π (⊆ beq l0 l1) ≔
+opaque symbol subset_cons_l [a] (beq: τ a → τ a → 𝔹) (x1 : τ a) (l0 l1 : 𝕃 a) : 
+  π (⊆ beq (x1 ⸬ l0) l1) → π (⊆ beq l0 l1) ≔
 begin
     assume a beq x1;
     induction 
@@ -1447,7 +1448,7 @@ end;
 symbol rem_nth [a : Set]: 𝕃 a → ℕ → 𝕃 a;
 rule rem_nth  □ _ ↪ □
 with rem_nth (_ ⸬ $l) 0 ↪ $l
-with rem_nth ($l0 ⸬ $l) ($n +1) ↪ $l0 ⸬ (rem_nth $l $n);
+with rem_nth ($l0 ⸬ $l) ($n +1) ↪ $l0 ⸬ rem_nth $l $n;
 
 // undup
 
@@ -1643,6 +1644,35 @@ opaque symbol indexes_cons [a : Set] (x : τ a) (l : 𝕃 a) :
         assume y l h;
         rewrite mapS_iota;
         refine eq_refl (0 ⸬ 1 ⸬ iota 2 (size l)) }
+end;
+
+opaque symbol indexes_shift (l: 𝕃 nat) (n : τ nat):
+    π (∈ eqn (n +1) (map (+1) l) ⇒ ∈ eqn n l)≔
+begin
+    induction
+        {assume n x; refine x}
+        {assume n0;
+        induction
+            {assume h0 n h1; refine h1}
+            {assume n1 l h0 h1 n2 h2;
+            refine orₑ [eqn n2 n0] [eqn n2 n1 or ∈ eqn (n2 +1) (map (+1) l)] (eqn n2 n0 or (eqn n2 n1 or ∈ eqn n2 l)) h2 _ _
+                {assume h3;
+                refine orᵢ₁ (eqn n2 n1 or ∈ eqn n2 l) h3}
+                {assume h3;
+                refine orᵢ₂ (eqn n2 n0) (h1 n2 h3)}}}
+end;
+
+opaque symbol indexes_decrement [a] (id : τ nat) (l0: τ a) (l: 𝕃 a): 
+     π (∈ eqn (id +1) (indexes (l0 ⸬ l))) → π (∈ eqn id (indexes l))≔
+begin
+    assume a id l0 l;
+    assume h0; 
+    have H1 : π ((∈ eqn (id +1) (iota 1 (size l))) ⇒ (∈ eqn id (iota 0 (size l))))
+        {have H2: π (iota 1 (size l) = map (+1) (iota 0 (size l)))
+            {refine (eq_sym (mapS_iota (size l) 0))};
+        rewrite H2;
+        refine indexes_shift (iota 0 (size l)) id};
+    refine H1 h0
 end;
 
 opaque symbol nths_shift_cons [a : Set] (x b : τ a) (l : 𝕃 a) (n : 𝕃 nat) : 
