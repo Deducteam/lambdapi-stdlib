@@ -165,6 +165,18 @@ begin
   }
 end;
 
+opaque symbol eqn_sym x y : π(eqn x y) → π(eqn y x) ≔
+begin
+  assume x y h; refine eqn_complete y x _;
+  symmetry;
+  refine eqn_correct x y _; refine h
+end;
+
+opaque symbol eqn_refl x : π(eqn x x) ≔
+begin
+  assume x; refine eqn_complete x x _; reflexivity
+end;
+
 // addition
 
 symbol + : ℕ → ℕ → ℕ; notation + infix left 20;

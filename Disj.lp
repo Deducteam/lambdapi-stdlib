@@ -32,6 +32,17 @@ The library proves the following meta-theorems:
    in the derived clause. If so, it maps the disjunction of the original literals to the disjunction after 
    the desired double literal deletion. This approach allows multiple identical literals to be deleted at once.
 
+** DeleteDoubles:
+   A convenience version of Delete, where duplicate occurrences of literals are removed automatically,
+   leaving only the first occurrence.
+
+   The theorem is instantiated with:
+   - A list of natural numbers representing the indices of literals in the original clause. As in Delete,
+     when a literal occurs multiple times, all occurrences are represented using the index of its first occurrence.
+   - A list of terms of type `o`, representing literals.
+
+   The theorem maps the original clause directly to a version where all duplicate literals have been removed.
+
 ** Transform:
    This theorem is useful when a rule is applied to only one literal of a clause. 
    For example, consider the clause `π (l0 ∨ l1 ∨ l2 ∨ l3)` and an inference rule `π l2 → π l2'`. 
@@ -338,6 +349,20 @@ begin
     refine ∃ᵢ n (∧ᵢ (∧ₑ₁ h3)
         (⊆ₙ_el n output_list id_list h1 (∧ₑ₂ h3)))
 end; 
+
+assert l0 l1 l2 ⊢ delete (0 ⸬ 1 ⸬ 0 ⸬ 0 ⸬ 2 ⸬ □) (0 ⸬ 1 ⸬ 2 ⸬ □) (l0 ⸬ l1 ⸬ l2 ⸬ □) ⊤ᵢ: 
+    π (l0 ∨ l1 ∨ l0 ∨ l0 ∨ l2) → π (l0 ∨ l1 ∨ l2);
+
+    
+opaque symbol deleteDoubles (id_list : 𝕃 nat) (c: 𝕃 o) : 
+    π(disj (literals c id_list)) → π(disj (literals c (undup_first eqn id_list))) ≔
+begin
+    assume id_list c h2;
+    refine delete id_list (undup_first eqn id_list) c (subset_undup_first eqn eqn_correct eqn_refl eqn_sym id_list) h2;
+end; 
+
+assert l0 l1 l2 ⊢ deleteDoubles (0 ⸬ 1 ⸬ 0 ⸬ 0 ⸬ 2 ⸬ □) (l0 ⸬ l1 ⸬ l2 ⸬ □): 
+    π (l0 ∨ l1 ∨ l0 ∨ l0 ∨ l2) → π (l0 ∨ l1 ∨ l2);
 
 
 // transformation theorem //////////////////////////////////////////////////////

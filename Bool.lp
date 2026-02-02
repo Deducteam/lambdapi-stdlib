@@ -34,7 +34,7 @@ with istrue false ↪ ⊥;
 
 coerce_rule coerce 𝔹 Prop $x ↪ istrue $x;
 
-symbol istrue=true [x] : π (istrue x) → π (x = true) ≔
+opaque symbol istrue=true [x] : π (istrue x) → π (x = true) ≔
 begin
   assume x h;
   refine ∨ₑ (case_𝔹 x) _ _
@@ -43,6 +43,31 @@ begin
       have H1: π (istrue false) { rewrite eq_sym h1; refine h };
       refine ⊥ₑ H1 };
 end;
+
+opaque symbol true=istrue [x] : π (x = true) → π (istrue x) ≔
+begin
+  assume x h;
+  refine ∨ₑ (case_𝔹 x) _ _
+      { assume h1; rewrite h1; refine ⊤ᵢ}
+      { assume h1; rewrite h; refine ⊤ᵢ}
+end;
+
+opaque symbol ¬istrue=false [x : 𝔹]: 
+    π (¬ x) → π (x = false) ≔
+begin
+  assume x h;
+  refine ∨ₑ (case_𝔹 x) _ _
+      { assume h1; refine ⊥ₑ (h (true=istrue h1))}
+      { assume h1; refine h1};
+end;
+
+opaque symbol false=¬istrue [x : 𝔹]: 
+    π (x = false) → π (¬ x) ≔
+begin
+  assume x h0; rewrite h0; 
+  assume h1; refine h1;
+end;
+
 
 // non confusion of constructors
 
@@ -62,6 +87,22 @@ symbol not : 𝔹 → 𝔹;
 
 rule not true  ↪ false
 with not false ↪ true;
+
+opaque symbol ¬_istrue [p: 𝔹]: 
+    π(¬ p) → π(not p) ≔
+begin
+  induction
+  { simplify; assume h; refine h ⊤ᵢ }
+  { simplify; assume h; refine ⊤ᵢ }
+end;
+
+opaque symbol istrue_not [p: 𝔹]: 
+    π(not p) → π(¬ p)≔
+begin
+  induction
+  { simplify; assume h0 h1; refine h0 }
+  { simplify; assume h0 h1; refine h1 }
+end;
 
 // or
 

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - Conj: theorems for structural operations on the level of nary conjunctions 
 - Disj: theorems for structural operations on the level of nary disjunctions
-- List: ⊆, rem_nth, and related theorems
+- List: ⊆, rem_nth, undup_first, and related theorems
 
 ### Fixed
 
