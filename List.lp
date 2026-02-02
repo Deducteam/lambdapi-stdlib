@@ -104,6 +104,8 @@ infix_index s1 s2 <=> the first index at which s1 appears in s2,
                     := drop n s ++ take n s
            rotr n s == s rotated right n times (or s if size s <= n).
               rev s == the (linear time) reversal of s.
+       catrev s1 s2 == the reversal of s1 followed by s2 (this is the
+                       recursive form of rev).
  ** Iterators: for s == x_1 ⸬ ... ⸬ x_n ⸬ □, t == y_1 ⸬ ... ⸬ y_m ⸬ □,
        map f s == the sequence f x_1 ⸬ ... ⸬ f x_n ⸬ □.
       zip s t == itemwise pairing of s and t (dropping any extra items).
@@ -133,8 +135,6 @@ bs \is a wf_tally <=> bs is well-formed tally, with no duplicate items or
 --> These left/right transitive versions of perm_eq make it easier to
  chain a sequence of equivalences.
   permutations s == a duplicate-free list of all permutations of s.
-       catrev s1 s2 == the reversal of s1 followed by s2 (this is the
-                       recursive form of rev).
 
  ** Dependent iterator: for s : seq S and t : S -> seq T
 [seq E | x <- s, y <- t] := flatten [seq [seq E | x <- t] | y <- s]
@@ -436,38 +436,55 @@ end;
 
 // list reversal
 
-symbol rev [a] : 𝕃 a → 𝕃 a;
+symbol catrev [a] : 𝕃 a → 𝕃 a → 𝕃 a;
 
-rule rev □ ↪ □
-with rev ($x ⸬ $l) ↪ rev $l ++ ($x ⸬ □);
+rule catrev □ $l ↪ $l
+with catrev ($x ⸬ $l) $m ↪ catrev $l ($x ⸬ $m);
 
-opaque symbol rev_concat [a] (l m : 𝕃 a) : π(rev (l ++ m) = rev m ++ rev l) ≔
+symbol rev [a] (l: 𝕃 a) ≔ catrev l □;
+assert ⊢ rev (0 ⸬ 1 ⸬ □) ≡ 1 ⸬ 0 ⸬ □;
+
+opaque symbol rev_def [a] (l:𝕃 a): π(rev l = catrev l □) ≔
+begin reflexivity end;
+
+opaque symbol catrev_cat [a] (l m:𝕃 a): π(catrev l m = rev l ++ m) ≔
+begin
+assume a; induction
+{ reflexivity }
+{ assume x l ih m; simplify; rewrite ih; rewrite ih (x ⸬ □); reflexivity }
+end;
+
+opaque symbol rev_cons [a] l (x:τ a): π(rev (x ⸬ l) = rev l ++ (x ⸬ □)) ≔
+begin
+  assume a; induction
+  { reflexivity }
+  { assume y l ih x; simplify; rewrite catrev_cat; rewrite catrev_cat l (y ⸬ □); reflexivity }
+end;
+
+opaque symbol rev_cat [a] (l m : 𝕃 a) : π(rev (l ++ m) = rev m ++ rev l) ≔
 begin
   assume a;
   induction
     // case l = □
     { simplify; reflexivity; }
     // case l = ⸬
-    { assume x l h m; simplify; rewrite h; reflexivity; }
+    { assume x l h m; simplify ++; rewrite rev_cons; rewrite rev_cons; rewrite h; reflexivity; }
 end;
-
-rule rev ($l ++ $m) ↪ rev $m ++ rev $l;
 
 opaque symbol rev_idem [a] (l :𝕃 a) : π(rev (rev l) = l) ≔
 begin
   assume a; induction
   { reflexivity }
-  { assume x l h; simplify; rewrite h; reflexivity }
+  { assume x l h; rewrite rev_cons; rewrite rev_cat; rewrite h; rewrite rev_cons; reflexivity }
 end;
 
 opaque symbol size_rev [a] (l : 𝕃 a) : π(size (rev l) = size l) ≔
 begin
-  assume a;
-  induction
+  assume a; induction
     // case l = □
-    { simplify; reflexivity; }
+    { reflexivity }
     // case l = ⸬
-    { assume x l h; simplify; rewrite h; reflexivity; }
+    { assume x l h; rewrite rev_cons; rewrite size_cat; rewrite h; reflexivity }
 end;
 
 // rcons
@@ -717,15 +734,14 @@ opaque symbol rev_zip [a b] (la:𝕃 a) (lb:𝕃 b) :
   π (size la = size lb) → π (rev (zip la lb) = zip (rev la) (rev lb)) ≔
 begin
   assume a b la lb h;
-  apply seq_ind2 (λ l1 l2, rev (zip l1 l2) = zip (rev l1) (rev l2)) _ _ la lb h {
-    reflexivity;
-  } {
-    assume l1 l2 e1 e2 i j; simplify;
+  apply seq_ind2 (λ l1 l2, rev (zip l1 l2) = zip (rev l1) (rev l2)) _ _ la lb h   { reflexivity }
+  { assume l1 l2 e1 e2 i j; simplify zip; rewrite rev_cons; rewrite rev_cons;
+    rewrite rev_cons;
     have i': π(size(rev l1) = size(rev l2))
-      { rewrite @size_rev; rewrite @size_rev; apply i}; 
+      { rewrite size_rev; rewrite size_rev; apply i }; 
     rewrite zip_cat (rev l1) (e1 ⸬ □) (rev l2) (e2 ⸬ □) i';
-    rewrite left j; reflexivity;
-  };
+    rewrite left j; reflexivity
+  }
 end;
 
 // drop
@@ -1425,11 +1441,12 @@ opaque symbol filter_rev [a] (p:τ a → 𝔹) l :
 begin
   assume a p; induction
   { reflexivity; }
-  { assume e l h; simplify; rewrite filter_cat p (rev l) (e ⸬ □); simplify;
+  { assume e l h; rewrite rev_cons; simplify filter;
+    rewrite filter_cat p (rev l) (e ⸬ □); simplify filter;
     refine ind_𝔹 (λ b:𝔹, (filter p (rev l) ++ (if b (e ⸬ □) □) = rev (if b (e ⸬ filter p l) (filter p l)))) _ _ (p e) {
-      simplify; rewrite h; reflexivity;
+      simplify; rewrite catrev_cat (filter p l) (e ⸬ □); rewrite left h; reflexivity;
     } {
-      simplify; rewrite h; reflexivity;
+      simplify; rewrite left rev_def; rewrite h; reflexivity;
     };
   }
 end;
@@ -1592,8 +1609,8 @@ opaque symbol map_rev [a b] (f:τ a → τ b) l :
 begin
   assume a b f; induction
   { reflexivity; }
-  { assume e l h; simplify; rewrite map_cat f (rev l) (e ⸬ □); rewrite h;
-    reflexivity; }
+  { assume e l h; rewrite rev_cons; rewrite map_cat f (rev l) (e ⸬ □);
+    rewrite h; simplify map; rewrite rev_cons; reflexivity; }
 end;
 
 opaque symbol inj_map [a b] (f:τ a → τ b) :
