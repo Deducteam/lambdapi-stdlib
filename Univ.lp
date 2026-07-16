@@ -16,6 +16,8 @@ with U set_ ↪ Set;
 
 symbol ε:Π [l:L], U l → TYPE;
 
+builtin "Type" ≔ ε;
+
 rule ε [prop] $a ↪ π $a
 with ε [set_] $a ↪ τ $a;
 
