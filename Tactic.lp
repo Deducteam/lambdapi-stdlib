@@ -13,6 +13,10 @@ builtin "admit" ≔ #admit;
 constant symbol #all_hyps: (Π [l] [a:U l], ε a → Tactic) → Tactic;
 builtin "all_hyps" ≔ #all_hyps;
 
+constant symbol & : Tactic → Tactic → Tactic;
+builtin "and" ≔ &;
+notation & infix right 10;
+
 constant symbol #apply: Π [l] [a:U l], ε a → Tactic;
 builtin "apply" ≔ #apply;
 
@@ -24,10 +28,6 @@ builtin "assumption" ≔ #assumption;
 
 constant symbol #change: Π [l] [a:U l], ε a → Tactic;
 builtin "change" ≔ #change;
-
-constant symbol & : Tactic → Tactic → Tactic;
-builtin "compose" ≔ &;
-notation & infix right 10;
 
 constant symbol #fail : Tactic;
 builtin "fail" ≔ #fail;
