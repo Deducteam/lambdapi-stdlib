@@ -14,12 +14,21 @@ builtin "Univ" ≔ U;
 rule U prop ↪ Prop
 with U set_ ↪ Set;
 
-symbol ε:Π [l:L], U l → TYPE;
+injective symbol η:Π [l:L], U l → TYPE; // \eta
 
-builtin "Type" ≔ ε;
+builtin "Type" ≔ η;
 
-rule ε [prop] $a ↪ π $a
-with ε [set_] $a ↪ τ $a;
+rule @η prop ↪ π
+with @η set_ ↪ τ;
 
-unif_rule ε $a ≡ π $b ↪ [$a ≡ $b];
-unif_rule ε $a ≡ τ $b ↪ [$a ≡ $b];
+unif_rule @η $l $a ≡ π $b ↪ [$l ≡ prop; $a ≡ $b];
+unif_rule @η $l $a ≡ τ $b ↪ [$l ≡ set_; $a ≡ $b];
+
+require open Stdlib.FOL;
+
+unif_rule @η $l $a ≡ Π x:τ $b, π $c.[x] ↪ [$l ≡ prop; $a ≡ @∀ $b (λ x:τ $b, $c.[x])];
+
+require open Stdlib.HOL;
+
+unif_rule @η $l $a ≡ Π _:τ $b, τ $c.[] ↪ [$l ≡ set_; $a ≡ $b ⤳ $c.[]];
+unif_rule @η $l $a ≡ Π x:τ $b, τ $c.[x] ↪ [$l ≡ set_; $a ≡ $b ⤳d λ x:τ $b, $c.[x]];
