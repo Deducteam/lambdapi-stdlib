@@ -262,7 +262,7 @@ end;
 
 // Simplifications on Equalities 
 
-opaque symbol =_idem t (x : τ t) : π ((x = x) = ⊤) ≔
+opaque symbol =_refl t (x : τ t) : π ((x = x) = ⊤) ≔
 begin
   assume t x;
   refine propExt (x = x) ⊤ _ _
@@ -270,7 +270,7 @@ begin
     {assume h1; refine eq_refl x}
 end;
 
-opaque symbol ¬=_idem t (x : τ t) : π (¬ (x = x) = ⊥) ≔
+opaque symbol ¬=_irrefl t (x : τ t) : π (¬ (x = x) = ⊥) ≔
 begin
   assume t x;
   refine propExt (¬ (x = x)) ⊥ _ _
@@ -436,7 +436,7 @@ end;
 
 // Simplifications on Implication
 
-opaque symbol ⇒_idem x : π ((x ⇒ x) = ⊤) ≔
+opaque symbol ⇒_refl x : π ((x ⇒ x) = ⊤) ≔
 begin
   assume x;
   refine propExt (x ⇒ x) ⊤ _ _
@@ -478,7 +478,7 @@ end;
 
 // Simplifications on Bi-Implication
 
-opaque symbol ⇔_idem x : π ((x ⇔ x) = ⊤) ≔
+opaque symbol ⇔_refl x : π ((x ⇔ x) = ⊤) ≔
 begin
   assume x;
   refine propExt (x ⇔ x) ⊤ _ _
