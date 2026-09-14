@@ -38,9 +38,9 @@ seqn n x_0 ... x_n-1 == the sequence of the x_i; can be partially applied.
  ** Random access:
         nth x0 s i == the item i of s (numbered from 0), or x0 if s does
                       not have at least i+1 items (i.e., size x <= i)
-      nths x0 s ks == the sequence that is formed when taking for each 
-                      index i in n the i-th item of ks (numbered from 0), 
-                      or x0 if s has fewer than i+1 items (i.e., size s <= i). 
+      nths x0 s ks == the sequence that is formed when taking for each
+                      index i in n the i-th item of ks (numbered from 0),
+                      or x0 if s has fewer than i+1 items (i.e., size s <= i).
               s`_i == standard notation for nth x0 s i for a default x0,
                       e.g., 0 for rings.
   set_nth x0 s i y == s where item i has been changed to y; if s does not
@@ -69,7 +69,7 @@ seqn n x_0 ... x_n-1 == the sequence of the x_i; can be partially applied.
          uniq s <=> all the items in s are pairwise different.
    subseq s1 s2 <=> s1 is a subsequence of s2, i.e., s1 = mask m s2 for
                    some m : bitseq (see below).
-    ⊆ beq s1 s2 <=> s1 is contained in s2, i.e., every element in s1 is 
+    ⊆ beq s1 s2 <=> s1 is contained in s2, i.e., every element in s1 is
                     also in s2
     infix s1 s2 <=> s1 is a contiguous subsequence of s2, i.e.,
                       s ++ s1 ++ s' = s2 for some sequences s, s'.
@@ -281,7 +281,7 @@ begin
       apply feq2 (⸬) _ _
       { apply beq_correct; apply @andₑ₁ _ (eql beq l m) c}
       { apply h; refine @andₑ₂ (beq x y) _ c
-      } 
+      }
     }
   }
 end;
@@ -481,7 +481,7 @@ begin
     // case l = □
     { reflexivity }
     // case l = ⸬
-    { assume x l h; rewrite rev_cons; rewrite size_cat; rewrite h; simplify; 
+    { assume x l h; rewrite rev_cons; rewrite size_cat; rewrite h; simplify;
     rewrite suc=+1; rewrite suc=+1; rewrite add0n; reflexivity}
 end;
 
@@ -614,7 +614,7 @@ assert ⊢ incr_nth (3 ⸬ 2 ⸬ 1 ⸬ □) 1 ≡ 3 ⸬ 3 ⸬ 1 ⸬ □;
 assert ⊢ incr_nth (3 ⸬ 2 ⸬ 1 ⸬ □) 2 ≡ 3 ⸬ 2 ⸬ 2 ⸬ □;
 assert ⊢ incr_nth (3 ⸬ 2 ⸬ 1 ⸬ □) 5 ≡ 3 ⸬ 2 ⸬ 1 ⸬ 0 ⸬ 0 ⸬ 1 ⸬ □;
 
-// zip 
+// zip
 
 symbol zip [a b] : 𝕃 a → 𝕃 b → 𝕃 (a × b);
 
@@ -725,7 +725,7 @@ begin
   apply @seq_ind2 a b (λ l1 l2, (zip (l1 ++ sa) (l2 ++ sb) = zip l1 l2 ++ zip sa sb)) _ _ la lb h {
     reflexivity;
   } {
-    assume l1 l2 e1 e2 h1 h2; simplify; apply feq (λ l, (e1 ‚ e2) ⸬ l) h2; 
+    assume l1 l2 e1 e2 h1 h2; simplify; apply feq (λ l, (e1 ‚ e2) ⸬ l) h2;
   };
 end;
 
@@ -753,7 +753,7 @@ begin
   { assume l1 l2 e1 e2 i j; simplify zip; rewrite rev_cons; rewrite rev_cons;
     rewrite rev_cons;
     have i': π(size(rev l1) = size(rev l2))
-      { rewrite size_rev; rewrite size_rev; apply i }; 
+      { rewrite size_rev; rewrite size_rev; apply i };
     rewrite zip_cat (rev l1) (e1 ⸬ □) (rev l2) (e2 ⸬ □) i';
     rewrite left j; reflexivity
   }
@@ -786,7 +786,7 @@ end;
 opaque symbol drop_oversize [a] n (l:𝕃 a) : π (size l ≤ n) → π (drop n l = □) ≔
 begin
   assume a; induction
-  { assume l h; 
+  { assume l h;
     have t:π (size l = 0) { apply ≤0 (size l) h;};
     simplify; apply size0nil l t;
   }
@@ -815,7 +815,7 @@ begin
   { assume n; rewrite dropx□; reflexivity}
   { assume e l h; simplify; induction
     { reflexivity; }
-    { assume n i; simplify; apply h n; } 
+    { assume n i; simplify; apply h n; }
   }
 end;
 
@@ -848,7 +848,7 @@ opaque symbol drop_drop [a] (l:𝕃 a) n1 n2 :
   π (drop n1 (drop n2 l) = drop (n1 + n2) l) ≔
 begin
   assume a; induction
-  { assume n m; rewrite dropx□; rewrite dropx□; 
+  { assume n m; rewrite dropx□; rewrite dropx□;
     rewrite dropx□; reflexivity }
   { assume e l h n1; induction
     { simplify; rewrite addn0; reflexivity; }
@@ -943,7 +943,7 @@ begin
   { assume n h; induction
     { assume l2 i; apply ⊥ₑ; apply s≠0 [n]; symmetry; apply i; }
     { assume e1 l1 i l2 j; simplify; apply feq (λ l, e1 ⸬ l);
-      apply h l1 l2; apply ∧ₑ₂ (size_cons e1 n l1) j; 
+      apply h l1 l2; apply ∧ₑ₂ (size_cons e1 n l1) j;
     }
   }
 end;
@@ -1029,7 +1029,7 @@ opaque symbol size_rot [a] (l:𝕃 a) n0 : π (size (rot n0 l) = size l) ≔
 begin
   assume a l n0; simplify; rewrite size_cat; rewrite addnC;
   rewrite left @size_cat a (take n0 l) (drop n0 l);
-  rewrite cat_take_drop n0 l; reflexivity; 
+  rewrite cat_take_drop n0 l; reflexivity;
 end;
 
 opaque symbol rot_oversize [a] n (l:𝕃 a) : π (size l ≤ n) → π (rot n l = l) ≔
@@ -1046,7 +1046,7 @@ end;
 opaque symbol rot_size_cat [a] (l1 l2:𝕃 a) :
   π (rot (size l1) (l1 ++ l2) = l2 ++ l1) ≔
 begin
-  assume a l1 l2; simplify; 
+  assume a l1 l2; simplify;
   rewrite drop_size_cat (size l1) l1 l2 (eq_refl (size l1));
   rewrite take_size_cat (size l1) l1 l2 (eq_refl (size l1));
   reflexivity;
@@ -1105,7 +1105,7 @@ end;
 
 opaque symbol mem_seq1 [a] beq (x y:τ a) : π (∈ beq x (y ⸬ □) = beq x y) ≔
 begin
-  assume a beq x y; 
+  assume a beq x y;
   simplify; rewrite or_false_lhs [beq x y];
   reflexivity;
 end;
@@ -1125,7 +1125,7 @@ begin
   assume a beq x l hrefl; rewrite hrefl; apply ⊤ᵢ;
 end;
 
-opaque symbol mem_tail [a] (beq: τ a → τ a → 𝔹) (n m: τ a) (l: 𝕃 a) : 
+opaque symbol mem_tail [a] (beq: τ a → τ a → 𝔹) (n m: τ a) (l: 𝕃 a) :
   π (∈ beq n l) → π (∈ beq n (m ⸬ l)) ≔
 begin
   assume a beq n m; induction
@@ -1216,12 +1216,12 @@ begin
   }
 end;
 
-opaque symbol not_mem_cons_head [a] (beq : τ a → τ a → 𝔹) l l0 x: 
+opaque symbol not_mem_cons_head [a] (beq : τ a → τ a → 𝔹) l l0 x:
     π (¬ (∈ beq x (l0 ⸬ l))) → π (¬ (beq x l0))≔
 begin
     assume a  beq;
     induction
-        {assume x l0; simplify ∈; 
+        {assume x l0; simplify ∈;
         rewrite or_false_lhs [beq l0 x]; assume h; refine h}
         {assume x l h0 l0 l1 h1 h2;
         have H0 : π ((¬ (istrue (beq l1 l0 or ∈ beq l1 (x ⸬ l)))) ⇒ ⊥)
@@ -1229,7 +1229,7 @@ begin
         refine H0 h1}
 end;
 
-opaque symbol not_mem_cons_tail [a] (beq : τ a → τ a → 𝔹) l l0 x: 
+opaque symbol not_mem_cons_tail [a] (beq : τ a → τ a → 𝔹) l l0 x:
     π (¬ (∈ beq x (l0 ⸬ l))) → π (¬ (∈ beq x l))≔
 begin
     assume a  beq;
@@ -1333,7 +1333,7 @@ begin
       simplify; apply h;
     } {
       simplify;
-      refine @leq_trans (count p l) (size l) (size l +1) h (leqnSn (size l)); 
+      refine @leq_trans (count p l) (size l) (size l +1) h (leqnSn (size l));
     };
   }
 end;
@@ -1399,35 +1399,35 @@ begin
                 {refine IH m (andₑ₂ [∈ beq y m] [⊆ beq ys m] h)}}
 end;
 
-opaque symbol subset_cons_l [a] (beq: τ a → τ a → 𝔹) (x1 : τ a) (l0 l1 : 𝕃 a) : 
+opaque symbol subset_cons_l [a] (beq: τ a → τ a → 𝔹) (x1 : τ a) (l0 l1 : 𝕃 a) :
   π (⊆ beq (x1 ⸬ l0) l1) → π (⊆ beq l0 l1) ≔
 begin
     assume a beq x1;
-    induction 
+    induction
         {assume l0 h0; refine ⊤ᵢ}
-        {assume x2 l0 h0 l1 h1; 
+        {assume x2 l0 h0 l1 h1;
         refine andₑ₂ [∈ beq x1 l1] [(∈ beq x2 l1 and ⊆ beq l0 l1)] h1}
 end;
 
-opaque symbol subset_cons [a: Set] (beq : τ a → τ a → 𝔹) (beq_idem : Π x, π (beq x x)) l' l x : 
+opaque symbol subset_cons [a: Set] (beq : τ a → τ a → 𝔹) (beq_idem : Π x, π (beq x x)) l' l x :
     π (⊆ beq l l') → π (⊆ beq (x ⸬ l) (x ⸬ l'))≔
 begin
     assume a beq beq_idem;
     induction
         {assume l x h; rewrite istrue=true (beq_idem x);
         refine subset_cons_r beq x l □ h}
-        {assume x0 l0 h0 l1 x1 h1; rewrite istrue=true (beq_idem x1); 
+        {assume x0 l0 h0 l1 x1 h1; rewrite istrue=true (beq_idem x1);
         refine subset_cons_r beq x1 l1 (x0 ⸬ l0) h1}
 end;
 
-opaque symbol mem_subseq_cons [a: Set] (beq : τ a → τ a → 𝔹) l' l l0: 
+opaque symbol mem_subseq_cons [a: Set] (beq : τ a → τ a → 𝔹) l' l l0:
     π (⊆ beq (l0 ⸬ l) l') → π (∈ beq l0 l')≔
 begin
     assume a beq l' l l0 h;
     refine andₑ₁ [∈ beq l0 l'] [⊆ beq l l'] h
 end;
 
-opaque symbol ⊆_idem [a: Set] (beq : (τ a → τ a → 𝔹)) (beq_idem : Π x, π (beq x x)) l: 
+opaque symbol ⊆_idem [a: Set] (beq : (τ a → τ a → 𝔹)) (beq_idem : Π x, π (beq x x)) l:
     π (⊆ beq l l)≔
 begin
     assume a beq beq_idem;
@@ -1548,7 +1548,7 @@ begin
   rewrite left size_cat (filter p l1) (filter p l2); reflexivity;
 end;
 
-opaque symbol mem_filter [a: Set] (beq : τ a → τ a → 𝔹) (beq_correct : Π x, Π y, π (beq x y) → π(x = y)) (p : τ a → 𝔹) l x: 
+opaque symbol mem_filter [a: Set] (beq : τ a → τ a → 𝔹) (beq_correct : Π x, Π y, π (beq x y) → π(x = y)) (p : τ a → 𝔹) l x:
     π (p x) → π (∈ beq x l = ∈ beq x (filter p l))≔
 begin
     assume a beq beq_correct p;
@@ -1560,33 +1560,33 @@ begin
             refine ∨ₑ (case_𝔹 (beq x1 x0)) _ _
                 {assume h3; rewrite h3; reflexivity}
                 {assume h3; rewrite h3; rewrite (h0 x1 h1); reflexivity}}
-            {assume h3; rewrite h3; simplify; rewrite left (h0 x1 h1); 
+            {assume h3; rewrite h3; simplify; rewrite left (h0 x1 h1);
             refine ∨ₑ (case_𝔹 (beq x1 x0)) _ _
                 {assume h4;
                 have H0: π((p x1) ⇒ ⊥)
-                    {rewrite beq_correct x1 x0 (true=istrue h4); rewrite h3; 
+                    {rewrite beq_correct x1 x0 (true=istrue h4); rewrite h3;
                     assume h5; refine h5};
                 refine ⊥ₑ (H0 h1)}
             {assume h4; rewrite h4; reflexivity}}}
 end;
 
-opaque symbol beq_sym_not [a: Set] (beq : τ a → τ a → 𝔹): 
+opaque symbol beq_sym_not [a: Set] (beq : τ a → τ a → 𝔹):
     (Π x, Π y, π (beq x y) → π (beq y x)) → (Π x, Π y, π (not (beq x y)) → π (not (beq y x)))≔
 begin
     assume a beq h0 x y h1; refine ¬_istrue [beq y x] _; assume h2;
-    have NotXbeqX: π ((beq x y) ⇒ ⊥) 
+    have NotXbeqX: π ((beq x y) ⇒ ⊥)
         {refine istrue_not [beq x y] h1};
     refine NotXbeqX (h0 y x h2)
 end;
 
-opaque symbol subset_cons_filter_not [a: Set] (beq : τ a → τ a → 𝔹) (beq_sym : Π x, Π y, π (beq x y) → π  (beq y x)) (beq_correct : Π x, Π y, π (beq x y) → π(x = y)) l l' x0: 
+opaque symbol subset_cons_filter_not [a: Set] (beq : τ a → τ a → 𝔹) (beq_sym : Π x, Π y, π (beq x y) → π  (beq y x)) (beq_correct : Π x, Π y, π (beq x y) → π(x = y)) l l' x0:
     π (⊆ beq l l') → π (⊆ beq l (x0 ⸬ filter (λ y, not (beq x0 y)) l'))≔
 begin
     assume a beq beq_sym beq_correct;
     induction
         {assume l x h; refine ⊤ᵢ}
-        {assume x0 l0 h0 l x h; simplify; 
-        refine ∨ₑ (case_𝔹 (beq x0 x)) _ _ 
+        {assume x0 l0 h0 l x h; simplify;
+        refine ∨ₑ (case_𝔹 (beq x0 x)) _ _
             {assume h1; rewrite h1;
             refine h0 l x (subset_cons_l beq x0 l0 l h)}
             {assume h1; rewrite h1;
@@ -1599,30 +1599,30 @@ begin
                 {refine h0 l x (subset_cons_l beq x0 l0 l h)}}}
 end;
 
-opaque symbol not_mem_filter_not [a] (beq : τ a → τ a → 𝔹) (l: 𝕃 a) x: 
+opaque symbol not_mem_filter_not [a] (beq : τ a → τ a → 𝔹) (l: 𝕃 a) x:
     π (¬ (∈ beq x (filter (λ y, not (beq x y)) l)))≔
 begin
     assume a beq;
     induction
         {assume x h; refine h}
         {assume x0 l0 h0 x1; simplify;
-        refine ∨ₑ (case_𝔹 (beq x1 x0)) _ _ 
-            {assume h1; rewrite h1; 
+        refine ∨ₑ (case_𝔹 (beq x1 x0)) _ _
+            {assume h1; rewrite h1;
             assume h2; refine h0 x1 h2}
-            {assume h1; rewrite h1; simplify if; simplify ∈ ; rewrite h1; 
+            {assume h1; rewrite h1; simplify if; simplify ∈ ; rewrite h1;
             simplify or; assume h2; refine h0 x1 h2}}
 end;
 
-opaque symbol filter_not_id [a] (beq : τ a → τ a → 𝔹) [l] [x]: 
+opaque symbol filter_not_id [a] (beq : τ a → τ a → 𝔹) [l] [x]:
     π (¬ (∈ beq x l)) → π (l = filter (λ y, not (beq x y)) l)≔
 begin
     assume a beq;
     induction
         {assume x h0; reflexivity}
         {assume x0 l0 h0 x1 h1; simplify;
-        have H0: π ((beq x1 x0) = false) 
+        have H0: π ((beq x1 x0) = false)
             {refine ¬istrue=false (not_mem_cons_head beq l0 x0 x1 h1)};
-        have H1: π (¬ (istrue (∈ beq x1 l0))) 
+        have H1: π (¬ (istrue (∈ beq x1 l0)))
             {refine (not_mem_cons_tail beq l0 x0 x1 h1)};
         rewrite H0; rewrite left h0 x1 H1; reflexivity}
 end;
@@ -1678,13 +1678,13 @@ rule undup_first _ □ ↪ □
 with undup_first $beq ($x ⸬ $l)
   ↪ $x ⸬ filter (λ y, not ($beq $x y)) (undup_first $beq $l);
 
-opaque symbol subset_undup_first [a: Set] (beq : τ a → τ a → 𝔹) (beq_correct : Π x, Π y, π (beq x y) → π(x = y)) (beq_rfl : Π x:τ a, π(beq x x)) (beq_sym : Π x, Π y, π (beq x y) → π  (beq y x)) (l: 𝕃 a): 
+opaque symbol subset_undup_first [a: Set] (beq : τ a → τ a → 𝔹) (beq_correct : Π x, Π y, π (beq x y) → π(x = y)) (beq_rfl : Π x:τ a, π(beq x x)) (beq_sym : Π x, Π y, π (beq x y) → π  (beq y x)) (l: 𝕃 a):
     π (⊆ beq l (undup_first beq l)) ≔
 begin
     assume a beq beq_correct beq_rfl beq_sym;
     induction
         {refine ⊤ᵢ}
-        {assume x0 l0 h0; simplify; rewrite istrue=true (beq_rfl x0); 
+        {assume x0 l0 h0; simplify; rewrite istrue=true (beq_rfl x0);
         refine subset_cons_filter_not beq beq_sym beq_correct l0 (undup_first beq l0) x0 h0}
 end;
 
@@ -1757,7 +1757,7 @@ begin
   { reflexivity; }
   { assume n h; induction
     { reflexivity; }
-    { assume e l i; simplify; rewrite h l; reflexivity; } 
+    { assume e l i; simplify; rewrite h l; reflexivity; }
   }
 end;
 
@@ -1768,7 +1768,7 @@ begin
   { reflexivity; }
   { assume n h; induction
     { reflexivity; }
-    { assume e l i; simplify; rewrite h l; reflexivity; } 
+    { assume e l i; simplify; rewrite h l; reflexivity; }
   }
 end;
 
@@ -1776,7 +1776,7 @@ opaque symbol map_rot [a b] (f:τ a → τ b) n l :
   π (map f (rot n l) = rot n (map f l)) ≔
 begin
   assume a b f n l; simplify; rewrite map_cat f (drop n l) (take n l);
-  rewrite map_take f n l; rewrite map_drop f n l; reflexivity; 
+  rewrite map_take f n l; rewrite map_drop f n l; reflexivity;
 end;
 
 opaque symbol map_rotr [a b] (f:τ a → τ b) n l :
@@ -1822,7 +1822,7 @@ symbol nths [a : Set] : τ a → 𝕃 a → 𝕃 nat → 𝕃 a;
 
 rule nths $b $l $n ↪ map (nth $b $l) $n;
 
-opaque symbol mapS_iota (m n : τ nat) : 
+opaque symbol mapS_iota (m n : τ nat) :
   π (map (+1) (iota n m) = iota (n +1) m)≔
 begin
   induction
@@ -1835,7 +1835,7 @@ begin
       refine eq_refl (m +1 ⸬ m +1 +1 ⸬ iota (m +1 +1 +1) n0) } }
 end;
 
-opaque symbol indexes_cons [a : Set] (x : τ a) (l : 𝕃 a) : 
+opaque symbol indexes_cons [a : Set] (x : τ a) (l : 𝕃 a) :
   π (indexes (x ⸬ l) = 0 ⸬ (map (+1) (indexes l)))≔
     begin
       assume a x;
@@ -1863,11 +1863,11 @@ begin
                 refine orᵢ₂ (eqn n2 n0) (h1 n2 h3)}}}
 end;
 
-opaque symbol indexes_decrement [a] (id : τ nat) (l0: τ a) (l: 𝕃 a): 
+opaque symbol indexes_decrement [a] (id : τ nat) (l0: τ a) (l: 𝕃 a):
      π (∈ eqn (id +1) (indexes (l0 ⸬ l))) → π (∈ eqn id (indexes l))≔
 begin
     assume a id l0 l;
-    assume h0; 
+    assume h0;
     have H1 : π ((∈ eqn (id +1) (iota 1 (size l))) ⇒ (∈ eqn id (iota 0 (size l))))
         {have H2: π (iota 1 (size l) = map (+1) (iota 0 (size l)))
             {refine (eq_sym (mapS_iota (size l) 0))};
@@ -1876,7 +1876,7 @@ begin
     refine H1 h0
 end;
 
-opaque symbol nths_shift_cons [a : Set] (x b : τ a) (l : 𝕃 a) (n : 𝕃 nat) : 
+opaque symbol nths_shift_cons [a : Set] (x b : τ a) (l : 𝕃 a) (n : 𝕃 nat) :
   π ((nths b (x ⸬ l) (map (+1) n)) = (nths b l n))≔
 begin
   assume a x b l; induction
@@ -1889,7 +1889,7 @@ begin
     refine eq_refl (nths b l (n ⸬ ll)) }
 end;
 
-opaque symbol nths_indexes_id [a : Set] (b : τ a) (l : 𝕃 a) : 
+opaque symbol nths_indexes_id [a : Set] (b : τ a) (l : 𝕃 a) :
   π (nths b l (indexes l) = l)≔
 begin
   assume a b; induction

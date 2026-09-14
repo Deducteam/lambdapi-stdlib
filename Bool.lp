@@ -52,7 +52,7 @@ begin
       { assume h1; rewrite h; refine ⊤ᵢ}
 end;
 
-opaque symbol ¬istrue=false [x : 𝔹]: 
+opaque symbol ¬istrue=false [x : 𝔹]:
     π (¬ x) → π (x = false) ≔
 begin
   assume x h;
@@ -61,10 +61,10 @@ begin
       { assume h1; refine h1};
 end;
 
-opaque symbol false=¬istrue [x : 𝔹]: 
+opaque symbol false=¬istrue [x : 𝔹]:
     π (x = false) → π (¬ x) ≔
 begin
-  assume x h0; rewrite h0; 
+  assume x h0; rewrite h0;
   assume h1; refine h1;
 end;
 
@@ -88,7 +88,7 @@ symbol not : 𝔹 → 𝔹;
 rule not true  ↪ false
 with not false ↪ true;
 
-opaque symbol ¬_istrue [p: 𝔹]: 
+opaque symbol ¬_istrue [p: 𝔹]:
     π(¬ p) → π(not p) ≔
 begin
   induction
@@ -96,7 +96,7 @@ begin
   { simplify; assume h; refine ⊤ᵢ }
 end;
 
-opaque symbol istrue_not [p: 𝔹]: 
+opaque symbol istrue_not [p: 𝔹]:
     π(not p) → π(¬ p)≔
 begin
   induction
@@ -113,7 +113,7 @@ notation or infix left 20;
 rule true  or _     ↪ true
 with false or $b    ↪ $b;
 
-opaque symbol or_true_lhs [p : 𝔹] : 
+opaque symbol or_true_lhs [p : 𝔹] :
   π ((p or true) = true) ≔
 begin
   induction
@@ -121,7 +121,7 @@ begin
     {reflexivity}
 end;
 
-opaque symbol or_false_lhs [p : 𝔹] : 
+opaque symbol or_false_lhs [p : 𝔹] :
   π ((p or false) = p) ≔
 begin
   induction

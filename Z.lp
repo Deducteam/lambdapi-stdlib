@@ -162,7 +162,7 @@ begin
   induction
     {reflexivity}
     {reflexivity}
-    {reflexivity} 
+    {reflexivity}
 end;
 
 // Interaction of addition with opposite
@@ -564,7 +564,7 @@ begin
   assume x y a; simplify; assume H; rewrite ≐_sub;
   rewrite +_assoc; rewrite .[y + a] +_com;
   rewrite distr_—_+; rewrite left +_assoc a (— a) (— y);
-  rewrite -_same; rewrite left +_assoc; rewrite +Z0; 
+  rewrite -_same; rewrite left +_assoc; rewrite +Z0;
   rewrite left ≐_sub; refine H;
 end;
 

@@ -230,7 +230,7 @@ opaque symbol addnC x y : π (x + y = y + x) ≔
 begin
   induction
   { assume y; rewrite addn0; reflexivity }
-  { assume x' h y; simplify; rewrite h; 
+  { assume x' h y; simplify; rewrite h;
   rewrite addnS (y) (x'); reflexivity }
 end;
 
@@ -282,7 +282,7 @@ opaque symbol addIn x y z : π (x + z = y + z) → π (x = y) ≔
 begin
   assume x y; induction
   { rewrite addn0 x; rewrite addn0 y; assume h; apply h;}
-  { assume z h i; apply h; apply +1_inj; 
+  { assume z h i; apply h; apply +1_inj;
   rewrite left addnS x z; rewrite left addnS y z; apply i;}
 end;
 
@@ -854,7 +854,7 @@ begin
     generalize p; induction
     { assume m n h; apply h }
     { assume p h m n i; apply h m n i }
-  }; 
+  };
 end;
 
 opaque symbol ltn_add2l p m n : π (istrue (p + m < p + n) ⇔ istrue (m < n)) ≔
@@ -1800,7 +1800,7 @@ symbol _9 ≔ _8 +1;
 symbol _10 ≔ _9 +1;
 
 opaque symbol suc=+1 x : π ((x +1) = (x + _1))≔
-begin 
+begin
   induction
     {reflexivity}
     {assume n h; rewrite h; rewrite left addSn; rewrite h; reflexivity;}

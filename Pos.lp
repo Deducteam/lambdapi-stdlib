@@ -117,7 +117,7 @@ begin
   { assume n h i; apply ∨ₑ (casen n)
     { assume j; apply ∃ᵢ H; rewrite j; reflexivity }
     { assume j; apply ∃ₑ (h j); assume p k; apply ∃ᵢ (succ p);
-      rewrite left k; apply valS p /*FIXME*/ } 
+      rewrite left k; apply valS p /*FIXME*/ }
   }
 end;
 
@@ -125,7 +125,7 @@ opaque opaque symbol val≠0 x : π(val x ≠ 0) ≔
 begin
   induction
   { assume x h; refine s≠0 }
-  { assume x h; simplify; assume i; 
+  { assume x h; simplify; assume i;
     have i' :  π ((val x + (val x)) = 0)
       {rewrite left .[x in ((_ + x) = _)] addn0 (val x);
       refine i};
@@ -144,17 +144,17 @@ begin
   induction
   { assume x h; induction
     { simplify; assume y i j; rewrite h y _
-        { apply 2*_inj; apply +1_inj; 
+        { apply 2*_inj; apply +1_inj;
           have j' : π ((((val x + (val x + 0)) +1) = ((val y + (val y + 0)) +1)) ⇒ (((val x + val x) +1) = ((val y + val y) +1)))
             {rewrite addn0; rewrite addn0; assume h0; refine h0};
         apply (j' j) }
         { reflexivity }
     }
-    { simplify; assume y i j; apply ⊥ₑ; 
+    { simplify; assume y i j; apply ⊥ₑ;
       have H: π ((((val x + (val x + 0)) +1) = (val y + (val y + 0))) ⇒ (((val x + val x) +1) = (val y + val y)))
         {rewrite addn0; rewrite addn0; assume h0; refine h0};
       apply odd≠even (val x) (val y) (H j) }
-    { simplify; assume i; apply ⊥ₑ; apply 2*val≠0 x; apply +1_inj; 
+    { simplify; assume i; apply ⊥ₑ; apply 2*val≠0 x; apply +1_inj;
       have H: π ((((val x + (val x + 0)) +1) = 1) ⇒ (((val x + val x) +1) = 1))
         {rewrite addn0; assume h0; refine h0};
     apply (H i) }
@@ -164,11 +164,11 @@ begin
     have H: π (((val x + (val x + 0)) = ((val y + (val y + 0)) +1)) ⇒ ((val x + val x) = ((val y + val y) +1)))
         {rewrite addn0; rewrite addn0; assume h0; refine h0};
       apply odd≠even (val y) (val x) (eq_sym (H j)) }
-    { simplify; assume y i j; apply feq O; apply h; apply 2*_inj; 
+    { simplify; assume y i j; apply feq O; apply h; apply 2*_inj;
       have H: π (((val x + (val x + 0)) = (val y + (val y + 0))) ⇒ ((val x + val x) = (val y + val y)))
         {rewrite addn0; rewrite addn0; assume h0; refine h0};
     apply (H j) }
-    { assume i; apply ⊥ₑ; apply odd≠even 0 (val x); symmetry; simplify; 
+    { assume i; apply ⊥ₑ; apply odd≠even 0 (val x); symmetry; simplify;
       have H: π ((val (O x) = val H) ⇒ ((val x + val x) = 1))
         {simplify val; simplify *; simplify *; simplify *; rewrite addn0; assume h0; refine h0};
     apply (H i)
@@ -176,11 +176,11 @@ begin
   }
   { induction
     { simplify; assume x h i; apply ⊥ₑ; apply val≠0 x; apply 2*=0; apply +1_inj;
-      symmetry; 
+      symmetry;
       have H: π ((1 = ((val x + (val x + 0)) +1)) ⇒ (1 = ((val x + val x) +1)))
         {rewrite addn0; assume h0; refine h0};
       apply (H i) }
-    { simplify; assume x h i; apply ⊥ₑ; apply odd≠even 0 (val x); simplify; 
+    { simplify; assume x h i; apply ⊥ₑ; apply odd≠even 0 (val x); simplify;
       have H: π ((1 = (val x + (val x + 0))) ⇒ (1 = (val x + val x)))
         {rewrite addn0; assume h0; refine h0};
     apply (H i) }
@@ -315,9 +315,9 @@ begin
       { reflexivity }
       { reflexivity } }
   // case H
-  { induction 
+  { induction
     { assume q h; simplify; rewrite addHn; reflexivity }
-    { assume q h; simplify; rewrite addHn; reflexivity } 
+    { assume q h; simplify; rewrite addHn; reflexivity }
     { reflexivity } }
 end;
 
