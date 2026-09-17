@@ -8,7 +8,7 @@
 require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.HOL Stdlib.Nat Stdlib.Eq Stdlib.Impred;
 
 inductive Sets : ℕ → TYPE ≔
-| Unit : Sets 0
+| unit : Sets 0
 | ▹ : Π [n : ℕ], Set → Sets n → Sets (n +1);
 
 notation ▹ infix right 10;
@@ -17,86 +17,66 @@ symbol sets (n : ℕ) : Set;
 rule τ (sets $n) ↪ Sets $n;
 
 // Type transformer x1 ▹ x2 ▹ .. into  x1 ⤳ x2 ⤳ ..
-symbol arrows n : Sets n → Set → Set;
-rule arrows 0 Unit $b ↪ $b
-with arrows ($n +1) ($t ▹ $ts) $b ↪ $t ⤳ (arrows $n $ts $b);
+symbol arrows [n] : Sets n → Set → Set;
+rule arrows unit $b ↪ $b
+with arrows ($t ▹ $ts) $b ↪ $t ⤳ arrows $ts $b;
 
-injective symbol Arrow [n] (dom : Sets n) (cod : Set) : TYPE ≔ τ (@arrows n dom cod);
+injective symbol Arrow [n] (dom : Sets n) (cod : Set) : TYPE ≔ τ (arrows dom cod);
 
-assert ⊢ Arrow (o ▹ o ▹ Unit) o ≡ (Prop → Prop → Prop);
-assert ⊢ (∧) : Arrow (o ▹ o ▹ Unit) o;
-
-// Tail of a telescope.
-symbol tl [n] : Sets (n +1) → Sets n;
-rule tl (_ ▹ $ts) ↪ $ts;
-
-
-// The definitions below do not depend on these rules; they only let the `Sets`
-// argument stay implicit at use sites such as `congₙ 2 (+)`.
-// So the unif rule below  allows us to write generic programs acting on n-ary functions
-// with less boilerplate.
-// Unfolding `arrows` in the unifier. Its rules match on the `Sets` argument,
-// so `arrows n ?ts ?b` is stuck when `?ts` is a metavariable: for
-// `f : τ A → τ B → τ C` against `Arrow ?ts ?b`, the unifier faces
-// `arrows 2 ?ts ?b ≡ A ⤳ B ⤳ C`. The rules below unfold it one step at a
-// time, the constructor of `?ts`.
-unif_rule @arrows ($n +1) $ts $b ≡ ($a ⤳ $c) ↪ [$ts ≡ @▹ $n $a _; @arrows $n (@tl $n $ts) $b ≡ $c];
-unif_rule @arrows 0 $ts $b ≡ $c ↪ [$ts ≡ Unit; $b ≡ $c];
+assert ⊢ Arrow (o ▹ o ▹ unit) o ≡ Prop → Prop → Prop;
+assert ⊢ (∧) : Arrow (o ▹ o ▹ unit) o;
 
 // Helper type constructor to just create an arrow of `n`-times the type `t`.
-// Ex: SetsIdent 3 nat  ≡ nat ⤳ nat ⤳ nat
-symbol SetsIdent n (t : Set) : Sets n;
-rule SetsIdent 0 _ ↪ Unit
-with SetsIdent ($n +1) $t ↪ $t ▹ (SetsIdent $n $t);
+// Ex: sets_ident 3 nat ≡ nat ▹ nat ▹ nat ▹ unit
+symbol sets_ident n (t : Set) : Sets n;
+rule sets_ident 0 _ ↪ unit
+with sets_ident ($n +1) $t ↪ $t ▹ sets_ident $n $t;
 
-// Helper type constructor to just create an arrow of `n`-times the type `t`.
-// Ex: ArrowI 2 nat  ≡ nat ⤳ nat ⤳ nat
-symbol ArrowI n (a : Set) ≔ Arrow (SetsIdent n a) a; // Arrow wrapper for SetsIdent
+// Type of the `n`-ary functions on `a`.
+// Ex: ArrowI 2 nat ≡ nat ⤳ nat ⤳ nat
+symbol ArrowI n (a : Set) ≔ Arrow (sets_ident n a) a;
 
-// ------------------------------------------------------ pointwise liftings
 
-// Lift a unary operation (τ A → τ B) to n-ary functions.
-symbol lift [A B : Set] n [dom : Sets n] : (τ A → τ B) → Arrow dom A → Arrow dom B;
-rule @lift _ _ 0 Unit $op $f ↪ $op $f
-with @lift $A $B ($n +1) ($t ▹ $ts) $op $f ↪ λ (x : τ $t), @lift $A $B $n $ts $op ($f x);
+// Lift a unary operation (τ a → τ b) to n-ary functions.
+symbol lift [a b : Set] n [dom : Sets n] : (τ a → τ b) → Arrow dom a → Arrow dom b;
+rule @lift _ _ _ unit $op $f ↪ $op $f
+with @lift _ _ _ ($t ▹ $ts) $op $f ↪ λ x : τ $t, @lift _ _ _ $ts $op ($f x);
 
 // Lift a binary operation to two n-ary functions with the same domain
-symbol lift2 [A B C : Set] n [dom : Sets n] :
-  (τ A → τ B → τ C) → Arrow dom A → Arrow dom B → Arrow dom C;
-rule @lift2 _ _ _ 0 Unit $op $f $g ↪ $op $f $g
-with @lift2 $A $B $C ($n +1) ($t ▹ $ts) $op $f $g ↪
-  λ (x : τ $t), @lift2 $A $B $C $n $ts $op ($f x) ($g x);
+symbol lift2 [a b c : Set] n [dom : Sets n] :
+  (τ a → τ b → τ c) → Arrow dom a → Arrow dom b → Arrow dom c;
+rule @lift2 _ _ _ _ unit $op $f $g ↪ $op $f $g
+with @lift2 _ _ _ _ ($t ▹ $ts) $op $f $g ↪ λ x : τ $t, @lift2 _ _ _ _ $ts $op ($f x) ($g x);
 
 // `composeₙ n g f` precomposes the (n+1)-th argument of g with f:
 // composition with f, lifted over the first n arguments.
 symbol composeₙ [i j b : Set] n [dom : Sets n] (g : Arrow dom (j ⤳ b)) (f : τ i → τ j)
   : Arrow dom (i ⤳ b) ≔ lift n (λ h, h ∘ f) g;
 
+symbol ∧ₙ [n] [dom : Sets n] (p q : Arrow dom o) : Arrow dom o ≔ lift2 n (∧) p q;
 
-symbol ∧ₙ [n] [dom : Sets n] (P Q : Arrow dom o) : Arrow dom o ≔ lift2 n (∧) P Q;
+symbol ∨ₙ [n] [dom : Sets n] (p q : Arrow dom o) : Arrow dom o ≔ lift2 n (∨) p q;
 
-symbol ∨ₙ [n] [dom : Sets n] (P Q : Arrow dom o) : Arrow dom o ≔ lift2 n (∨) P Q;
+symbol ⇒ₙ [n] [dom : Sets n] (p q : Arrow dom o) : Arrow dom o ≔ lift2 n (⇒) p q;
 
-symbol ⇒ₙ [n] [dom : Sets n] (P Q : Arrow dom o) : Arrow dom o ≔ lift2 n (⇒) P Q;
+symbol quantₙ (q : Π a : Set, (τ a → Prop) → Prop) [n] [ts : Sets n] : Arrow ts o → Prop;
+rule @quantₙ _ _ unit $p ↪ $p
+with @quantₙ $q _ ($t ▹ $ts) $p ↪ $q $t (λ x : τ $t, @quantₙ $q _ $ts ($p x));
 
-symbol quantₙ (Q : Π a : Set, (τ a → Prop) → Prop) n [ts : Sets n] : Arrow ts o → Prop;
-rule @quantₙ _ 0 Unit $P ↪ $P
-with @quantₙ $Q ($n +1) ($t ▹ $ts) $P ↪ $Q $t (λ (x : τ $t), @quantₙ $Q $n $ts ($P x));
+symbol ∀ₙ n [ts : Sets n] (p : Arrow ts o) : Prop ≔ quantₙ @∀ p;
+symbol ∃ₙ n [ts : Sets n] (p : Arrow ts o) : Prop ≔ quantₙ @∃ p;
 
-symbol ∀ₙ n [ts : Sets n] (P : Arrow ts o) : Prop ≔ quantₙ (@∀) n P;
-symbol ∃ₙ n [ts : Sets n] (P : Arrow ts o) : Prop ≔ quantₙ (@∃) n P;
-
-// Cong n f g computes the statement
+// cong f g computes the statement
 //   `∀ a₁, `∀ b₁, a₁ = b₁ ⇒ ... ⇒ `∀ aₙ, `∀ bₙ, aₙ = bₙ ⇒ f a₁ .. aₙ = g b₁ .. bₙ
-symbol Cong n [ts : Sets n] [R : Set] (f g : Arrow ts R) : Prop;
-rule @Cong 0 Unit $R $f $g ↪ @= $R $f $g
-with @Cong ($n +1) ($t ▹ $ts) $R $f $g ↪
-  `∀ (x : τ $t), `∀ (y : τ $t), (x = y) ⇒ @Cong $n $ts $R ($f x) ($g y);
+symbol cong [n] [ts : Sets n] [r : Set] (f g : Arrow ts r) : Prop;
+rule @cong _ unit _ $f $g ↪ $f = $g
+with @cong _ ($t ▹ $ts) $r $f $g ↪
+  `∀ x : τ $t, `∀ y : τ $t, x = y ⇒ @cong _ $ts $r ($f x) ($g y);
 
-opaque symbol congₙ [D : Set] n [ts : Sets n] (f : Arrow ts D) : π (@Cong n ts D f f) ≔
+opaque symbol congₙ [d : Set] n [ts : Sets n] (f : Arrow ts d) : π (cong f f) ≔
 begin
-  assume D n;
-  refine ind_Sets (λ n u, `∀ f, @Cong n u D f f) _ _ n
+  assume d n;
+  refine ind_Sets (λ n u, `∀ f, @cong n u d f f) _ _ n
   { reflexivity }
   { assume m t ts ih;
     assume f t1 t2 hrefl;
@@ -104,40 +84,54 @@ begin
     refine ih (f t2) }
 end;
 
-// Subst n P Q computes the statement
-//   `∀ a₁, `∀ b₁, a₁ = b₁ ⇒ ... ⇒ `∀ aₙ, `∀ bₙ, aₙ = bₙ ⇒ P a₁ .. aₙ ⇒ Q b₁ .. bₙ
-symbol Subst n [ts : Sets n] (P Q : Arrow ts o) : Prop;
-rule @Subst 0 Unit $P $Q ↪ $P ⇒ $Q
-with @Subst ($n +1) ($t ▹ $ts) $P $Q ↪
-  `∀ (x : τ $t), `∀ (y : τ $t), (x = y) ⇒ @Subst $n $ts ($P x) ($Q y);
+// subst p q computes the statement
+//   `∀ a₁, `∀ b₁, a₁ = b₁ ⇒ ... ⇒ `∀ aₙ, `∀ bₙ, aₙ = bₙ ⇒ p a₁ .. aₙ ⇒ q b₁ .. bₙ
+symbol subst [n] [ts : Sets n] (p q : Arrow ts o) : Prop;
+rule @subst _ unit $p $q ↪ $p ⇒ $q
+with @subst _ ($t ▹ $ts) $p $q ↪
+  `∀ x : τ $t, `∀ y : τ $t, x = y ⇒ @subst _ $ts ($p x) ($q y);
 
-opaque symbol substₙ n [ts : Sets n] (P : Arrow ts o) : π (@Subst n ts P P) ≔
+opaque symbol substₙ n [ts : Sets n] (p : Arrow ts o) : π (subst p p) ≔
 begin
   assume n;
-  refine ind_Sets (λ n u, `∀ P, @Subst n u P P) _ _ n
-  { assume P h; refine h }
+  refine ind_Sets (λ n u, `∀ p, @subst n u p p) _ _ n
+  { assume p h; refine h }
   { assume m t ts ih;
-    assume P x y hxy;
+    assume p x y hxy;
     rewrite hxy;
-    refine ih (P y) }
+    refine ih (p y) }
 end;
+
+symbol tl [n] : Sets (n +1) → Sets n;
+rule tl (_ ▹ $ts) ↪ $ts;
+
+// The definitions above do not depend on the following unification rules:
+// they only let the `Sets` argument stay implicit at use sites such as
+// `congₙ 2 (+)`, where the arity `n` is given but the domain is not.
+// The rules of `arrows` match on the `Sets` argument, so `arrows ?ts ?b` is
+// stuck when `?ts` is a metavariable: for `f : τ a → τ b → τ c` against
+// `Arrow ?ts ?d`, the unifier faces `arrows 2 ?ts ?d ≡ a ⤳ b ⤳ c`. The rules
+// below unfold it one step at a time, guided by `n`, which determines the
+// constructor of `?ts`.
+unif_rule @arrows ($n +1) $ts $b ≡ ($a ⤳ $c) ↪ [$ts ≡ @▹ $n $a _; @arrows $n (@tl $n $ts) $b ≡ $c];
+unif_rule @arrows 0 $ts $b ≡ $c ↪ [$ts ≡ unit; $b ≡ $c];
 
 // Examples
 
-private symbol f1 : Arrow (o ▹ o ▹ o ▹ o ▹ Unit) o;
+private symbol f1 : Arrow (o ▹ o ▹ o ▹ o ▹ unit) o;
 private symbol f2 : ArrowI 4 o;
 
 private opaque symbol ex_cong a b c d x y w z :
   π (a = x) → π (b = y) → π (c = w) → π (d = z) → π (f1 a b c d = f1 x y w z) ≔
 begin
   assume a b c d x y w z heq1 heq2 heq3 heq4;
-refine congₙ 4 f1 _ _ heq1 _ _ heq2 _ _ heq3 _ _ heq4
+  refine congₙ 4 f1 _ _ heq1 _ _ heq2 _ _ heq3 _ _ heq4
 end;
 
 assert (x y : ℕ)
   ⊢ let u1 ≔ composeₙ 1 (+) (λ x, x +1) in
     u1 x y ≡ x + (y +1);
 
-private opaque symbol testSubst (P : Arrow (nat ▹ nat ▹ Unit) o) (a b x y : ℕ) :
-  π (a = x) → π (b = y) → π (P a b) → π (P x y) ≔
-begin assume P a b x y hax hby; refine substₙ 2 P _ _ hax _ _ hby end;
+private opaque symbol testSubst (p : Arrow (nat ▹ nat ▹ unit) o) (a b x y : ℕ) :
+  π (a = x) → π (b = y) → π (p a b) → π (p x y) ≔
+begin assume p a b x y hax hby; refine substₙ 2 p _ _ hax _ _ hby end;
