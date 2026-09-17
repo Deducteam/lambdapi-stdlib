@@ -153,7 +153,7 @@ begin
     { simplify; assume y i j; apply ⊥ₑ;
       have H: π ((((val x + (val x + 0)) +1) = (val y + (val y + 0))) ⇒ (((val x + val x) +1) = (val y + val y)))
         {rewrite addn0; rewrite addn0; assume h0; refine h0};
-      apply odd≠even (val x) (val y) (H j) }
+      apply addnnS≠addnn (val x) (val y) (H j) }
     { simplify; assume i; apply ⊥ₑ; apply 2*val≠0 x; apply +1_inj;
       have H: π ((((val x + (val x + 0)) +1) = 1) ⇒ (((val x + val x) +1) = 1))
         {rewrite addn0; assume h0; refine h0};
@@ -163,12 +163,12 @@ begin
     { simplify; assume y i j; apply ⊥ₑ;
     have H: π (((val x + (val x + 0)) = ((val y + (val y + 0)) +1)) ⇒ ((val x + val x) = ((val y + val y) +1)))
         {rewrite addn0; rewrite addn0; assume h0; refine h0};
-      apply odd≠even (val y) (val x) (eq_sym (H j)) }
+      apply addnnS≠addnn (val y) (val x) (eq_sym (H j)) }
     { simplify; assume y i j; apply feq O; apply h; apply 2*_inj;
       have H: π (((val x + (val x + 0)) = (val y + (val y + 0))) ⇒ ((val x + val x) = (val y + val y)))
         {rewrite addn0; rewrite addn0; assume h0; refine h0};
     apply (H j) }
-    { assume i; apply ⊥ₑ; apply odd≠even 0 (val x); symmetry; simplify;
+    { assume i; apply ⊥ₑ; apply addnnS≠addnn 0 (val x); symmetry; simplify;
       have H: π ((val (O x) = val H) ⇒ ((val x + val x) = 1))
         {simplify val; simplify *; simplify *; simplify *; rewrite addn0; assume h0; refine h0};
     apply (H i)
@@ -180,7 +180,7 @@ begin
       have H: π ((1 = ((val x + (val x + 0)) +1)) ⇒ (1 = ((val x + val x) +1)))
         {rewrite addn0; assume h0; refine h0};
       apply (H i) }
-    { simplify; assume x h i; apply ⊥ₑ; apply odd≠even 0 (val x); simplify;
+    { simplify; assume x h i; apply ⊥ₑ; apply addnnS≠addnn 0 (val x); simplify;
       have H: π ((1 = (val x + (val x + 0))) ⇒ (1 = (val x + val x)))
         {rewrite addn0; assume h0; refine h0};
     apply (H i) }
@@ -626,7 +626,125 @@ symbol mul : ℙ → ℙ → ℙ;
 
 rule mul (I $x) $y ↪ add $y (O (mul $x $y))
 with mul (O $x) $y ↪ O (mul $x $y)
-with mul H      $y ↪ $y;
+with mul H      $y ↪ $y
+with mul $y     H  ↪ $y;
+
+// Right reduction properties for multiplication
+
+opaque symbol mul_O_right p q : π (mul p (O q) = O (mul p q)) ≔
+begin
+  induction
+   { assume p prec q; simplify; rewrite prec; refine feq O _; reflexivity }
+   { assume p prec q; simplify; rewrite prec; refine feq O _; reflexivity }
+   { reflexivity }
+end;
+
+opaque symbol mul_I_right p q : π (mul p (I q) = add p (O (mul p q))) ≔
+begin
+  induction
+   { assume p prec q; simplify; refine feq I _;
+     rewrite prec; rewrite left add_assoc; rewrite add_com q p;
+     rewrite left add_assoc; reflexivity }
+   { assume p prec q; simplify; refine feq O _; rewrite prec; reflexivity }
+   { reflexivity }
+end;
+
+// Commutativity of multiplication
+
+opaque symbol mul_com x y : π (mul x y = mul y x) ≔
+begin
+  induction
+   { assume x xrec y; rewrite mul_I_right; simplify; rewrite xrec y; reflexivity }
+   { assume x xrec y; rewrite mul_O_right; simplify; rewrite xrec y; reflexivity }
+   { assume y; reflexivity }
+end;
+
+// Interaction of multiplication with succ
+
+opaque symbol addnn n : π (add n n = O n) ≔
+begin
+  induction
+   { assume n nrec; simplify; rewrite left succ_add n n; rewrite nrec; reflexivity }
+   { assume n nrec; simplify; rewrite nrec; reflexivity }
+   { reflexivity }
+end;
+
+opaque symbol mul_succ n m : π (mul (succ n) m = add (mul n m) m) ≔
+begin
+  induction
+   { assume n nrec m; symmetry; simplify;
+     rewrite nrec;
+     rewrite left addnn;
+     rewrite left addnn;
+     rewrite add_com (mul n m) m;
+     rewrite .[in x in _ = x] add_assoc;
+     rewrite .[in x in _ = x] add_com;
+     rewrite left add_assoc m (mul n m) (mul n m);
+     rewrite .[in x in x = _] add_com m (mul n m);
+     rewrite add_assoc (mul n m) m (mul n m);
+     reflexivity }
+   { assume n nrec m; symmetry; simplify; rewrite add_com; reflexivity }
+   { assume m; symmetry; simplify; apply addnn }
+end;
+
+opaque symbol mul_succ_right n m : π (mul n (succ m) = add (mul n m) n) ≔
+begin
+  assume n m;
+  symmetry;
+  rewrite mul_com n (succ m);
+  rewrite mul_succ m n;
+  rewrite mul_com n m;
+  reflexivity
+end;
+
+// Distributivity of multiplication over addition
+
+opaque symbol mul_distr_l a x y : π (mul a (add x y) = add (mul a x) (mul a y)) ≔
+begin
+  refine ind_ℙeano (λ a, `∀ x, `∀ y, mul a (add x y) = add (mul a x) (mul a y)) _ _
+  // case H
+  { reflexivity }
+  // case succ
+  { assume a arec x y;
+    rewrite mul_succ;
+    rewrite (arec x y);
+    rewrite mul_succ;
+    rewrite mul_succ;
+    rewrite add_assoc;
+    rewrite add_com;
+    rewrite add_com x y;
+    rewrite left add_assoc;
+    rewrite add_assoc;
+    rewrite add_com;
+    rewrite add_com x (mul a x);
+    reflexivity }
+end;
+
+opaque symbol mul_distr_r a x y : π (mul (add x y) a = add (mul x a) (mul y a)) ≔
+begin
+  assume a x y;
+  rewrite mul_com;
+  rewrite mul_com x a;
+  rewrite mul_com y a;
+  refine mul_distr_l a x y
+end;
+
+// Associativity of multiplication
+
+opaque symbol mul_assoc x y z : π (mul (mul x y) z = mul x (mul y z)) ≔
+begin
+  assume x y;
+  refine ind_ℙeano (λ z, mul (mul x y) z = mul x (mul y z)) _ _
+  // case H
+  { reflexivity }
+  // case succ
+  { assume z zrec;
+    rewrite mul_succ_right (mul x y) z;
+    rewrite mul_succ_right y z;
+    rewrite mul_distr_l;
+    rewrite zrec;
+    reflexivity }
+end;
 
 // enable printing of positive numbers in decimal notation
 
