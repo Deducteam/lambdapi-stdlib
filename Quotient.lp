@@ -1,88 +1,51 @@
 /*
-   Encoding of the Quotient types interfaces following Jesper Cockx,
-   [1] "Type Theory Unchained: Extending Agda with User-Defined Rewrite Rules" (TYPES 2019), §2.4.
-   The code below try to follows as maximum the code presented in the paper but also adapt it to benefits some Lambdapi features.
+  Encoding of the Quotient types interfaces following the approch done in Lean.
 */
-require open Stdlib.Set Stdlib.Prop Stdlib.Eq Stdlib.PropExt Stdlib.Nat Stdlib.Prod;
+require open Stdlib.Eq;
 
-// The type `Quot A R` written `A ⫽ R` consists of elements `proj x` where `x: A`
-[a : Set] (R : τ a → τ a → Prop) inductive Quot : TYPE ≔
-| proj : τ a → Quot R;
+symbol Rel a ≔ τ a → τ a → Prop;
 
-constant symbol ⫽ : Π (a : Set), (τ a → τ a → Prop) → Set; // \sslash
+[a:Set] (r:Rel a) inductive Quot : TYPE ≔ prj :τ a → Quot r;
+
+constant symbol ⫽ : Π (a : Set), (τ a → τ a → Prop) → Set;
 notation ⫽ infix 30;
 
 rule τ (_ ⫽ $R) ↪ Quot $R;
 
-// The `proj x` is equal to `proj y` if and only if `R x y` holds
-constant symbol quot [a] [R : τ a → τ a → Prop] [x y : τ a] :
-  π (R x y) → π (@proj a R x = @proj a R y);
+symbol proj [a] r ≔ @prj a r;
+symbol ind_quot [a] ≔ ind_Quot a;
 
-symbol transport [a] (P : τ a → Set) [x y : τ a] : π (x = y) → τ (P x) → τ (P y);
+symbol sound [a] (r:Rel a) x y: π(r x y) → π (proj r x = proj r y);
 
-rule @transport _ _ $x $x _ $z ↪ $z // correspond to transportR−refl in [1]
-with @transport _ (λ _, _) _ _ _ $z ↪ $z; // transport P when P is constant only so typing is preserved.
+symbol lift [a] (r:Rel a) [b] (f:τ a → τ b):
+  (Π x₁ x₁', π(r x₁ x₁') → π(f x₁ = f x₁')) → τ(a ⫽ r) → τ b;
 
-// The elimination principle ⫽−elim allows us to define functions that extract an element of A from a given element of A ⫽ R,
-//  provided a proof `quot∗` that the function respects the equality on A // R.
-symbol ⫽-elim [a] [R : τ a → τ a → Prop] (P : τ (a ⫽ R) → Set)
-  (proj* : Π x : τ a, τ (P (proj x)))
-  (quot* : Π (x y : τ a) (r : π (R x y)), π (transport P (quot r) (proj* x) = proj* y))
-  : Π q : τ (a ⫽ R), τ (P q);
+rule lift _ $f _ (prj $x) ↪ $f $x;
 
-// The computation rule below allows ⫽−elim to compute when it is applied to a proj x.
-rule ⫽-elim _ $f _ (proj $x) ↪ $f $x;
-
-
-// Non-dependent eliminator (i.e. recursor in HoTT)
-symbol ⫽-rec [a] [R : τ a → τ a → Prop] [b] (f : τ a → τ b)
-  (h : Π (x y : τ a), π (R x y) → π (f x = f y)) : τ (a ⫽ R) → τ b ≔
-  ⫽-elim (λ _, b) f h;
-
-assert (a : Set) (R : τ a → τ a → Prop) (b : Set) (f : τ a → τ b)
-  (h : Π (x y : τ a), π (R x y) → π (f x = f y)) (x : τ a)
-  ⊢ ⫽-rec f h (proj x) ≡ f x;
-
-// Binary non-dependent eliminator
-symbol ⫽-rec2 [a] [R : τ a → τ a → Prop] [c] (f : τ a → τ a → τ c)
-  (refl : Π x : τ a, π (R x x))
-  (h : Π (x x' y y' : τ a), π (R x x') → π (R y y') → π (f x y = f x' y'))
-  : τ (a ⫽ R) → τ (a ⫽ R) → τ c ≔
-  λ q1 q2,
-    ⫽-rec (λ x, ⫽-rec (f x) (λ y y' s, h x x y y' (refl x) s) q2)
-      (λ x x' r, ind_Quot a R (λ q, ⫽-rec (f x) (λ y y' s, h x x y y' (refl x) s) q
-                                  = ⫽-rec (f x') (λ y y' s, h x' x' y y' (refl x') s) q)
-                             (λ y, h x x' y y r (refl y)) q2) q1;
-
-assert (a : Set) (R : τ a → τ a → Prop) (c : Set) (f : τ a → τ a → τ c)
-  (refl : Π x : τ a, π (R x x))
-  (h : Π (x x' y y' : τ a), π (R x x') → π (R y y') → π (f x y = f x' y'))
-  (x y : τ a)
-  ⊢ ⫽-rec2 f refl h (proj x) (proj y) ≡ f x y;
-
-
-// `proj` identifies two elements only when they are related,
-// so together with `quot` the quotient is exactly `a` modulo `R`:
-//    R x y  ⇔  proj x = proj y
-opaque symbol noconf [a] [R : τ a → τ a → Prop]
-  (refl : Π x, π (R x x))
-  (sym : Π x y, π (R x y) → π (R y x))
-  (trans : Π x y z, π (R x y) → π (R y z) → π (R x z))
-  (x y : τ a) : π (proj x = proj y) → π (R x y) ≔
+symbol lift2 [a] (r:Rel a) (hr:Π x, π(r x x)) [b] (f:τ a → τ a → τ b)
+  (hf:Π x₁ x₁', π(r x₁ x₁') → Π x₂ x₂', π(r x₂ x₂') → π(f x₁ x₂ = f x₁' x₂')):
+  τ(a ⫽ r) → τ(a ⫽ r) → τ b ≔
 begin
-  assume a R refl sym trans x y h;
-  have compat : Π (u v : τ a), π (R u v) → π (R x u = R x v)
-  {
-    assume u v r;
-    refine propExt (R x u) (R x v) (λ k, trans x u v k r) (λ k, trans x v u k (sym u v r))
-  };
-  refine =⇒ (feq (⫽-rec (λ u, R x u) compat) h) (refl x)
+  assume a r hr b f hf;
+  refine λ c d, lift r (λ x, lift r (f x) _ d) _ c
+    { assume y y' yy'; apply hf {apply hr} {apply yy'} }
+    { assume x x' xx'; set p ≔ λ x y y' yy', hf x x (hr x) y y' yy';
+      change π(lift r (f x) (p x) d = lift r (f x') (p x') d);
+      set q ≔ λ d, lift r (f x) (p x) d = lift r (f x') (p x') d;
+      change π(q d); apply ind_quot r q _ d;
+      assume y; simplify; apply hf {apply xx'} {apply hr} }
 end;
+
+assert (a:Set) (r:Rel a) (hr:Π x,π(r x x)) b (f:τ a → τ a → τ b)
+  (hf:Π x₁ x₁', π(r x₁ x₁') → Π x₂ x₂', π(r x₂ x₂') → π(f x₁ x₂ = f x₁' x₂'))
+  (x y:τ a) ⊢ lift2 r hr f hf (proj r x) (proj r y) ≡ f x y;
 
 // Example from https://lawrencecpaulson.github.io/2022/03/30/Quotienting.html
 // Let’s define the set of integers from pairs of natural numbers by quotienting.
 // The required equivalence relation on such pairs is (a, b) ~ (c, d) ⟺ a + d = c + b
-private symbol intrel (p q : τ (nat × nat)) : Prop ≔ (p ₁) + (q ₂) = (q ₁) + (p ₂);
+require open Stdlib.Nat Stdlib.Prod;
+
+private symbol intrel : Rel (nat × nat) ≔ λ p q, (p ₁) + (q ₂) = (q ₁) + (p ₂);
 
 private symbol int : Set ≔ (nat × nat) ⫽ intrel;
 
@@ -97,13 +60,17 @@ begin
 end;
 
 private symbol i+ : τ int → τ int → τ int ≔
-  ⫽-rec2 (λ p q, proj (plus p q)) (λ p, eq_refl _)
-    (λ p p' q q' r s, quot (plus_compat p p' q q' r s));
+  lift2 intrel (λ p, eq_refl _) (λ p q, proj intrel (plus p q))
+    (λ p p' r q q' s, sound intrel (plus p q) (plus p' q') (plus_compat p p' q q' r s));
 
 notation i+ infix left 20;
 
+assert (p q : τ (nat × nat)) ⊢ proj intrel p i+ proj intrel q ≡ proj intrel (plus p q);
+
 private opaque symbol i+_com (a b : τ int) : π (a i+ b = b i+ a) ≔
 begin
-  induction; assume p; induction; assume q;
-  refine feq proj (feq2 (λ x y, x ‚ y) (addnC (p ₁) (q ₁)) (addnC (p ₂) (q ₂)))
+  assume a b;
+  refine ind_quot intrel (λ a, a i+ b = b i+ a) _ a; assume p;
+  refine ind_quot intrel (λ b, proj intrel p i+ b = b i+ proj intrel p) _ b; assume q;
+  refine feq (proj intrel) (feq2 (λ x y, x ‚ y) (addnC (p ₁) (q ₁)) (addnC (p ₂) (q ₂)))
 end;
