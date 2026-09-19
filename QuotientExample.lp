@@ -22,7 +22,7 @@ begin
   rewrite addnACA (p' ₁) (q' ₁) (p ₂) (q ₂); reflexivity
 end;
 
-symbol class_add p q ≔ proj intrel (add p q);
+symbol class_add p q ≔ class intrel (add p q);
 
 opaque symbol class_add_compat:
   Π p p', π (intrel p p') → Π q q', π (intrel q q')
@@ -39,6 +39,6 @@ require open Stdlib.FOL;
 opaque symbol +_com a b: π (+ a b = + b a) ≔
 begin
   refine ind_quot intrel (λ a, `∀ b, + a b = + b a) _; assume x;
-  refine ind_quot intrel (λ b, + (proj intrel x) b = + b (proj intrel x)) _; assume y;
+  refine ind_quot intrel (λ b, + (class intrel x) b = + b (class intrel x)) _; assume y;
   apply sound; simplify; rewrite addnC (x ₁); rewrite addnC (y ₂); reflexivity
 end;

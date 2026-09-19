@@ -4,22 +4,22 @@ require open Stdlib.Eq;
 
 symbol Rel a ≔ τ a → τ a → Prop;
 
-[a:Set] (r:Rel a) inductive Quot : TYPE ≔ prj:τ a → Quot r;
+[a:Set] (r:Rel a) inductive Quot : TYPE ≔ cl:τ a → Quot r;
 
 constant symbol ⫽ : Π a, (τ a → τ a → Prop) → Set; // \sslash
 notation ⫽ infix 30;
 
 rule τ (_ ⫽ $R) ↪ Quot $R;
 
-symbol proj [a] r ≔ @prj a r;
+symbol class [a] r ≔ @cl a r;
 symbol ind_quot [a] ≔ ind_Quot a;
 
-symbol sound [a] (r:Rel a) x y: π(r x y) → π (proj r x = proj r y);
+symbol sound [a] (r:Rel a) x y: π(r x y) → π (class r x = class r y);
 
 symbol lift [a] (r:Rel a) [b] (f:τ a → τ b):
   (Π x₁ x₁', π(r x₁ x₁') → π(f x₁ = f x₁')) → τ(a ⫽ r) → τ b;
 
-rule lift _ $f _ (prj $x) ↪ $f $x;
+rule lift _ $f _ (cl $x) ↪ $f $x;
 
 symbol lift2 [a] (r:Rel a) (hr:Π x, π(r x x)) [b] (f:τ a → τ a → τ b)
   (hf:Π x₁ x₁', π(r x₁ x₁') → Π x₂ x₂', π(r x₂ x₂') → π(f x₁ x₂ = f x₁' x₂')):
@@ -37,4 +37,4 @@ end;
 
 assert (a:Set) (r:Rel a) (hr:Π x,π(r x x)) b (f:τ a → τ a → τ b)
   (hf:Π x₁ x₁', π(r x₁ x₁') → Π x₂ x₂', π(r x₂ x₂') → π(f x₁ x₂ = f x₁' x₂'))
-  (x y:τ a) ⊢ lift2 r hr f hf (proj r x) (proj r y) ≡ f x y;
+  (x y:τ a) ⊢ lift2 r hr f hf (class r x) (class r y) ≡ f x y;
