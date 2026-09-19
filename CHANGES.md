@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+### Added
+
+- Quotient: quotient types
+
 ### Changed
 
 - Changed rewrite rules to be in line with the Rocq standard library.
