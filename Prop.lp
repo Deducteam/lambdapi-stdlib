@@ -22,7 +22,7 @@ constant symbol ⊤ᵢ : π ⊤;
 
 constant symbol ⊥ : Prop; // \bot
 
-builtin "bot" ≔ ⊤;
+builtin "bot" ≔ ⊥;
 
 constant symbol ⊥ₑ [p] : π ⊥ → π p;
 
