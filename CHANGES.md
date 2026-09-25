@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Pos: builtins for parsing decimal numbers
+- Univ: universe levels for Set and Prop
 - Quotient: quotient types
+- NaryFun: n-ary functions and relations
 
 ### Changed
 
