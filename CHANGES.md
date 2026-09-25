@@ -5,6 +5,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+### Added
+
+- Pos: builtins for parsing decimal numbers
+- Univ: universe levels for Set and Prop
+- NaryFun: n-ary functions and relations
+
 ### Changed
 
 - Changed rewrite rules to be in line with the Rocq standard library.
