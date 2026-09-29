@@ -18,8 +18,3 @@ rule τ ($a ⤳d λ x,$b.[x]) ↪ Π x:τ $a, τ $b.[x];
 symbol ∘ [a b c] : τ (b ⤳ c) → τ (a ⤳ b) → τ a → τ c ≔ λ g f x, g (f x);
 
 notation ∘ infix 20;
-
-symbol transport [a] (p: τ a → Set) [x y: τ a] : π (x = y) → τ (p x) → τ (p y);
-
-rule @transport _ _ $x $x _ $u ↪ $u
-with @transport _ (λ _, _) _ _ _ $u ↪ $u;

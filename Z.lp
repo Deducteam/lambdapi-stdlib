@@ -34,20 +34,6 @@ builtin "int_zero" ≔ Z0;
 builtin "int_positive" ≔ Zpos;
 builtin "int_negative" ≔ Zneg;
 
-// enable parsing of integers in decimal notation
-
-builtin "0" ≔ Z0;
-builtin "1" ≔ _1;
-builtin "2" ≔ _2;
-builtin "3" ≔ _3;
-builtin "4" ≔ _4;
-builtin "5" ≔ _5;
-builtin "6" ≔ _6;
-builtin "7" ≔ _7;
-builtin "8" ≔ _8;
-builtin "9" ≔ _9;
-builtin "10" ≔ _10;
-
 // boolean functions for testing head constructor
 
 symbol isZ0 : ℤ → 𝔹;
@@ -424,6 +410,20 @@ notation * infix right 22;
 
 builtin "*" ≔ *;
 
+// enable parsing of integers in decimal notation
+
+builtin "0" ≔ Z0;
+builtin "1" ≔ _1;
+builtin "2" ≔ _2;
+builtin "3" ≔ _3;
+builtin "4" ≔ _4;
+builtin "5" ≔ _5;
+builtin "6" ≔ _6;
+builtin "7" ≔ _7;
+builtin "8" ≔ _8;
+builtin "9" ≔ _9;
+builtin "10" ≔ _10;
+
 rule Z0      * _       ↪ Z0
 with _       * Z0       ↪ Z0
 with Zpos $x * Zpos $y ↪ Zpos (mul $x $y)
@@ -488,7 +488,10 @@ end;
 
 opaque symbol *_neutral x : π (x * Zpos H = x) ≔
 begin
-  induction { reflexivity } { reflexivity } { reflexivity }
+  induction
+  { reflexivity }
+  { assume p; simplify; rewrite mul_H_right; reflexivity }
+  { assume p; simplify; rewrite mul_H_right; reflexivity }
 end;
 
 opaque symbol *Z0 x : π (x * Z0 = Z0) ≔
@@ -795,6 +798,27 @@ begin
    { assume r; reflexivity }
    { assume a r; reflexivity }
    { assume a r; reflexivity }
+end;
+
+// ℤ has no zero divisor
+
+opaque symbol *=Z0 x y : π (x * y = Z0) → π (x = Z0 ∨ y = Z0) ≔
+begin
+  induction
+  // case Z0
+  { assume y h; apply ∨ᵢ₁; reflexivity }
+  // case Zpos
+  { assume a;
+    induction
+     { assume h; apply ∨ᵢ₂; reflexivity }
+     { assume b h; apply ⊥ₑ (Zpos≠Z0 (mul a b) h) }
+     { assume b h; apply ⊥ₑ (Zneg≠Z0 (mul a b) h) } }
+  // case Zneg
+  { assume a;
+    induction
+     { assume h; apply ∨ᵢ₂; reflexivity }
+     { assume b h; apply ⊥ₑ (Zneg≠Z0 (mul a b) h) }
+     { assume b h; apply ⊥ₑ (Zpos≠Z0 (mul a b) h) } }
 end;
 
 opaque symbol ≐_refl x : π (x ≐ x = Eq) ≔

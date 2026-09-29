@@ -88,7 +88,7 @@ expnMn : (m1 * m2) ^ n = ... The operands of other operators are selected
 using the l/r suffixes.
 */
 
-require open Stdlib.Bool Stdlib.HOL;
+require open Stdlib.Bool;
 
 inductive ℕ : TYPE ≔
 | _0 : ℕ
@@ -112,22 +112,8 @@ symbol _8 ≔ _7 +1;
 symbol _9 ≔ _8 +1;
 symbol _10 ≔ _9 +1;
 
-// enable parsing of natural numbers in decimal notation
-
-builtin "0" ≔ _0;
-builtin "1" ≔ _1;
-builtin "2" ≔ _2;
-builtin "3" ≔ _3;
-builtin "4" ≔ _4;
-builtin "5" ≔ _5;
-builtin "6" ≔ _6;
-builtin "7" ≔ _7;
-builtin "8" ≔ _8;
-builtin "9" ≔ _9;
-builtin "10" ≔ _10;
-
 // Induction principle for nats from n to n+2
-opaque symbol ind_ℕ2 : Π p: (ℕ → Prop), π (p _0) → π (p (_0 +1)) → (Π x0: ℕ, π (p x0) → π (p (x0 +1)) → π (p (x0 +1 +1))) → Π x: ℕ, π (p x) ≔
+opaque symbol ind_ℕ2 (p : ℕ → Prop) : π (p _0) → π (p (_0 +1)) → (Π x0: ℕ, π (p x0) → π (p (x0 +1)) → π (p (x0 +1 +1))) → Π x: ℕ, π (p x) ≔
 begin
   assume p h0 h1 ih x;
   have enough: π (p x ∧ p (x +1)) → π (p x) { assume h; refine ∧ₑ₁ h };
@@ -145,7 +131,7 @@ begin
 end;
 
 // Perform just a case analysis without induction hypothesis
-opaque symbol case_ℕ : Π p: (ℕ → Prop), π (p _0) → (Π x: ℕ, π (p (x +1))) → Π x: ℕ, π (p x) ≔
+opaque symbol case_ℕ (p : ℕ → Prop) : π (p _0) → (Π x: ℕ, π (p (x +1))) → Π x: ℕ, π (p x) ≔
 begin
   assume p h1 h2;
   induction
@@ -586,6 +572,20 @@ rule _0 * _  ↪ _0
 with ($x +1) * $y ↪ $y + $x * $y;
 
 builtin "*" ≔ *;
+
+// enable parsing of natural numbers in decimal notation
+
+builtin "0" ≔ _0;
+builtin "1" ≔ _1;
+builtin "2" ≔ _2;
+builtin "3" ≔ _3;
+builtin "4" ≔ _4;
+builtin "5" ≔ _5;
+builtin "6" ≔ _6;
+builtin "7" ≔ _7;
+builtin "8" ≔ _8;
+builtin "9" ≔ _9;
+builtin "10" ≔ _10;
 
 opaque symbol mul0n x : π (x * _0 = _0) ≔
 begin
@@ -2018,9 +2018,11 @@ symbol >>: ℕ → ℕ ≔ λ x, x >>> 1 ; notation >> postfix 30;
 
 assert ⊢ 21 >>> 2 ≡ 5;
 
-symbol bitwise: τ (bool ⤳ bool ⤳ bool) → ℕ → ℕ → ℕ → ℕ;
-rule bitwise $op _0 _ _ ↪ _0
-with bitwise $op ($n +1) $a $b ↪ (if ($op (odd $a) (odd $b)) 1 0) + 2 * (bitwise $op $n (div2 $a) (div2 $b));
+symbol bitwise : (𝔹 → 𝔹 → 𝔹) → ℕ → ℕ → ℕ → ℕ;
+
+rule bitwise _ _0 _ _ ↪ _0
+with bitwise $op ($n +1) $a $b ↪
+  (if ($op (odd $a) (odd $b)) 1 0) + 2 * bitwise $op $n (div2 $a) (div2 $b);
 
 symbol && (a b: ℕ): ℕ ≔ bitwise (and) a a b; notation && infix 10;
 
@@ -2037,20 +2039,20 @@ symbol testbit (a n: ℕ) : 𝔹;
 rule testbit $a 0 ↪ odd $a
 with testbit $a ($n +1) ↪ testbit (div2 $a) $n;
 
-symbol testbit_0_l : Π n, π (testbit 0 n = false) ≔
+symbol testbit_0_l n : π (testbit 0 n = false) ≔
 begin induction { reflexivity } { assume x ih; apply ih } end;
 
 symbol Odd n ≔ (`∃ k, (2 * k + 1) = n);
 
-symbol Odd2 : Π n, π (Odd n) → π (Odd (n + 2));
+symbol Odd2 n : π (Odd n) → π (Odd (n + 2));
 
-symbol odd_spec: Π n, π (Odd n) → π (odd n = true);
+symbol odd_spec n : π (Odd n) → π (odd n = true);
 
 symbol Even n ≔ (`∃ k, 2 * k = n);
 
-symbol even_spec: Π n, π (Even n) → π (even n = true);
+symbol even_spec n : π (Even n) → π (even n = true);
 
-symbol odd_bitwise : Π op n a b, π (odd (bitwise op (n +1) a b) = op (odd a) (odd b)) ≔
+symbol odd_bitwise op n a b : π (odd (bitwise op (n +1) a b) = op (odd a) (odd b)) ≔
 begin
   assume op n a b;
   simplify bitwise;
@@ -2069,13 +2071,14 @@ begin
   {
     assume hr; rewrite hr; simplify if;
     simplify; rewrite addn0;
-    refine ∧ₑ₂ (negb_false_eq_true (even (bitwise op n (div2 a) (div2 b) + bitwise op n (div2 a) (div2 b)))) _;
+    refine @feq bool bool not (even (bitwise op n (div2 a) (div2 b) + bitwise op n (div2 a) (div2 b))) true _;
     apply even_spec (bitwise op n (div2 a) (div2 b) + bitwise op n (div2 a) (div2 b));
     refine ∃ᵢ (bitwise op n (div2 a) (div2 b)) (mul2n (bitwise op n (div2 a) (div2 b)))
   }
 end;
 
-symbol div2_bitwise : Π op n a b, π (div2 (bitwise op (n +1) a b) = bitwise op n (div2 a) (div2 b)) ≔
+symbol div2_bitwise op n a b :
+  π (div2 (bitwise op (n +1) a b) = bitwise op n (div2 a) (div2 b)) ≔
 begin
   assume op n a b;
   simplify bitwise;
@@ -2095,8 +2098,8 @@ begin
   }
 end;
 
-symbol testbit_bitwise_1 : Π op, (Π b, π ((op false b) = false)) →
-  Π n m a b, π (a ≤ n) →
+symbol testbit_bitwise_1 op (hop : Π b, π (op false b = false)) n m a b :
+  π (a ≤ n) →
   π (testbit (bitwise op n a b) m = op (testbit a m) (testbit b m))
 ≔ begin
   assume op Hop;
@@ -2126,8 +2129,8 @@ symbol testbit_bitwise_1 : Π op, (Π b, π ((op false b) = false)) →
   }
 end;
 
-symbol testbit_bitwise_2 : Π op, π ((op false false) = false) →
-  Π n m a b, π (a ≤ n) → π (b ≤ n) →
+symbol testbit_bitwise_2 op (hop : π (op false false = false)) n m a b :
+  π (a ≤ n) → π (b ≤ n) →
   π (testbit (bitwise op n a b) m = op (testbit a m) (testbit b m))
 ≔ begin
   assume op Hop_spec;
@@ -2203,7 +2206,7 @@ begin
   {refine leq_maxr a n }
 end;
 
-opaque symbol shiftr_spec: Π a n m,  π (testbit (a >>> n) m = testbit a (m + n)) ≔
+opaque symbol shiftr_spec a n m : π (testbit (a >>> n) m = testbit a (m + n)) ≔
 begin
   assume a;
   induction
@@ -2215,7 +2218,7 @@ begin
   }
 end;
 
-opaque symbol shiftl_spec: Π a n m,  π (n ≤ m) → π (testbit (a <<< n) m = testbit a (m - n)) ≔
+opaque symbol shiftl_spec a n m : π (n ≤ m) → π (testbit (a <<< n) m = testbit a (m - n)) ≔
 begin
 assume a;
   induction

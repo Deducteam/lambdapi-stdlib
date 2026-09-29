@@ -204,7 +204,7 @@ protected with nosimpl.
  An example of use can be found in fingraph theorem orbitPcycle.
 */
 
-require open Stdlib.Nat Stdlib.Prod Stdlib.HOL;
+require open Stdlib.Nat Stdlib.Prod;
 
 (a:Set) inductive 𝕃:TYPE ≔
 | □ : 𝕃 a // \Box
@@ -1903,69 +1903,61 @@ begin
     refine eq_refl (x ⸬ l) }
 end;
 
+// foldr
+
+symbol foldr [a b] : (τ b → τ a → τ a) → τ a → 𝕃 b → τ a;
+
+rule foldr _ $acc □ ↪ $acc
+with foldr $op $acc ($h ⸬ $tl) ↪ $op $h (foldr $op $acc $tl);
+
+// foldl
+
+symbol foldl [a b] : (τ a → τ b → τ a) → τ a → 𝕃 b → τ a;
+
+rule foldl _ $acc □ ↪ $acc
+with foldl $op $acc ($h ⸬ $tl) ↪ foldl $op ($op $acc $h) $tl;
+
+assert ⊢ foldl (+) 0 (3 ⸬ 2 ⸬ 1 ⸬ □) ≡ foldr (+) 0 (3 ⸬ 2 ⸬ 1 ⸬ □);
+
 // sumn
 
-symbol sumn : 𝕃 nat → ℕ;
-
-rule sumn □ ↪ 0
-with sumn ($x ⸬ $l) ↪ $x + sumn $l;
+symbol sumn (l : 𝕃 nat) : ℕ ≔ foldr (+) 0 l;
 
 assert ⊢ sumn (3 ⸬ 2 ⸬ 1 ⸬ □) ≡ 6;
 
 // prodn
 
-symbol prodn : 𝕃 nat → ℕ;
-
-rule prodn □ ↪ 1
-with prodn ($x ⸬ $l) ↪ $x * prodn $l;
+symbol prodn (l : 𝕃 nat) : ℕ ≔ foldr (*) 1 l;
 
 assert ⊢ prodn (3 ⸬ 2 ⸬ 1 ⸬ □) ≡ 3 !;
 
-// foldl
-
-symbol foldl [a b] : τ (a ⤳ b ⤳ a) → τ a → 𝕃 b → τ a;
-
-rule foldl _ $acc □ ↪ $acc
-with foldl $op $acc ($h ⸬ $tl) ↪ foldl $op ($op $acc $h) $tl;
-
-assert ⊢ sumn (3 ⸬ 2 ⸬ 1 ⸬ □) ≡ foldl (+) 0 (3 ⸬ 2 ⸬ 1 ⸬ □);
-
-// foldr
-
-symbol foldr [a b] : τ (b ⤳ a ⤳ a) → τ a → 𝕃 b → τ a;
-
-rule foldr _ $acc □ ↪ $acc
-with foldr $op $acc ($h ⸬ $tl) ↪ $op $h (foldr $op $acc $tl);
-
-assert ⊢ sumn (3 ⸬ 2 ⸬ 1 ⸬ □) ≡ foldr (+) 0 (3 ⸬ 2 ⸬ 1 ⸬ □);
-
 // Sorting algorithm Merge Sort
 
-symbol split [a: Set] (l : τ (list a)): τ(list a × list a);
-rule split □ ↪ (□ ‚ □)
-with split ($x ⸬ □) ↪ (($x ⸬ □) ‚ □)
+symbol split [a: Set] (l : τ (list a)) : τ (list a × list a);
+
+rule split □ ↪ □ ‚ □
+with split ($x ⸬ □) ↪ ($x ⸬ □) ‚ □
 with split ($x ⸬ $y ⸬ $l) ↪
-    let res ≔  (split $l) in
-        ($x ⸬ (res ₁)) ‚ ($y ⸬ (res ₂));
+    let res ≔ split $l in ($x ⸬ (res ₁)) ‚ ($y ⸬ (res ₂));
 
 // merge and mergesort are parametrised by a boolean ordering on the elements
 
 symbol merge [a] : (τ a → τ a → 𝔹) → 𝕃 a → 𝕃 a → 𝕃 a;
+
 rule merge _ □ $l2 ↪ $l2
 with merge _ $l1 □ ↪ $l1
-with merge $ble ($a1 ⸬ $l1') ($a2 ⸬ $l2') ↪
-    if ($ble $a1 $a2)
-        ($a1 ⸬ merge $ble $l1' ($a2 ⸬ $l2'))
-        ($a2 ⸬ merge $ble ($a1 ⸬ $l1') $l2');
+with merge $≤ ($a1 ⸬ $l1') ($a2 ⸬ $l2') ↪
+    if ($≤ $a1 $a2)
+        ($a1 ⸬ merge $≤ $l1' ($a2 ⸬ $l2'))
+        ($a2 ⸬ merge $≤ ($a1 ⸬ $l1') $l2');
 
 symbol mergesort [a] : (τ a → τ a → 𝔹) → 𝕃 a → 𝕃 a;
+
 rule mergesort _ □ ↪ □
-with mergesort _ ($x ⸬ □) ↪ ($x ⸬ □)
-with mergesort $ble ($x ⸬ $y ⸬ $l) ↪
-    let s ≔ split ($x ⸬ $y ⸬ $l) in
-    let l1 ≔ s ₁ in
-    let l2 ≔ s ₂ in
-        merge $ble (mergesort $ble l1) (mergesort $ble l2);
+with mergesort _ ($x ⸬ □) ↪ $x ⸬ □
+with mergesort $≤ ($x ⸬ $y ⸬ $l) ↪
+    merge $≤ (mergesort $≤ ($x ⸬ ((split $l)₁)))
+             (mergesort $≤ ($y ⸬ ((split $l)₂)));
 
 assert ⊢ mergesort (≤) (3 ⸬ 1 ⸬ 4 ⸬ 1 ⸬ 5 ⸬ □) ≡ 1 ⸬ 1 ⸬ 3 ⸬ 4 ⸬ 5 ⸬ □;
 
@@ -2060,34 +2052,34 @@ end;
 
 // merge preserves size and multiplicities
 
-opaque symbol size_merge [a] (ble : τ a → τ a → 𝔹) l1 l2 :
-  π (size (merge ble l1 l2) = size l1 + size l2) ≔
+opaque symbol size_merge [a] (≤ : τ a → τ a → 𝔹) l1 l2 :
+  π (size (merge (≤) l1 l2) = size l1 + size l2) ≔
 begin
-  assume a ble;
+  assume a ≤;
   induction
   { assume l2; reflexivity }
   { assume x l1 ih1;
     induction
     { simplify; rewrite addn0; reflexivity }
     { assume y l2 ih2;
-      refine ∨ₑ (case_𝔹 (ble x y)) _ _
+      refine ∨ₑ (case_𝔹 ((≤) x y)) _ _
       { assume h; simplify; rewrite h; simplify;
         rewrite ih1 (y ⸬ l2); reflexivity }
       { assume h; simplify; rewrite h; simplify;
         rewrite ih2; rewrite addnS; reflexivity } } }
 end;
 
-opaque symbol count_merge [a] p (ble : τ a → τ a → 𝔹) l1 l2 :
-  π (count p (merge ble l1 l2) = count p l1 + count p l2) ≔
+opaque symbol count_merge [a] p (≤ : τ a → τ a → 𝔹) l1 l2 :
+  π (count p (merge (≤) l1 l2) = count p l1 + count p l2) ≔
 begin
-  assume a p ble;
+  assume a p ≤;
   induction
   { assume l2; reflexivity }
   { assume x l1 ih1;
     induction
     { simplify; rewrite addn0; reflexivity }
     { assume y l2 ih2;
-      refine ∨ₑ (case_𝔹 (ble x y)) _ _
+      refine ∨ₑ (case_𝔹 ((≤) x y)) _ _
       { assume h; simplify; rewrite h; simplify;
         rewrite ih1 (y ⸬ l2);
         refine ∨ₑ (case_𝔹 (p x)) _ _
@@ -2102,17 +2094,17 @@ end;
 
 // mergesort preserves size and multiplicities: its result is a permutation
 
-opaque symbol size_mergesort [a] (ble : τ a → τ a → 𝔹) (l : 𝕃 a) :
-  π (size (mergesort ble l) = size l) ≔
+opaque symbol size_mergesort [a] (≤ : τ a → τ a → 𝔹) (l : 𝕃 a) :
+  π (size (mergesort (≤) l) = size l) ≔
 begin
-  assume a ble;
-  refine ind_𝕃_size (λ l, size (mergesort ble l) = size l) _;
+  assume a ≤;
+  refine ind_𝕃_size (λ l, size (mergesort (≤) l) = size l) _;
   refine case_𝕃2
     (λ l, (`∀ l' : τ (list a), istrue (size l' < size l)
-             ⇒ size (mergesort ble l') = size l')
-          ⇒ size (mergesort ble l) = size l) _ _ _
-  { assume rec; reflexivity }
-  { assume x rec; reflexivity }
+             ⇒ size (mergesort (≤) l') = size l')
+          ⇒ size (mergesort (≤) l) = size l) _ _ _
+  { reflexivity }
+  { reflexivity }
   { assume x y l rec; simplify;
     rewrite size_merge;
     rewrite rec (x ⸬ ((split l)₁)) (size_split1 l);
@@ -2120,17 +2112,17 @@ begin
     simplify; rewrite addnS; rewrite size_split; reflexivity }
 end;
 
-opaque symbol count_mergesort [a] p (ble : τ a → τ a → 𝔹) (l : 𝕃 a) :
-  π (count p (mergesort ble l) = count p l) ≔
+opaque symbol count_mergesort [a] p (≤ : τ a → τ a → 𝔹) (l : 𝕃 a) :
+  π (count p (mergesort (≤) l) = count p l) ≔
 begin
-  assume a p ble;
-  refine ind_𝕃_size (λ l, count p (mergesort ble l) = count p l) _;
+  assume a p ≤;
+  refine ind_𝕃_size (λ l, count p (mergesort (≤) l) = count p l) _;
   refine case_𝕃2
     (λ l, (`∀ l' : τ (list a), istrue (size l' < size l)
-             ⇒ count p (mergesort ble l') = count p l')
-          ⇒ count p (mergesort ble l) = count p l) _ _ _
-  { assume rec; reflexivity }
-  { assume x rec; reflexivity }
+             ⇒ count p (mergesort (≤) l') = count p l')
+          ⇒ count p (mergesort (≤) l) = count p l) _ _ _
+  { reflexivity }
+  { reflexivity }
   { assume x y l rec; simplify;
     rewrite count_merge;
     rewrite rec (x ⸬ ((split l)₁)) (size_split1 l);
@@ -2147,24 +2139,28 @@ begin
       { assume hy; rewrite hy; simplify; rewrite count_split; reflexivity } } }
 end;
 
-opaque symbol all_true [a] (p : τ a → 𝔹) (l : 𝕃 a) :
-  (Π x, π (istrue (p x))) → π (istrue (all p l)) ≔
+opaque symbol all_true [a] (≤ : τ a → τ a → 𝔹) (≤_refl : Π x, π (≤ x x))
+  (p : τ a → 𝔹) (l : 𝕃 a) :
+  (Π x, π (∈ (≤) x l) → π (p x)) → π (all p l) ≔
 begin
-  assume a p;
+  assume a ≤ ≤_refl p;
   induction
   { assume h; refine ⊤ᵢ }
-  { assume x l ih h; simplify; rewrite istrue=true (h x); simplify; refine ih h }
+  { assume y l ih h;
+    have hy : π (p y) { refine h y (orᵢ₁ (∈ (≤) y l) (≤_refl y)) };
+    simplify; rewrite istrue=true hy; simplify;
+    refine ih (λ x hx, h x (orᵢ₂ ((≤) x y) hx)) }
 end;
 
-opaque symbol perm_eq_mergesort [a] (ble : τ a → τ a → 𝔹) (l : 𝕃 a) :
-  π (istrue (perm_eq (λ x y, ble x y and ble y x) (mergesort ble l) l)) ≔
+opaque symbol perm_eq_mergesort [a] (≤ : τ a → τ a → 𝔹) (l : 𝕃 a) :
+  π (perm_eq (λ x y, (≤) x y and (≤) y x) (mergesort (≤) l) l) ≔
 begin
-  assume a ble l;
-  refine @all_true a
-    (λ x, eqn (count (λ y, ble x y and ble y x) (mergesort ble l))
-              (count (λ y, ble x y and ble y x) l))
-    ((mergesort ble l) ++ l) _;
-  assume x;
-  rewrite count_mergesort (λ y, ble x y and ble y x) ble l;
-  refine eqn_refl (count (λ y, ble x y and ble y x) l)
+  assume a ≤ l;
+  refine all_true (λ _ _, true) (λ _, ⊤ᵢ)
+    (λ x, eqn (count (λ y, ≤ x y and ≤ y x) (mergesort ≤ l))
+              (count (λ y, ≤ x y and ≤ y x) l))
+    ((mergesort ≤ l) ++ l) _;
+  assume x hx;
+  rewrite count_mergesort (λ y, (≤) x y and (≤) y x) (≤) l;
+  refine eqn_refl (count (λ y, (≤) x y and (≤) y x) l)
 end;

@@ -11,11 +11,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Univ: universe levels for Set and Prop
 - Quotient: quotient types
 - NaryFun: n-ary functions and relations
+- Bool: imp, xorb, not_inj and theorems on if-then-else
+- Epsilon: εₑ
+- List: foldl, foldr, All, mergesort and its correctness
+- Nat: parity, div2, shifts, bitwise operations and strong induction
+- Pos: theorems on multiplication
+- Prod: theorems on the Cartesian product
+- ProdExt: extensionality of the Cartesian product
+- Coprod and CoprodExt: the co-Cartesian product (disjoint sum)
+- Subset: subset types
+- DepProd: dependent products and transport
+- Z: theorems on multiplication, power and comparison
 
 ### Changed
 
 - Changed rewrite rules to be in line with the Rocq standard library.
 - Moved rules not in line with Rocq to the module ExtraRules.
+- Bool: imp is now defined from not and or, and xorb uses more general rules,
+  to be in line with Rocq.
+- Nat and Z: the builtins for parsing decimal numbers are now declared
+  together with those for + and *.
+- Pos: moved the rule `mul x H ↪ x` to ExtraRules.
+- Prod: the co-Cartesian product, subset types and dependent products have
+  been moved to the new modules Coprod, Subset and DepProd, and the
+  properties requiring surjective pairing to the new module ProdExt.
 
 ## 1.4.0 (2026-07-07)
 

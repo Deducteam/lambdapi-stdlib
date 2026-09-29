@@ -626,8 +626,7 @@ symbol mul : ℙ → ℙ → ℙ;
 
 rule mul (I $x) $y ↪ add $y (O (mul $x $y))
 with mul (O $x) $y ↪ O (mul $x $y)
-with mul H      $y ↪ $y
-with mul $y     H  ↪ $y;
+with mul H      $y ↪ $y;
 
 // Right reduction properties for multiplication
 
@@ -649,6 +648,14 @@ begin
    { reflexivity }
 end;
 
+opaque symbol mul_H_right p : π (mul p H = p) ≔
+begin
+  induction
+   { assume p prec; simplify; rewrite prec; reflexivity }
+   { assume p prec; simplify; rewrite prec; reflexivity }
+   { reflexivity }
+end;
+
 // Commutativity of multiplication
 
 opaque symbol mul_com x y : π (mul x y = mul y x) ≔
@@ -656,7 +663,7 @@ begin
   induction
    { assume x xrec y; rewrite mul_I_right; simplify; rewrite xrec y; reflexivity }
    { assume x xrec y; rewrite mul_O_right; simplify; rewrite xrec y; reflexivity }
-   { assume y; reflexivity }
+   { assume y; rewrite mul_H_right; reflexivity }
 end;
 
 // Interaction of multiplication with succ
@@ -736,7 +743,7 @@ begin
   assume x y;
   refine ind_ℙeano (λ z, mul (mul x y) z = mul x (mul y z)) _ _
   // case H
-  { reflexivity }
+  { simplify; rewrite mul_H_right; rewrite mul_H_right; reflexivity }
   // case succ
   { assume z zrec;
     rewrite mul_succ_right (mul x y) z;

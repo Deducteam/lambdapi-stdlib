@@ -39,6 +39,7 @@ rule P.add $x P.H ↪ P.succ $x
 with P.add P.H $y ↪ P.succ $y;
 rule P.add_carry $x P.H ↪ P.add $x (P.O P.H)
 with P.add_carry P.H $y ↪ P.add (P.O P.H) $y;
+rule P.mul $x P.H ↪ $x;
 
 // Z
 
