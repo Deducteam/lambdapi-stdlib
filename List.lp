@@ -1956,8 +1956,8 @@ symbol mergesort [a] : (τ a → τ a → 𝔹) → 𝕃 a → 𝕃 a;
 rule mergesort _ □ ↪ □
 with mergesort _ ($x ⸬ □) ↪ $x ⸬ □
 with mergesort $≤ ($x ⸬ $y ⸬ $l) ↪
-    merge $≤ (mergesort $≤ ($x ⸬ ((split $l)₁)))
-             (mergesort $≤ ($y ⸬ ((split $l)₂)));
+  let s ≔ split ($x ⸬ $y ⸬ $l) in
+    merge $≤ (mergesort $≤ (s ₁)) (mergesort $≤ (s ₂));
 
 assert ⊢ mergesort (≤) (3 ⸬ 1 ⸬ 4 ⸬ 1 ⸬ 5 ⸬ □) ≡ 1 ⸬ 1 ⸬ 3 ⸬ 4 ⸬ 5 ⸬ □;
 

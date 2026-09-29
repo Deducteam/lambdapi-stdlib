@@ -1,6 +1,6 @@
 // Co-Cartesian product (disjoint sum)
 
-require open Stdlib.Prod;
+require open Stdlib.Prod Stdlib.FOL;
 
 (a: Set) (b: Set) inductive Sum: TYPE ≔
 | inl: τ a → Sum a b
@@ -107,22 +107,22 @@ end;
 
 // currying
 
-symbol sum_curry [a b c] (h: τ (sum a b ⤳ c)) : τ ((a ⤳ c) × (b ⤳ c)) ≔
-  (λ x, h (inl x)) ‚ (λ y, h (inr y));
+symbol sum_curry₁ [a b c] (h: τ (sum a b) → τ c) (x: τ a) : τ c ≔ h (inl x);
+symbol sum_curry₂ [a b c] (h: τ (sum a b) → τ c) (y: τ b) : τ c ≔ h (inr y);
 
-symbol sum_uncurry [a b c] (fg: τ ((a ⤳ c) × (b ⤳ c))) : τ (sum a b ⤳ c) ≔
-  λ s, sum_case s (fg ₁) (fg ₂);
+symbol sum_uncurry [a b c] (f: τ a → τ c) (g: τ b → τ c) (s: τ (sum a b)) : τ c ≔
+  sum_case s f g;
 
-opaque symbol sum_uncurry_curry [a b c] (h: τ (sum a b ⤳ c)) (s: τ (sum a b)) :
-  π (sum_uncurry (sum_curry h) s = h s) ≔
+opaque symbol sum_uncurry_curry [a b c] (h: τ (sum a b) → τ c) (s: τ (sum a b)) :
+  π (sum_uncurry (sum_curry₁ h) (sum_curry₂ h) s = h s) ≔
 begin
   assume a b c h; induction { reflexivity } { reflexivity }
 end;
 
-opaque symbol sum_curry_uncurry₁ [a b c] (fg: τ ((a ⤳ c) × (b ⤳ c))) (x: τ a) :
-  π (((sum_curry (sum_uncurry fg)) ₁) x = (fg ₁) x) ≔
+opaque symbol sum_curry_uncurry₁ [a b c] (f: τ a → τ c) (g: τ b → τ c) (x: τ a) :
+  π (sum_curry₁ (sum_uncurry f g) x = f x) ≔
 begin reflexivity end;
 
-opaque symbol sum_curry_uncurry₂ [a b c] (fg: τ ((a ⤳ c) × (b ⤳ c))) (y: τ b) :
-  π (((sum_curry (sum_uncurry fg)) ₂) y = (fg ₂) y) ≔
+opaque symbol sum_curry_uncurry₂ [a b c] (f: τ a → τ c) (g: τ b → τ c) (y: τ b) :
+  π (sum_curry₂ (sum_uncurry f g) y = g y) ≔
 begin reflexivity end;
