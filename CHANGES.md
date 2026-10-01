@@ -17,8 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Nat: parity, div2, shifts, bitwise operations and strong induction
 - Pos: theorems on multiplication
 - Prod: theorems on the Cartesian product
-- ProdExt: extensionality of the Cartesian product
-- Coprod and CoprodExt: the co-Cartesian product (disjoint sum)
+- Coprod: the co-Cartesian product (disjoint sum)
 - Subset: subset types
 - DepProd: dependent products and transport
 - Z: theorems on multiplication, power and comparison
