@@ -1,6 +1,6 @@
 // Extensionality of the Cartesian product
 
-require open Stdlib.Prop Stdlib.Set Stdlib.HOL Stdlib.Eq Stdlib.FOL Stdlib.Prod;
+require open Stdlib.FOL Stdlib.Eq Stdlib.Prod;
 
 /* Surjective pairing. `×` has no interpretation rule for `τ`, so it is opaque
    and η cannot be obtained by case analysis: we assume it. */
@@ -29,6 +29,6 @@ begin assume a b x; symmetry; refine prodExt x end;
 opaque symbol swap_×_invol [a b] (x: τ (a × b)) : π (swap_× (swap_× x) = x) ≔
 begin assume a b x; symmetry; refine prodExt x end;
 
-opaque symbol pairing_uniq [a b c] (h: τ (c ⤳ (a × b))) (z: τ c) :
+opaque symbol pairing_uniq [a b c] (h: τ c → τ (a × b)) (z: τ c) :
   π (pairing (λ u, h u ₁) (λ u, h u ₂) z = h z) ≔
 begin assume a b c h z; symmetry; refine prodExt (h z) end;
