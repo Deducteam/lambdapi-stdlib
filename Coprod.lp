@@ -1,11 +1,10 @@
 // Co-Cartesian product (disjoint sum)
 
-require open Stdlib.Prod Stdlib.FOL;
+require open Stdlib.FOL Stdlib.Eq;
 
 (a: Set) (b: Set) inductive Sum: TYPE ≔
 | inl: τ a → Sum a b
-| inr: τ b → Sum a b
-;
+| inr: τ b → Sum a b;
 
 constant symbol sum : Set → Set → Set;
 
@@ -31,6 +30,7 @@ begin
 end;
 
 // non confusion of constructors
+
 symbol is_inl [a b] : τ (sum a b) → Prop;
 
 rule is_inl (inl _) ↪ ⊤
@@ -91,20 +91,6 @@ begin
   assume a b; induction { reflexivity } { reflexivity }
 end;
 
-// Relation between the product and the coproduct
-
-symbol dist_× [a b c] (x: τ (a × sum b c)) : τ (sum (a × b) (a × c)) ≔
-  sum_case (x ₂) (λ y, inl ((x ₁) ‚ y)) (λ z, inr ((x ₁) ‚ z));
-
-symbol undist_× [a b c] (s: τ (sum (a × b) (a × c))) : τ (a × sum b c) ≔
-  sum_case s (λ u, (u ₁) ‚ inl (u ₂)) (λ v, (v ₁) ‚ inr (v ₂));
-
-opaque symbol undist_dist_‚ [a b c] (u: τ a) (s: τ (sum b c)) :
-  π (undist_× (dist_× (u ‚ s)) = u ‚ s) ≔
-begin
-  assume a b c u; induction { reflexivity } { reflexivity }
-end;
-
 // currying
 
 symbol sum_curry₁ [a b c] (h: τ (sum a b) → τ c) (x: τ a) : τ c ≔ h (inl x);
@@ -126,3 +112,19 @@ begin reflexivity end;
 opaque symbol sum_curry_uncurry₂ [a b c] (f: τ a → τ c) (g: τ b → τ c) (y: τ b) :
   π (sum_curry₂ (sum_uncurry f g) y = g y) ≔
 begin reflexivity end;
+
+// Relation between the product and the coproduct
+
+require open Stdlib.Prod;
+
+symbol dist_× [a b c] (x: τ (a × sum b c)) : τ (sum (a × b) (a × c)) ≔
+  sum_case (x ₂) (λ y, inl ((x ₁) ‚ y)) (λ z, inr ((x ₁) ‚ z));
+
+symbol undist_× [a b c] (s: τ (sum (a × b) (a × c))) : τ (a × sum b c) ≔
+  sum_case s (λ u, (u ₁) ‚ inl (u ₂)) (λ v, (v ₁) ‚ inr (v ₂));
+
+opaque symbol undist_dist_‚ [a b c] (u: τ a) (s: τ (sum b c)) :
+  π (undist_× (dist_× (u ‚ s)) = u ‚ s) ≔
+begin
+  assume a b c u; induction { reflexivity } { reflexivity }
+end;
