@@ -1,4 +1,4 @@
-require open Stdlib.Set Stdlib.Eq;
+require open Stdlib.Set;
 
 constant symbol ⤳ : Set → Set → Set; // \leadsto
 
