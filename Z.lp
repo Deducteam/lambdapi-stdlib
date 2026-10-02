@@ -534,7 +534,7 @@ end;
 opaque symbol *_distr_l (z x y : ℤ) : π (z * (x + y) = z * x + z * y) ≔
 begin
   induction
-  { assume x y; reflexivity }
+  { reflexivity }
   { assume z;
     induction
     { reflexivity }
@@ -550,7 +550,7 @@ begin
       { assume y; simplify; rewrite mul_distr_l; reflexivity } } }
   { assume z;
     induction
-    { assume x; reflexivity }
+    { reflexivity }
     { assume x;
       induction
       { reflexivity }
@@ -781,9 +781,9 @@ end;
 opaque symbol ≐_mul_Zpos w r : π ((w * Zpos r ≐ Z0) = (w ≐ Z0)) ≔
 begin
   induction
-   { assume r; reflexivity }
-   { assume a r; reflexivity }
-   { assume a r; reflexivity }
+   { reflexivity }
+   { reflexivity }
+   { reflexivity }
 end;
 
 // ℤ has no zero divisor

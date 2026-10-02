@@ -320,7 +320,7 @@ opaque symbol size_behead [a] (l:𝕃 a) : π (size (behead l) = size l ∸1) �
 begin
   assume a; induction
   { reflexivity }
-  { assume e l h; reflexivity }
+  { reflexivity }
 end;
 
 // concatenation
@@ -723,7 +723,7 @@ begin
   { assume ea la h; induction
     { assume i j; apply ⊥ₑ (s≠0 j) }
     { assume eb lb k; induction
-      { assume m; reflexivity }
+      { reflexivity }
       { assume i m n; apply h lb i _; apply +1_inj n }
     }
   }
@@ -783,7 +783,7 @@ end;
 
 opaque symbol drop_cons [a] (e:τ a) l n : π (drop (n +1) (e ⸬ l) = drop n l) ≔
 begin
-  assume a e l n; reflexivity;
+  reflexivity;
 end;
 
 opaque symbol size_drop [a] (l:𝕃 a) n : π (size (drop n l) = size l - n) ≔
@@ -1063,19 +1063,17 @@ opaque symbol in_cons [a] beq (x y:τ a) l :
 begin
   assume a beq x y; induction
   { reflexivity }
-  { assume e l h; reflexivity }
+  { reflexivity }
 end;
 
 opaque symbol in_nil [a] beq (x:τ a) : π (∈ beq x □ = false) ≔
 begin
-  assume a beq x; reflexivity;
+  reflexivity
 end;
 
 opaque symbol mem_seq1 [a] beq (x y:τ a) : π (∈ beq x (y ⸬ □) = beq x y) ≔
 begin
-  assume a beq x y;
-  simplify; rewrite or_false_lhs [beq x y];
-  reflexivity;
+  assume a beq x y; simplify; rewrite or_false; reflexivity
 end;
 
 opaque symbol mem_cat [a] beq (x:τ a) l1 l2 :
@@ -1190,7 +1188,7 @@ begin
     assume a  beq;
     induction
         {assume x l0; simplify ∈;
-        rewrite or_false_lhs [beq l0 x]; assume h; refine h}
+        rewrite or_false; assume h; refine h}
         {assume x l h0 l0 l1 h1 h2;
         have H0 : π ((¬ (istrue (beq l1 l0 or ∈ beq l1 (x ⸬ l)))) ⇒ ⊥)
             {rewrite istrue=true h2; simplify; assume h3; refine h3 ⊤ᵢ};
@@ -1205,7 +1203,7 @@ begin
         {assume x l0 h0 h1; refine h1}
         {assume x l h0 l0 l1 h1 h2;
         have H0 : π ((¬ (istrue (beq l1 l0 or ∈ beq l1 (x ⸬ l)))) ⇒ ⊥)
-            {rewrite istrue=true h2; rewrite or_true_lhs [beq l1 l0]; simplify; assume h3; refine h3 ⊤ᵢ};
+            {rewrite istrue=true h2; rewrite or_true; simplify; assume h3; refine h3 ⊤ᵢ};
         refine H0 h1}
 end;
 
@@ -1521,7 +1519,7 @@ opaque symbol mem_filter [a: Set] (beq : τ a → τ a → 𝔹) (beq_correct : 
 begin
     assume a beq beq_correct p;
     induction
-        {assume x h; reflexivity}
+        {reflexivity}
         {assume x0 l h0 x1 h1; simplify;
         refine ∨ₑ (case_𝔹 (p x0)) _ _
             {assume h2; rewrite h2; simplify;
@@ -1586,7 +1584,7 @@ opaque symbol filter_not_id [a] (beq : τ a → τ a → 𝔹) [l] [x]:
 begin
     assume a beq;
     induction
-        {assume x h0; reflexivity}
+        {reflexivity}
         {assume x0 l0 h0 x1 h1; simplify;
         have H0: π ((beq x1 x0) = false)
             {refine ¬istrue=false (not_mem_cons_head beq l0 x0 x1 h1)};
@@ -1668,7 +1666,7 @@ assert ⊢ map (λ x, 3 ≤ x) (42 ⸬ 2 ⸬ 51 ⸬ 3 ⸬ □) ≡ true ⸬ fals
 opaque symbol map_cons [a b] (f:τ a → τ b) l x :
   π (map f (x ⸬ l) = f x ⸬ map f l) ≔
 begin
-  assume a b f l x; reflexivity;
+  reflexivity;
 end;
 
 opaque symbol map_cat [a b] (f:τ a → τ b) l1 l2 :
@@ -1691,7 +1689,7 @@ opaque symbol behead_map [a b] (f:τ a → τ b) l :
 begin
   assume a b f; induction
   { reflexivity }
-  { assume e l h; reflexivity }
+  { reflexivity }
 end;
 
 opaque symbol map_rcons [a b] (f:τ a → τ b) l e :
@@ -1981,7 +1979,7 @@ begin
   assume a;
   refine ind_𝕃2 (λ l, size ((split l)₁) + size ((split l)₂) = size l) _ _ _
   { reflexivity }
-  { assume x; reflexivity }
+  { reflexivity }
   { assume x y l ih; simplify; rewrite addnS; rewrite ih; reflexivity }
 end;
 
@@ -2025,7 +2023,7 @@ opaque symbol size_merge [a] (≤ : τ a → τ a → 𝔹) l1 l2 :
 begin
   assume a ≤;
   induction
-  { assume l2; reflexivity }
+  { reflexivity }
   { assume x l1 ih1;
     induction
     { simplify; rewrite addn0; reflexivity }
@@ -2042,7 +2040,7 @@ opaque symbol count_merge [a] p (≤ : τ a → τ a → 𝔹) l1 l2 :
 begin
   assume a p ≤;
   induction
-  { assume l2; reflexivity }
+  { reflexivity }
   { assume x l1 ih1;
     induction
     { simplify; rewrite addn0; reflexivity }

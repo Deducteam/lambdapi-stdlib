@@ -115,12 +115,12 @@ opaque symbol not_inj [b c] : π (not b = not c) → π (b = c) ≔
 begin
   induction
   { induction
-    { assume h; reflexivity }
+    { reflexivity }
     { assume h; apply ⊥ₑ (false≠true h) }
   }
   { induction
     { assume h; apply ⊥ₑ (true≠false h) }
-    { assume h; reflexivity }
+    { reflexivity }
   }
 end;
 

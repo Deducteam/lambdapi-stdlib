@@ -19,7 +19,7 @@ rule proj₂ (dpair _ $u) ↪ $u;
 
 opaque symbol η_dprod [a] [p] (e: @DProd a p) :
   π (dpair (proj₁ e) (proj₂ e) = e) ≔
-begin assume a p; induction; assume x u; reflexivity end;
+begin assume a p; induction; reflexivity end;
 
 opaque symbol eq_proj₁ [a] [p] (x y: @DProd a p) :
   π (x = y) → π (proj₁ x = proj₁ y) ≔

@@ -104,7 +104,7 @@ opaque opaque symbol valS x : π(val (succ x) = val x +1) ≔
 begin
   induction
   { assume x h; simplify; rewrite h; simplify; rewrite addn0; rewrite addnS; reflexivity}
-  { assume x h; reflexivity }
+  { reflexivity }
   { reflexivity }
 end;
 
@@ -597,7 +597,7 @@ begin
   { assume x xrec;
     induction
      { assume y h c; simplify; refine compare_Gt_succ x y }
-     { assume y h c; reflexivity }
+     { reflexivity }
      { assume c; simplify; refine compare_Gt_H x } }
   // case H
   { induction
