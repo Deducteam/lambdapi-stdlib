@@ -1,10 +1,6 @@
 // Dependent product: a dependent pair of an element and an element in Set
 
-require open Stdlib.Prop Stdlib.Set Stdlib.Eq;
-
-
-symbol transport [a] (p: τ a → Set) [x y: τ a] : π (x = y) → τ (p x) → τ (p y);
-rule transport _ (eq_refl _) $u ↪ $u;
+require open Stdlib.Eq;
 
 [a: Set] (p: τ a → Set) inductive DProd : TYPE ≔
   dpair (x: τ a) : τ (p x) → DProd p;
@@ -29,11 +25,14 @@ opaque symbol eq_proj₁ [a] [p] (x y: @DProd a p) :
   π (x = y) → π (proj₁ x = proj₁ y) ≔
 begin assume a p x y h; refine feq (λ e, proj₁ e) h end;
 
-symbol eq_dpair [a] [p] (x y: τ a) (u: τ (p x)) (v: τ (p y)) (h: π (x = y)) :
-  π (transport p h u = v) → π (@dpair a p x u = dpair y v);
-
 opaque symbol eq_dpair_refl [a] [p] (x: τ a) (u v: τ (p x)) :
   π (u = v) → π (@dpair a p x u = dpair x v) ≔
 begin
   assume a p x u v h; refine feq (λ w, @dpair a p x w) h
 end;
+
+symbol transport [a] (p: τ a → Set) [x y: τ a] : π (x = y) → τ (p x) → τ (p y);
+rule transport _ (eq_refl _) $u ↪ $u;
+
+symbol eq_dpair [a] [p] (x y: τ a) (u: τ (p x)) (v: τ (p y)) (h: π (x = y)) :
+  π (transport p h u = v) → π (@dpair a p x u = dpair y v);
