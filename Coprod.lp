@@ -23,7 +23,7 @@ begin
   assume a b c h; induction { reflexivity } { reflexivity }
 end;
 
-opaque symbol sum_η [a b] (s: τ (sum a b)) :
+opaque symbol η_sum [a b] (s: τ (sum a b)) :
   π (sum_case s (λ x, inl x) (λ y, inr y) = s) ≔
 begin
   assume a b; induction { reflexivity } { reflexivity }
@@ -72,7 +72,7 @@ symbol map_sum [a b c d] (f: τ a → τ c) (g: τ b → τ d) (s: τ (sum a b))
 
 opaque symbol map_sum_id [a b] (s: τ (sum a b)) :
   π (map_sum (λ u, u) (λ v, v) s = s) ≔
-begin assume a b s; refine sum_η s end;
+begin assume a b s; refine η_sum s end;
 
 opaque symbol map_sum_comp [a b c d e f]
   (g: τ c → τ e) (g': τ d → τ f) (h: τ a → τ c) (h': τ b → τ d) (s: τ (sum a b)) :

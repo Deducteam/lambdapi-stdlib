@@ -17,7 +17,7 @@ symbol proj₂ [a] [p] (e: @DProd a p) : τ (p (proj₁ e));
 
 rule proj₂ (dpair _ $u) ↪ $u;
 
-opaque symbol DProd_η [a] [p] (e: @DProd a p) :
+opaque symbol η_dprod [a] [p] (e: @DProd a p) :
   π (dpair (proj₁ e) (proj₂ e) = e) ≔
 begin assume a p; induction; assume x u; reflexivity end;
 
