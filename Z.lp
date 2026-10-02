@@ -176,8 +176,6 @@ end;
 symbol + : ℤ → ℤ → ℤ;
 notation + infix right 20;
 
-builtin "+" ≔ +;
-
 rule Z0      + $y      ↪ $y
 with Zpos $x + Z0      ↪ Zpos $x
 with Zneg $x + Z0      ↪ Zneg $x
@@ -272,8 +270,6 @@ end;
 symbol - x y ≔ x + — y;
 
 notation - infix left 20;
-
-builtin "-" ≔ —;
 
 opaque symbol -_same z : π (z + — z = Z0) ≔
 begin
@@ -401,28 +397,9 @@ begin
   refine g2
 end;
 
-
-
 // Multiplication
 
-symbol * : ℤ → ℤ → ℤ;
-notation * infix right 22;
-
-builtin "*" ≔ *;
-
-// enable parsing of integers in decimal notation
-
-builtin "0" ≔ Z0;
-builtin "1" ≔ _1;
-builtin "2" ≔ _2;
-builtin "3" ≔ _3;
-builtin "4" ≔ _4;
-builtin "5" ≔ _5;
-builtin "6" ≔ _6;
-builtin "7" ≔ _7;
-builtin "8" ≔ _8;
-builtin "9" ≔ _9;
-builtin "10" ≔ _10;
+symbol * : ℤ → ℤ → ℤ; notation * infix right 22;
 
 rule Z0      * _       ↪ Z0
 with _       * Z0       ↪ Z0
@@ -430,7 +407,6 @@ with Zpos $x * Zpos $y ↪ Zpos (mul $x $y)
 with Zpos $x * Zneg $y ↪ Zneg (mul $x $y)
 with Zneg $x * Zpos $y ↪ Zneg (mul $x $y)
 with Zneg $x * Zneg $y ↪ Zpos (mul $x $y);
-
 
 opaque symbol *_com x y : π (x * y = y * x) ≔
 begin
@@ -535,7 +511,6 @@ begin
   refine e
 end;
 
-
 opaque symbol mul_distr_sub_pos_l (a x y : ℙ) :
   π (Zpos a * sub x y = sub (mul a x) (mul a y)) ≔
 begin
@@ -557,7 +532,6 @@ begin
     rewrite mul_distr_sub_pos_l a x y; refine sub_opp (mul a x) (mul a y) };
   refine e
 end;
-
 
 opaque symbol *_distr_l (z x y : ℤ) : π (z * (x + y) = z * x + z * y) ≔
 begin
@@ -614,7 +588,22 @@ begin
   { assume a; induction { reflexivity } { reflexivity } { reflexivity } }
 end;
 
+// enable parsing of integers in decimal notation
 
+builtin "0" ≔ Z0;
+builtin "1" ≔ _1;
+builtin "2" ≔ _2;
+builtin "3" ≔ _3;
+builtin "4" ≔ _4;
+builtin "5" ≔ _5;
+builtin "6" ≔ _6;
+builtin "7" ≔ _7;
+builtin "8" ≔ _8;
+builtin "9" ≔ _9;
+builtin "10" ≔ _10;
+builtin "+" ≔ +;
+builtin "*" ≔ *;
+builtin "-" ≔ —;
 
 // Exponentiation
 
@@ -629,7 +618,6 @@ symbol ^ : ℤ → ℤ → ℤ; notation ^ infix 3;
 rule _  ^ Z0        ↪ Zpos H
 with $x ^ (Zpos $p) ↪ power_pos $x $p
 with _  ^ (Zneg _)  ↪ Z0;
-
 
 // Comparison of integers
 

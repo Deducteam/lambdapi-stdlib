@@ -95,12 +95,10 @@ inductive ℕ : TYPE ≔
 | +1 : ℕ → ℕ; notation +1 postfix 100;
 
 // enable printing of natural numbers in decimal notation
-
 builtin "nat_zero" ≔ _0;
 builtin "nat_succ" ≔ +1;
 
 // shortcuts
-
 symbol _1 ≔ _0 +1;
 symbol _2 ≔ _1 +1;
 symbol _3 ≔ _2 +1;
@@ -228,8 +226,6 @@ symbol + : ℕ → ℕ → ℕ; notation + infix left 20;
 
 rule _0 + $y ↪ $y
 with $x +1 + $y ↪ ($x + $y) +1;
-
-builtin "+" ≔ +;
 
 opaque symbol add0n x : π (_0 + x = x) ≔
 begin
@@ -571,22 +567,6 @@ assert x y z ⊢ x + y * z ≡ x + (y * z);
 rule _0 * _  ↪ _0
 with ($x +1) * $y ↪ $y + $x * $y;
 
-builtin "*" ≔ *;
-
-// enable parsing of natural numbers in decimal notation
-
-builtin "0" ≔ _0;
-builtin "1" ≔ _1;
-builtin "2" ≔ _2;
-builtin "3" ≔ _3;
-builtin "4" ≔ _4;
-builtin "5" ≔ _5;
-builtin "6" ≔ _6;
-builtin "7" ≔ _7;
-builtin "8" ≔ _8;
-builtin "9" ≔ _9;
-builtin "10" ≔ _10;
-
 opaque symbol mul0n x : π (x * _0 = _0) ≔
 begin
   induction { reflexivity } { assume x' h; apply h }
@@ -626,7 +606,7 @@ begin
   { assume x' h y; simplify; rewrite h; rewrite addnAC; reflexivity }
 end;
 
-opaque symbol muln2 n: π (n * 2 = n + n) ≔
+opaque symbol muln2 n: π (n * _2 = n + n) ≔
 begin
 assume n; simplify; rewrite mulnS; rewrite muln1; reflexivity
 end;
@@ -725,6 +705,22 @@ begin
     };
   };
 end;
+
+// enable parsing of decimal notation
+
+builtin "0" ≔ _0;
+builtin "1" ≔ _1;
+builtin "2" ≔ _2;
+builtin "3" ≔ _3;
+builtin "4" ≔ _4;
+builtin "5" ≔ _5;
+builtin "6" ≔ _6;
+builtin "7" ≔ _7;
+builtin "8" ≔ _8;
+builtin "9" ≔ _9;
+builtin "10" ≔ _10;
+builtin "+" ≔ +;
+builtin "*" ≔ *;
 
 // Boolean ordering functions
 
@@ -1199,12 +1195,8 @@ end;
 
 opaque symbol exD_leq n m : π (`∃ p, n + p = m) → π (n ≤ m) ≔
 begin
-  assume n m h;
-  refine ∃ₑ h _;
-  assume p h2;
-  remove h;
-  rewrite left h2;
-  refine leq_addr p n;
+  assume n m h; refine ∃ₑ h _; assume p h2; remove h;
+  rewrite left h2; refine leq_addr p n;
 end;
 
 // max
@@ -1999,7 +1991,7 @@ end;
 symbol double x ≔ x + x;
 
 // shift left
-// left-shifting an natural `x` with an natural `y` is equivalent to multiplying `x` with 2 raised to power `y`.
+// left-shifting a natural `x` with a natural `y` is equivalent to multiplying `x` by 2 raised to power `y`.
 symbol <<<: ℕ → ℕ → ℕ; notation <<< infix 30;
 rule $x <<< 0 ↪ $x
 with $x <<< ($n +1) ↪ double ($x <<< $n);
@@ -2032,7 +2024,6 @@ assert ⊢ 2 ⎪⎪ 8 ≡ 10;
 
 symbol diff (a b: ℕ): ℕ ≔ bitwise (λ b1, λ b2,  b1 and (not b2)) a a b;
 
-// Definition lxor a b := bitwise xorb (max a b) a b.
 symbol xor (a b: ℕ): ℕ ≔ bitwise (xorb) (max a b) a b; notation xor infix 10;
 
 symbol testbit (a n: ℕ) : 𝔹;
@@ -2243,6 +2234,7 @@ assume a;
     }
   }
 end;
+
 // Strong (course-of-values) induction
 
 opaque symbol ind_ℕ_strong (p : ℕ → Prop) :
