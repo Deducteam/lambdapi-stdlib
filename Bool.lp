@@ -15,8 +15,8 @@ rule τ bool ↪ 𝔹;
 opaque symbol case_𝔹 b : π (b = true ∨ b = false) ≔
 begin
   induction
-  { apply ∨ᵢ₁; reflexivity; }
-  { apply ∨ᵢ₂; reflexivity; }
+  { apply ∨ᵢ₁; reflexivity }
+  { apply ∨ᵢ₂; reflexivity }
 end;
 
 opaque symbol ind_𝔹_eq p b:
@@ -115,12 +115,12 @@ opaque symbol not_inj [b c] : π (not b = not c) → π (b = c) ≔
 begin
   induction
   { induction
-    { assume h; reflexivity }
+    { reflexivity }
     { assume h; apply ⊥ₑ (false≠true h) }
   }
   { induction
     { assume h; apply ⊥ₑ (true≠false h) }
-    { assume h; reflexivity }
+    { reflexivity }
   }
 end;
 
@@ -133,21 +133,11 @@ notation or infix left 20;
 rule true  or _     ↪ true
 with false or $b    ↪ $b;
 
-opaque symbol or_true_lhs [p : 𝔹] :
-  π ((p or true) = true) ≔
-begin
-  induction
-    {reflexivity}
-    {reflexivity}
-end;
+opaque symbol or_true b: π(b or true = true) ≔
+begin induction {reflexivity} {reflexivity} end;
 
-opaque symbol or_false_lhs [p : 𝔹] :
-  π ((p or false) = p) ≔
-begin
-  induction
-    {reflexivity}
-    {reflexivity}
-end;
+opaque symbol or_false b: π(b or false = b) ≔
+begin induction {reflexivity} {reflexivity} end;
 
 // imp
 
@@ -195,15 +185,15 @@ end;
 opaque symbol ∨_istrue [p q : 𝔹] : π(p or q) → π(p ∨ q) ≔
 begin
   induction
-  { assume q h; apply ∨ᵢ₁; apply ⊤ᵢ; }
-  { assume q h; apply ∨ᵢ₂; apply h; }
+  { assume q h; apply ∨ᵢ₁; apply ⊤ᵢ }
+  { assume q h; apply ∨ᵢ₂; apply h }
 end;
 
 opaque symbol istrue_or [p q : 𝔹] : π(p ∨ q) → π(p or q) ≔
 begin
   induction
-  { assume q h; apply ⊤ᵢ; }
-  { assume q h; apply ∨ₑ h { assume i; apply ⊥ₑ i; } { assume i; apply i; } }
+  { assume q h; apply ⊤ᵢ }
+  { assume q h; apply ∨ₑ h { assume i; apply ⊥ₑ i } { assume i; apply i } }
 end;
 
 opaque symbol orᵢ₁ [p : 𝔹] q : π p → π (p or q) ≔
@@ -231,43 +221,47 @@ end;
 opaque symbol orC p q : π (p or q = q or p) ≔
 begin
     induction
-    { assume q; rewrite or_true_lhs [q]; reflexivity }
-    { assume q; rewrite or_false_lhs [q]; reflexivity }
+    { assume q; rewrite or_true; reflexivity }
+    { assume q; rewrite or_false; reflexivity }
 end;
 
 opaque symbol orA p q r : π ((p or q) or r = p or (q or r)) ≔
 begin
     induction
-    { reflexivity; }
-    { reflexivity; }
+    { reflexivity }
+    { reflexivity }
 end;
 
 // and
 
 symbol and : 𝔹 → 𝔹 → 𝔹;
 
-notation and infix left 7;
+notation and infix left 15;
 
 rule true  and $b    ↪ $b
-with $b    and true  ↪ $b
-with false and _     ↪ false
-with _     and false ↪ false;
+with false and _     ↪ false;
+
+opaque symbol and_true b: π(b and true = b) ≔
+begin induction {reflexivity} {reflexivity} end;
+
+opaque symbol and_false b: π(b and false = false) ≔
+begin induction {reflexivity} {reflexivity} end;
 
 opaque symbol ∧_istrue [p q : 𝔹] : π(p and q) → π(p ∧ q) ≔
 begin
   induction
   { induction
     { assume h; apply ∧ᵢ { apply ⊤ᵢ } { apply ⊤ᵢ } }
-    { assume h; apply ⊥ₑ h; }
+    { assume h; apply ⊥ₑ h }
   }
-  { assume q h; apply ⊥ₑ h; }
+  { assume q h; apply ⊥ₑ h }
 end;
 
 opaque symbol istrue_and [p q : 𝔹] : π(p ∧ q) → π(p and q) ≔
 begin
   induction
-  { assume q h; apply ∧ₑ₂ h; }
-  { assume q h; apply ∧ₑ₁ h; }
+  { assume q h; apply ∧ₑ₂ h }
+  { assume q h; apply ∧ₑ₁ h }
 end;
 
 opaque symbol andᵢ [p q : 𝔹] : π p → π q → π(p and q) ≔
@@ -278,15 +272,15 @@ end;
 opaque symbol andₑ₁ [p q : 𝔹] : π (p and q) → π p ≔
 begin
   induction
-  { assume q i; apply ⊤ᵢ; }
-  { assume q i; apply i; }
+  { assume q i; apply ⊤ᵢ }
+  { assume q i; apply i }
 end;
 
 opaque symbol andₑ₂ [p q : 𝔹] : π (p and q) → π q ≔
 begin
   induction
-  { assume q i; apply i; }
-  { assume q i; apply ⊥ₑ i; }
+  { assume q i; apply i }
+  { assume q i; apply ⊥ₑ i }
 end;
 
 // xorb

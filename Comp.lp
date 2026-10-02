@@ -74,7 +74,7 @@ with opp Gt ↪ Lt;
 
 opaque symbol opp_idem c : π (opp (opp c) = c) ≔
 begin
-  induction { reflexivity; } { reflexivity; } { reflexivity; }
+  induction { reflexivity } { reflexivity } { reflexivity }
 end;
 
 // Conditional

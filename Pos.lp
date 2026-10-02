@@ -1,6 +1,4 @@
-/* Positive binary integers
-
-by Quentin Garchery (May 2021). */
+// Positive binary integers following Rocq stdlib
 
 require open Stdlib.Nat Stdlib.Comp;
 
@@ -106,7 +104,7 @@ opaque opaque symbol valS x : π(val (succ x) = val x +1) ≔
 begin
   induction
   { assume x h; simplify; rewrite h; simplify; rewrite addn0; rewrite addnS; reflexivity}
-  { assume x h; reflexivity }
+  { reflexivity }
   { reflexivity }
 end;
 
@@ -255,7 +253,7 @@ with add_carry H      (I $q) ↪ I (succ $q)
 with add_carry H      (O $q) ↪ O (succ $q)
 with add_carry H      H      ↪ I H;
 
-opaque symbol add_carryH n : π (add_carry n H = add n (O H))≔
+opaque symbol add_carrynH n : π (add_carry n H = add n (O H))≔
 begin
   induction
     {assume n h; simplify; rewrite addnH; reflexivity }
@@ -599,7 +597,7 @@ begin
   { assume x xrec;
     induction
      { assume y h c; simplify; refine compare_Gt_succ x y }
-     { assume y h c; reflexivity }
+     { reflexivity }
      { assume c; simplify; refine compare_Gt_H x } }
   // case H
   { induction
