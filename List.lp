@@ -1903,20 +1903,264 @@ begin
     refine eq_refl (x ⸬ l) }
 end;
 
+// foldr
+
+symbol foldr [a b] : (τ b → τ a → τ a) → τ a → 𝕃 b → τ a;
+
+rule foldr _ $acc □ ↪ $acc
+with foldr $op $acc ($h ⸬ $tl) ↪ $op $h (foldr $op $acc $tl);
+
+// foldl
+
+symbol foldl [a b] : (τ a → τ b → τ a) → τ a → 𝕃 b → τ a;
+
+rule foldl _ $acc □ ↪ $acc
+with foldl $op $acc ($h ⸬ $tl) ↪ foldl $op ($op $acc $h) $tl;
+
+assert ⊢ foldl (+) 0 (3 ⸬ 2 ⸬ 1 ⸬ □) ≡ foldr (+) 0 (3 ⸬ 2 ⸬ 1 ⸬ □);
+
 // sumn
 
-symbol sumn : 𝕃 nat → ℕ;
-
-rule sumn □ ↪ 0
-with sumn ($x ⸬ $l) ↪ $x + sumn $l;
+symbol sumn (l : 𝕃 nat) : ℕ ≔ foldr (+) 0 l;
 
 assert ⊢ sumn (3 ⸬ 2 ⸬ 1 ⸬ □) ≡ 6;
 
 // prodn
 
-symbol prodn : 𝕃 nat → ℕ;
-
-rule prodn □ ↪ 1
-with prodn ($x ⸬ $l) ↪ $x * prodn $l;
+symbol prodn (l : 𝕃 nat) : ℕ ≔ foldr (*) 1 l;
 
 assert ⊢ prodn (3 ⸬ 2 ⸬ 1 ⸬ □) ≡ 3 !;
+
+// Sorting algorithm Merge Sort
+
+symbol split [a: Set] (l : τ (list a)) : τ (list a × list a);
+
+rule split □ ↪ □ ‚ □
+with split ($x ⸬ □) ↪ ($x ⸬ □) ‚ □
+with split ($x ⸬ $y ⸬ $l) ↪
+    let res ≔ split $l in ($x ⸬ (res ₁)) ‚ ($y ⸬ (res ₂));
+
+// merge and mergesort are parametrised by a boolean ordering on the elements
+
+symbol merge [a] : (τ a → τ a → 𝔹) → 𝕃 a → 𝕃 a → 𝕃 a;
+
+rule merge _ □ $l2 ↪ $l2
+with merge _ $l1 □ ↪ $l1
+with merge $≤ ($a1 ⸬ $l1') ($a2 ⸬ $l2') ↪
+    if ($≤ $a1 $a2)
+        ($a1 ⸬ merge $≤ $l1' ($a2 ⸬ $l2'))
+        ($a2 ⸬ merge $≤ ($a1 ⸬ $l1') $l2');
+
+symbol mergesort [a] : (τ a → τ a → 𝔹) → 𝕃 a → 𝕃 a;
+
+rule mergesort _ □ ↪ □
+with mergesort _ ($x ⸬ □) ↪ $x ⸬ □
+with mergesort $≤ ($x ⸬ $y ⸬ $l) ↪
+  let s ≔ split ($x ⸬ $y ⸬ $l) in
+    merge $≤ (mergesort $≤ (s ₁)) (mergesort $≤ (s ₂));
+
+assert ⊢ mergesort (≤) (3 ⸬ 1 ⸬ 4 ⸬ 1 ⸬ 5 ⸬ □) ≡ 1 ⸬ 1 ⸬ 3 ⸬ 4 ⸬ 5 ⸬ □;
+
+// Two-step induction and case analysis on lists,
+// for the functions recursing by pairs
+
+opaque symbol ind_𝕃2 [a] (p : 𝕃 a → Prop) :
+  π (p □) → (Π x, π (p (x ⸬ □))) →
+  (Π x y l, π (p l) → π (p (x ⸬ y ⸬ l))) → Π l, π (p l) ≔
+begin
+  assume a p h0 h1 ih l;
+  have enough : π (p l ∧ `∀ x, p (x ⸬ l)) → π (p l) { assume h; refine ∧ₑ₁ h };
+  refine enough _;
+  remove enough;
+  generalize l;
+  induction
+  { apply ∧ᵢ h0 h1 }
+  { assume y l ihl;
+    apply ∧ᵢ
+    { refine ∧ₑ₂ ihl y }
+    { assume x; refine ih x y l (∧ₑ₁ ihl) } }
+end;
+
+opaque symbol case_𝕃2 [a] (p : 𝕃 a → Prop) :
+  π (p □) → (Π x, π (p (x ⸬ □))) →
+  (Π x y l, π (p (x ⸬ y ⸬ l))) → Π l, π (p l) ≔
+begin
+  assume a p h0 h1 h2;
+  refine ind_𝕃2 p h0 h1 _;
+  assume x y l ihl; refine h2 x y l
+end;
+
+// Strong induction on the length of a list
+
+opaque symbol ind_𝕃_size [a] (p : 𝕃 a → Prop) :
+  (Π l, (Π l', π (istrue (size l' < size l)) → π (p l')) → π (p l)) → Π l, π (p l) ≔
+begin
+  assume a p ih;
+  have aux : Π n, Π l, π (istrue (size l ≤ n)) → π (p l)
+  { refine ind_ℕ_strong (λ n, `∀ l, istrue (size l ≤ n) ⇒ p l) _;
+    assume n rec l h;
+    refine ih l _;
+    assume l' h';
+    refine rec (size l') (@leq_trans (size l' +1) (size l) n h' h) l' (≤_refl (size l')) };
+  assume l; refine aux (size l) l (≤_refl (size l))
+end;
+
+// split preserves size and multiplicities
+
+opaque symbol size_split [a] (l : 𝕃 a) :
+  π (size ((split l)₁) + size ((split l)₂) = size l) ≔
+begin
+  assume a;
+  refine ind_𝕃2 (λ l, size ((split l)₁) + size ((split l)₂) = size l) _ _ _
+  { reflexivity }
+  { assume x; reflexivity }
+  { assume x y l ih; simplify; rewrite addnS; rewrite ih; reflexivity }
+end;
+
+opaque symbol count_split [a] p (l : 𝕃 a) :
+  π (count p ((split l)₁) + count p ((split l)₂) = count p l) ≔
+begin
+  assume a p;
+  refine ind_𝕃2 (λ l, count p ((split l)₁) + count p ((split l)₂) = count p l) _ _ _
+  { reflexivity }
+  { assume x; simplify; rewrite addn0; reflexivity }
+  { assume x y l ih; simplify;
+    refine ∨ₑ (case_𝔹 (p x)) _ _
+    { assume hx; rewrite hx; simplify;
+      refine ∨ₑ (case_𝔹 (p y)) _ _
+      { assume hy; rewrite hy; simplify; rewrite addnS; rewrite ih; reflexivity }
+      { assume hy; rewrite hy; simplify; rewrite ih; reflexivity } }
+    { assume hx; rewrite hx; simplify;
+      refine ∨ₑ (case_𝔹 (p y)) _ _
+      { assume hy; rewrite hy; simplify; rewrite addnS; rewrite ih; reflexivity }
+      { assume hy; rewrite hy; simplify; rewrite ih; reflexivity } } }
+end;
+
+// Each half returned by split is no longer than the list
+
+opaque symbol size_split1 [a] (l : 𝕃 a) : π (istrue (size ((split l)₁) ≤ size l)) ≔
+begin
+  assume a l; rewrite left size_split l;
+  refine leq_addr (size ((split l)₂)) (size ((split l)₁))
+end;
+
+opaque symbol size_split2 [a] (l : 𝕃 a) : π (istrue (size ((split l)₂) ≤ size l)) ≔
+begin
+  assume a l; rewrite left size_split l;
+  refine leq_addl (size ((split l)₁)) (size ((split l)₂))
+end;
+
+// merge preserves size and multiplicities
+
+opaque symbol size_merge [a] (≤ : τ a → τ a → 𝔹) l1 l2 :
+  π (size (merge (≤) l1 l2) = size l1 + size l2) ≔
+begin
+  assume a ≤;
+  induction
+  { assume l2; reflexivity }
+  { assume x l1 ih1;
+    induction
+    { simplify; rewrite addn0; reflexivity }
+    { assume y l2 ih2;
+      refine ∨ₑ (case_𝔹 ((≤) x y)) _ _
+      { assume h; simplify; rewrite h; simplify;
+        rewrite ih1 (y ⸬ l2); reflexivity }
+      { assume h; simplify; rewrite h; simplify;
+        rewrite ih2; rewrite addnS; reflexivity } } }
+end;
+
+opaque symbol count_merge [a] p (≤ : τ a → τ a → 𝔹) l1 l2 :
+  π (count p (merge (≤) l1 l2) = count p l1 + count p l2) ≔
+begin
+  assume a p ≤;
+  induction
+  { assume l2; reflexivity }
+  { assume x l1 ih1;
+    induction
+    { simplify; rewrite addn0; reflexivity }
+    { assume y l2 ih2;
+      refine ∨ₑ (case_𝔹 ((≤) x y)) _ _
+      { assume h; simplify; rewrite h; simplify;
+        rewrite ih1 (y ⸬ l2);
+        refine ∨ₑ (case_𝔹 (p x)) _ _
+        { assume hx; rewrite hx; simplify; reflexivity }
+        { assume hx; rewrite hx; simplify; reflexivity } }
+      { assume h; simplify; rewrite h; simplify;
+        rewrite ih2;
+        refine ∨ₑ (case_𝔹 (p y)) _ _
+        { assume hy; rewrite hy; simplify; rewrite addnS; reflexivity }
+        { assume hy; rewrite hy; simplify; reflexivity } } } }
+end;
+
+// mergesort preserves size and multiplicities: its result is a permutation
+
+opaque symbol size_mergesort [a] (≤ : τ a → τ a → 𝔹) (l : 𝕃 a) :
+  π (size (mergesort (≤) l) = size l) ≔
+begin
+  assume a ≤;
+  refine ind_𝕃_size (λ l, size (mergesort (≤) l) = size l) _;
+  refine case_𝕃2
+    (λ l, (`∀ l' : τ (list a), istrue (size l' < size l)
+             ⇒ size (mergesort (≤) l') = size l')
+          ⇒ size (mergesort (≤) l) = size l) _ _ _
+  { reflexivity }
+  { reflexivity }
+  { assume x y l rec; simplify;
+    rewrite size_merge;
+    rewrite rec (x ⸬ ((split l)₁)) (size_split1 l);
+    rewrite rec (y ⸬ ((split l)₂)) (size_split2 l);
+    simplify; rewrite addnS; rewrite size_split; reflexivity }
+end;
+
+opaque symbol count_mergesort [a] p (≤ : τ a → τ a → 𝔹) (l : 𝕃 a) :
+  π (count p (mergesort (≤) l) = count p l) ≔
+begin
+  assume a p ≤;
+  refine ind_𝕃_size (λ l, count p (mergesort (≤) l) = count p l) _;
+  refine case_𝕃2
+    (λ l, (`∀ l' : τ (list a), istrue (size l' < size l)
+             ⇒ count p (mergesort (≤) l') = count p l')
+          ⇒ count p (mergesort (≤) l) = count p l) _ _ _
+  { reflexivity }
+  { reflexivity }
+  { assume x y l rec; simplify;
+    rewrite count_merge;
+    rewrite rec (x ⸬ ((split l)₁)) (size_split1 l);
+    rewrite rec (y ⸬ ((split l)₂)) (size_split2 l);
+    simplify;
+    refine ∨ₑ (case_𝔹 (p x)) _ _
+    { assume hx; rewrite hx; simplify;
+      refine ∨ₑ (case_𝔹 (p y)) _ _
+      { assume hy; rewrite hy; simplify; rewrite addnS; rewrite count_split; reflexivity }
+      { assume hy; rewrite hy; simplify; rewrite count_split; reflexivity } }
+    { assume hx; rewrite hx; simplify;
+      refine ∨ₑ (case_𝔹 (p y)) _ _
+      { assume hy; rewrite hy; simplify; rewrite addnS; rewrite count_split; reflexivity }
+      { assume hy; rewrite hy; simplify; rewrite count_split; reflexivity } } }
+end;
+
+opaque symbol all_true [a] (≤ : τ a → τ a → 𝔹) (≤_refl : Π x, π (≤ x x))
+  (p : τ a → 𝔹) (l : 𝕃 a) :
+  (Π x, π (∈ (≤) x l) → π (p x)) → π (all p l) ≔
+begin
+  assume a ≤ ≤_refl p;
+  induction
+  { assume h; refine ⊤ᵢ }
+  { assume y l ih h;
+    have hy : π (p y) { refine h y (orᵢ₁ (∈ (≤) y l) (≤_refl y)) };
+    simplify; rewrite istrue=true hy; simplify;
+    refine ih (λ x hx, h x (orᵢ₂ ((≤) x y) hx)) }
+end;
+
+opaque symbol perm_eq_mergesort [a] (≤ : τ a → τ a → 𝔹) (l : 𝕃 a) :
+  π (perm_eq (λ x y, (≤) x y and (≤) y x) (mergesort (≤) l) l) ≔
+begin
+  assume a ≤ l;
+  refine all_true (λ _ _, true) (λ _, ⊤ᵢ)
+    (λ x, eqn (count (λ y, ≤ x y and ≤ y x) (mergesort ≤ l))
+              (count (λ y, ≤ x y and ≤ y x) l))
+    ((mergesort ≤ l) ++ l) _;
+  assume x hx;
+  rewrite count_mergesort (λ y, (≤) x y and (≤) y x) (≤) l;
+  refine eqn_refl (count (λ y, (≤) x y and (≤) y x) l)
+end;
