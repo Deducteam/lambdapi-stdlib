@@ -1,6 +1,4 @@
-/* Binary integers
-
-by Quentin Garchery (May 2021). */
+// Binary integers (following Rocq stdlib)
 
 require open Stdlib.Pos;
 
