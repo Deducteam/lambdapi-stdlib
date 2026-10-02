@@ -133,27 +133,11 @@ notation or infix left 20;
 rule true  or _     ↪ true
 with false or $b    ↪ $b;
 
-opaque symbol or_true_r b: π(b or true = true) ≔
+opaque symbol or_true b: π(b or true = true) ≔
 begin induction {reflexivity} {reflexivity} end;
 
-opaque symbol or_false_r b: π(b or false = b) ≔
+opaque symbol or_false b: π(b or false = b) ≔
 begin induction {reflexivity} {reflexivity} end;
-
-opaque symbol or_true_lhs [p : 𝔹] :
-  π ((p or true) = true) ≔
-begin
-  induction
-    {reflexivity}
-    {reflexivity}
-end;
-
-opaque symbol or_false_lhs [p : 𝔹] :
-  π ((p or false) = p) ≔
-begin
-  induction
-    {reflexivity}
-    {reflexivity}
-end;
 
 // imp
 
@@ -237,8 +221,8 @@ end;
 opaque symbol orC p q : π (p or q = q or p) ≔
 begin
     induction
-    { assume q; rewrite or_true_lhs [q]; reflexivity }
-    { assume q; rewrite or_false_lhs [q]; reflexivity }
+    { assume q; rewrite or_true; reflexivity }
+    { assume q; rewrite or_false; reflexivity }
 end;
 
 opaque symbol orA p q r : π ((p or q) or r = p or (q or r)) ≔
@@ -252,12 +236,16 @@ end;
 
 symbol and : 𝔹 → 𝔹 → 𝔹;
 
-notation and infix left 7;
+notation and infix left 15;
 
 rule true  and $b    ↪ $b
-with $b    and true  ↪ $b
-with false and _     ↪ false
-with _     and false ↪ false;
+with false and _     ↪ false;
+
+opaque symbol and_true b: π(b and true = b) ≔
+begin induction {reflexivity} {reflexivity} end;
+
+opaque symbol and_false b: π(b and false = false) ≔
+begin induction {reflexivity} {reflexivity} end;
 
 opaque symbol ∧_istrue [p q : 𝔹] : π(p and q) → π(p ∧ q) ≔
 begin

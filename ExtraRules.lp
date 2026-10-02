@@ -4,11 +4,17 @@
 
 require open Stdlib.Bool;
 
-opaque symbol or_true_r b:π(b or true = true) ≔ or_true_r b;
+opaque symbol or_true b:π(b or true = true) ≔ or_true b;
 rule _ or true  ↪ true;
 
-opaque symbol or_false_r b:π(b or false = b) ≔ or_false_r b;
+opaque symbol or_false b:π(b or false = b) ≔ or_false b;
 rule $b or false ↪ $b;
+
+opaque symbol and_true b:π(b and true = b) ≔ and_true b;
+rule $b and true ↪ $b;
+
+opaque symbol and_false b:π(b and false = false) ≔ and_false b;
+rule _ and false ↪ false;
 
 // Nat
 
