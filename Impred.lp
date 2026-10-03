@@ -1,3 +1,5 @@
+// impredicativity (quantification on propositions)
+
 require open Stdlib.Set Stdlib.Prop;
 
 symbol o : Set;

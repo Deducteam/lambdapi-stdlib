@@ -1,4 +1,4 @@
-// Dependent product: a dependent pair of an element and an element in Set
+// dependent pairs
 
 require open Stdlib.Eq;
 
@@ -9,11 +9,11 @@ constant symbol dprod [a: Set] : (τ a → Set) → Set;
 
 rule τ (@dprod $a $p) ↪ @DProd $a $p;
 
-symbol proj₁ [a] [p] (e: @DProd a p) : τ a;
+symbol proj₁ [a p] (e: @DProd a p) : τ a;
 
 rule proj₁ (dpair $x _) ↪ $x;
 
-symbol proj₂ [a] [p] (e: @DProd a p) : τ (p (proj₁ e));
+symbol proj₂ [a p] (e: @DProd a p) : τ (p (proj₁ e));
 
 rule proj₂ (dpair _ $u) ↪ $u;
 
@@ -23,13 +23,11 @@ begin assume a p; induction; reflexivity end;
 
 opaque symbol eq_proj₁ [a] [p] (x y: @DProd a p) :
   π (x = y) → π (proj₁ x = proj₁ y) ≔
-begin assume a p x y h; refine feq (λ e, proj₁ e) h end;
+begin assume a p x y h; refine feq proj₁ h end;
 
 opaque symbol eq_dpair_refl [a] [p] (x: τ a) (u v: τ (p x)) :
   π (u = v) → π (@dpair a p x u = dpair x v) ≔
-begin
-  assume a p x u v h; refine feq (λ w, @dpair a p x w) h
-end;
+begin assume a p x u v h; refine feq (dpair x) h end;
 
 symbol transport [a] (p: τ a → Set) [x y: τ a] : π (x = y) → τ (p x) → τ (p y);
 rule transport _ (eq_refl _) $u ↪ $u;

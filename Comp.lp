@@ -1,6 +1,4 @@
-/* Comparison datatype
-
-By Quentin Garchery (May 2021). */
+// comparison datatype
 
 require open Stdlib.Bool;
 

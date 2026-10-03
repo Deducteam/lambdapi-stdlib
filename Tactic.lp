@@ -1,4 +1,4 @@
-// define a type representing Lambdapi tactics
+// tactic type
 
 require open Stdlib.String Stdlib.Univ;
 

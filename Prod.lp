@@ -58,7 +58,7 @@ begin reflexivity end;
 
 symbol prodExt [a b] (x: τ (a × b)) : π (x = (x ₁) ‚ (x ₂)) ≔
 begin
-  assume a; refine ind_Prod a (λ b x, x = (x ₁) ‚ (x ₂)) _; reflexivity
+  assume a b; refine ind_Prod (λ x, x = (x ₁) ‚ (x ₂)) _; reflexivity
 end;
 
 opaque symbol eq_pair [a b] (x y: τ (a × b)) :

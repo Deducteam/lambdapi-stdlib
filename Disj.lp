@@ -1,7 +1,6 @@
-/* Library on Meta-Theorems for Disjunctions
+// varyadic disjunction
 
--------------------
-
+/*
 The library proves the following meta-theorems:
 
 ** n-ary Natural Deduction rules:

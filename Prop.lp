@@ -1,4 +1,4 @@
-// Propositional logic
+// propositional logic
 
 constant symbol Prop : TYPE;
 

@@ -1,4 +1,4 @@
-// Co-Cartesian product (disjoint sum)
+// disjoint sum
 
 require open Stdlib.FOL Stdlib.Eq;
 

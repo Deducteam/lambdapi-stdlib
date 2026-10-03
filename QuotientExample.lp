@@ -1,4 +1,4 @@
-// example of quotient: integers
+// example of quotient type
 
 require open Stdlib.Nat Stdlib.Prod Stdlib.Quotient;
 
@@ -38,7 +38,7 @@ require open Stdlib.FOL;
 
 opaque symbol +_com a b: π (+ a b = + b a) ≔
 begin
-  refine ind_quot intrel (λ a, `∀ b, + a b = + b a) _; assume x;
-  refine ind_quot intrel (λ b, + (class intrel x) b = + b (class intrel x)) _; assume y;
+  refine ind_Quot (λ a, `∀ b, + a b = + b a) _; assume x;
+  refine ind_Quot (λ b, + (class intrel x) b = + b (class intrel x)) _; assume y;
   apply sound; simplify; rewrite addnC (x ₁); rewrite addnC (y ₂); reflexivity
 end;

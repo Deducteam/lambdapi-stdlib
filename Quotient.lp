@@ -1,4 +1,4 @@
-// Quotient types
+// quotient types
 
 require open Stdlib.Eq;
 
@@ -12,7 +12,6 @@ notation ⫽ infix 30;
 rule τ (_ ⫽ $R) ↪ Quot $R;
 
 symbol class [a] r ≔ @cl a r;
-symbol ind_quot [a] ≔ ind_Quot a;
 
 symbol sound [a] (r:Rel a) x y: π(r x y) → π (class r x = class r y);
 
@@ -31,7 +30,7 @@ begin
     { assume x x' xx'; set p ≔ λ x y y' yy', hf x x (hr x) y y' yy';
       change π(lift r (f x) (p x) d = lift r (f x') (p x') d);
       set q ≔ λ d, lift r (f x) (p x) d = lift r (f x') (p x') d;
-      change π(q d); apply ind_quot r q _ d;
+      change π(q d); apply ind_Quot q _ d;
       assume y; simplify; apply hf {apply xx'} {apply hr} }
 end;
 

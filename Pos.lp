@@ -1,5 +1,6 @@
-// Positive binary integers following Rocq stdlib
+// positive binary integers
 
+//  following Rocq stdlib
 require open Stdlib.Nat Stdlib.Comp;
 
 inductive ℙ : TYPE ≔
