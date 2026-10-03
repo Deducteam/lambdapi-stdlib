@@ -1,5 +1,6 @@
-/* Library on natural numbers
+// unary natural numbers
 
+/*
 following https://github.com/math-comp/math-comp/blob/master/mathcomp/ssreflect/ssrnat.v
 
 Documentation of ssrnat.v

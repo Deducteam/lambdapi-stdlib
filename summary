@@ -1,0 +1,6 @@
+#!/bin/sh
+
+for f in `ls *.lp`
+do
+    echo "- \`${f%.lp}\`: `head -n1 $f | sed -e 's/^\/\/ //'`"
+done

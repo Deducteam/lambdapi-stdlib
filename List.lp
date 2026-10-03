@@ -1,5 +1,6 @@
-/* Library on polymorphic lists
+// polymorphic lists
 
+/*
 following https://github.com/math-comp/math-comp/blob/master/mathcomp/ssreflect/seq.v
 
 seq.v documentation

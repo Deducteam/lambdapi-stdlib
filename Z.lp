@@ -1,5 +1,6 @@
-// Binary integers (following Rocq stdlib)
+// binary integers
 
+// following Rocq stdlib
 require open Stdlib.Pos;
 
 inductive ℤ : TYPE ≔ // \BbbZ

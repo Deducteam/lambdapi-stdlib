@@ -1,7 +1,6 @@
-/* Library on Meta-Theorems for Conjunctions
+// varyadic conjunction
 
--------------------
-
+/*
 The library proves the following meta-theorems:
 
 ** n-ary Natural Deduction rules:

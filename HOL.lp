@@ -1,3 +1,5 @@
+// higher-order logic
+
 require open Stdlib.Set;
 
 constant symbol ⤳ : Set → Set → Set; // \leadsto

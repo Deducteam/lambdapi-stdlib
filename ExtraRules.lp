@@ -1,4 +1,4 @@
-// This module turns proved equalities to rewrite rules
+// additional rewrite rules derived from proved equalities
 
 // Bool
 

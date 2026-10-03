@@ -1,4 +1,4 @@
-/* Library on booleans. */
+// booleans
 
 require open Stdlib.FOL Stdlib.Eq;
 

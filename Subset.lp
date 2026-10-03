@@ -1,4 +1,4 @@
-// Subset types: a dependent pair of an element and a proof
+// subset types
 
 require open Stdlib.FOL Stdlib.Eq;
 

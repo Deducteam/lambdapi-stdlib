@@ -1,5 +1,6 @@
-/* n-ary functions and relations
+// n-ary functions and relations
 
+/*
 following "Generic Level Polymorphic N-ary Functions" by Guillaume
 Allais (TyDe 2019). */
 

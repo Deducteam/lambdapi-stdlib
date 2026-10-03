@@ -1,3 +1,5 @@
+// propositional extensionality
+
 /***************************************************************************
 This file provides an axiom and various theorems for propositional equality.
 The theorems are grouped into sections by theme:

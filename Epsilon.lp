@@ -1,3 +1,5 @@
+// Hilbert choice operator
+
 require open Stdlib.FOL;
 
 symbol ε [a:Set] : (τ a → Prop) → τ a;
