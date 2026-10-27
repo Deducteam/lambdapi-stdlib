@@ -38,4 +38,6 @@ jobs:
       - name: Check library
         run: |
           eval $(opam env)
+          pwd
+          ls
           make
