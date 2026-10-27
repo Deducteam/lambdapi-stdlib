@@ -3,9 +3,9 @@ MAKEFLAGS += -r -k -j$(shell nproc)
 LPO_MK := lpo.mk
 
 EXCLUDE := _opam
-EXCEPT := $(EXCLUDE:%=-path ./% -prune -o)
+EXCEPT := $(EXCLUDE:%=! -path './%*')
 
-LP := $(shell find . $(EXCEPT) -type f -name '*.lp' -print)
+LP := $(shell find . -name '*.lp' $(EXCEPT) -print)
 
 .PHONY: default
 default: $(LP:%=%o)
@@ -18,9 +18,9 @@ include $(LPO_MK)
 
 $(LPO_MK): $(LP)
 	@echo create/update $@ ...
-	lambdapi depend $(LP) > $@
+	@lambdapi depend $(LP) > $@
 
 .PHONY: clean
 clean:
-	-find . $(EXCEPT) -type f -name '*.lpo' -delete
+	-find . -name '*.lpo' $(EXCEPT) -delete
 	-rm $(LPO_MK)
