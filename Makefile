@@ -15,7 +15,7 @@ include $(LPO_MK)
 
 $(LPO_MK): $(LP)
 	@echo create/update $@ ...
-	@lambdapi depend $(LP) > $@
+	lambdapi depend $(LP) > $@
 
 .PHONY: clean
 clean:
