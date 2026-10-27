@@ -2,7 +2,7 @@ MAKEFLAGS += -r -k -j$(shell nproc)
 
 LPO_MK := lpo.mk
 
-LP := $(shell find . -name '*.lp')
+LP := $(shell find . -path _opam -o -name '*.lp')
 
 .PHONY: default
 default: $(LP:%=%o)
