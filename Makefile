@@ -2,7 +2,10 @@ MAKEFLAGS += -r -k -j$(shell nproc)
 
 LPO_MK := lpo.mk
 
-LP := $(shell find . -path ./_opam -prune -o -name '*.lp')
+EXCLUDE := _opam
+EXCEPT := $(EXCLUDE:%=-path ./% -prune -o)
+
+LP := $(shell find . $(EXCEPT) -name '*.lp')
 
 .PHONY: default
 default: $(LP:%=%o)
@@ -19,5 +22,5 @@ $(LPO_MK): $(LP)
 
 .PHONY: clean
 clean:
-	-find . -name '*.lpo' -delete
+	-find . $(EXCEPT) -name '*.lpo' -delete
 	-rm $(LPO_MK)
