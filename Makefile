@@ -5,7 +5,7 @@ LPO_MK := lpo.mk
 EXCLUDE := _opam
 EXCEPT := $(EXCLUDE:%=-path ./% -prune -o)
 
-LP := $(shell find . $(EXCEPT) -type f -name '*.lp')
+LP := $(shell find . $(EXCEPT) -type f -name '*.lp' -print)
 
 .PHONY: default
 default: $(LP:%=%o)
