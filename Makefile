@@ -6,21 +6,34 @@ EXCLUDE := _opam
 EXCEPT := $(EXCLUDE:%=! -path './%/*')
 
 LP := $(shell find . -name '*.lp' $(EXCEPT) -print)
+LPO := $(LP:%=%o)
 
 .PHONY: default
-default: $(LP:%=%o)
+default: $(LPO)
+
+LP_OPTIONS = -c -v 0
 
 %.lpo: %.lp
 	@echo lambdapi check $< ...
-	@lambdapi check -c -v 0 $<
+	@lambdapi check $(LP_OPTIONS) $<
 
 include $(LPO_MK)
 
 $(LPO_MK): $(LP)
 	@echo create/update $@ ...
-	@lambdapi depend $(LP) > $@
+	@lambdapi depend > $@
 
 .PHONY: clean
 clean:
 	-find . -name '*.lpo' $(EXCEPT) -delete
 	-rm $(LPO_MK)
+
+.PHONY: install
+install: lambdapi.pkg $(LP) $(LPO)
+	@echo lambdapi install ...
+	@lambdapi install
+
+.PHONY: uninstall
+uninstall: lambdapi.pkg
+	@echo lambdapi uninstall ...
+	@lambdapi uninstall
