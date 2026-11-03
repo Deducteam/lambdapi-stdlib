@@ -773,7 +773,6 @@ symbol _10 ≔ O (I (O H)); assert ⊢ val _10 ≡ 10;
 
 // enable parsing of positive numbers in decimal notation
 
-builtin "0" ≔ _0;
 builtin "1" ≔ _1;
 builtin "2" ≔ _2;
 builtin "3" ≔ _3;
@@ -787,3 +786,5 @@ builtin "10" ≔ _10;
 
 builtin "+" ≔ add;
 builtin "*" ≔ mul;
+
+assert ⊢ add 001009 11 ≡ 01020;
