@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        lambdapi-version: [dev]
+        lambdapi-version: [dev, 4.0.0]
 
     runs-on: ubuntu-latest
 
@@ -20,7 +20,7 @@ jobs:
       - name: Install ocaml and opam
         uses: ocaml/setup-ocaml@v3
         with:
-          ocaml-compiler: 5.5
+          ocaml-compiler: 5.5.2
           opam-repositories: |
             default: https://github.com/ocaml/opam-repository.git
             lambdapi: https://github.com/deducteam/opam-lambdapi-repository.git
